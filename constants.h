@@ -1,4 +1,10 @@
-// constants.h
+//
+//  constants.h
+//  StickyParticles
+//
+//  Created by Alessandro Motta on 2/23/12.
+//  Taken from project documentation by R. Boulic.
+//
 
 #define RECT_X 8.f // m
 #define RECT_Y 6.f // m
