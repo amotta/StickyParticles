@@ -8,6 +8,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "game.h"
+
 static void usage(){
     printf(
         "Usage of Sticky Particles\n"
@@ -20,9 +22,10 @@ int main(int argc, char** argv){
         usage();
         return EXIT_SUCCESS;
     }
-
-    while(++argv, --argc){
-        printf("%s\n", *argv);
+    
+    unsigned int i;
+    for(i = 1; i < argc; i++){
+        gameFileRead(argv[i]);
     }
     
     return EXIT_SUCCESS;
