@@ -7,8 +7,7 @@
 
 #include <stdio.h>
 
-#define BUFSIZE 255
-
+static int gameFileSkip(FILE* file)
 static int gameFileReadScore(FILE* file);
 static int gameFileParse(FILE* file);
 extern int gameFileRead(char* name);
