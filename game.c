@@ -14,6 +14,7 @@
 static int gameFileSkip(FILE* file){
     char c;
     bool comment = false;
+    bool separation = false;
     
     do{
         c = fgetc(file);
@@ -21,6 +22,7 @@ static int gameFileSkip(FILE* file){
         switch(c){
             case ' ':
             case '\t':
+                separation = true;
                 break;
             
             case '#':
@@ -30,6 +32,7 @@ static int gameFileSkip(FILE* file){
             case '\r':
             case '\n':
                 comment = false;
+                separation = true;
                 break;
                 
             case EOF:
@@ -39,7 +42,12 @@ static int gameFileSkip(FILE* file){
             default:
                 if(!comment){
                     ungetc(c, file);
-                    return OK;
+                    
+                    if(separation){
+                        return OK;
+                    }else{
+                        return GAME_ERROR_NO_SEPA;
+                    }
                 }
         }
     }while(true);
@@ -49,7 +57,11 @@ static int gameFileReadScore(FILE* file){
     int error = OK;
     unsigned int score;
     
-    if(error = gameFileSkip(file)){
+    // no separator needed at start of file
+    if(
+       error = gameFileSkip(file)
+       && error != GAME_ERROR_NO_SEPA
+    ){
         return error;
     }
     

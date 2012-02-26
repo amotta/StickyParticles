@@ -13,6 +13,7 @@
 #define GAME_ERROR_EOF 1
 #define GAME_ERROR_FORMAT 2
 #define GAME_ERROR_FOPEN 3
+#define GAME_ERROR_NO_SEPA 4
 
 static int gameFileSkip(FILE* file);
 static int gameFileReadScore(FILE* file);
