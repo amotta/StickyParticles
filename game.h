@@ -16,6 +16,8 @@
 
 static int gameFileSkip(FILE* file);
 static int gameFileReadScore(FILE* file);
+static int gameFileReadInterval(FILE* file);
+static int gameFileReadDisc(FILE* file);
 extern int gameFileRead(char* name);
 
 #endif

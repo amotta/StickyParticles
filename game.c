@@ -63,6 +63,49 @@ static int gameFileReadScore(FILE* file){
     return OK;
 }
 
+static int gameFileReadInterval(FILE* file){
+    int error = OK;
+    double interval;
+    
+    if(error = gameFileSkip(file)){
+        return error;
+    }
+    
+    if(fscanf(file, "%lf", &interval) < 1){
+        return GAME_ERROR_FORMAT;
+    }
+    
+    // DEBUG
+    printf("Interval read: %f\n", interval);
+    
+    return OK;
+}
+
+static int gameFileReadDisc(FILE* file){
+    int error = OK;
+    double x, y;
+    
+    if(error = gameFileSkip(file)){
+        return error;
+    }
+    
+    if(fscanf(file, "%lf", &x) < 1){
+        return GAME_ERROR_FORMAT;
+    }
+    
+    if(error = gameFileSkip(file)){
+        return error;
+    }
+    
+    if(fscanf(file, "%lf", &y) < 1){
+        return GAME_ERROR_FORMAT;
+    }
+    
+    printf("Disc X: %f, Disc Y: %f\n", x, y);
+    
+    return OK;
+}
+
 extern int gameFileRead(char* name){
     int error = OK;
     FILE* file = NULL;
@@ -73,6 +116,8 @@ extern int gameFileRead(char* name){
     }
     
     error = error || gameFileReadScore(file);
+    error = error || gameFileReadInterval(file);
+    error = error || gameFileReadDisc(file);
     
     fclose(file);
     

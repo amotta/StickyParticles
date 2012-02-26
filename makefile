@@ -1,7 +1,7 @@
 # makefile
 
 CC = gcc
-FLAGS = -Wall -pedantic
+FLAGS = -Wall
 
 all: sticky.x
 
