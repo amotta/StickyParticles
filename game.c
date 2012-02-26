@@ -10,33 +10,45 @@
 
 #include "game.h"
 
-// TODO: handle EOF
 static int gameFileSkip(FILE* file){
     char c;
     bool comment = false;
-    bool newLine = false;
+    bool separation = false;
     
     do{
         c = fgetc(file);
         
-        if(c == ' '){
-            newLine = false;
-        }else if(c == '#'){
-            newLine = false;
-            comment = true;
-        }else if(c == '\r' ||  c == '\n'){
-            newLine = true;
-            comment = false;
-        }else{
-            if(newLine){
-                ungetc(c, file);
-                return 0;
-            }else if(!comment){
-                printf("ERROR: Invalid character\n");
-                return 1;
-            }
+        switch(c){
+            case ' ':
+            case '\t':
+                separation = true;
+                break;
             
-            newLine = false;
+            case '#':
+                comment = true;
+                break;
+            
+            case '\r':
+            case '\n':
+                comment = false;
+                separation = true;
+                break;
+                
+            case EOF:
+                printf("ERROR: Unexpected end-of-file\n");
+                return 2;
+                break;
+                
+            default:
+                if(!comment){
+                    if(separation){
+                        ungetc(c, file);
+                        return 0;
+                    }else{
+                        printf("ERROR: Invalid character\n");
+                        return 1;
+                    }
+                }
         }
     }while(true);
 }
