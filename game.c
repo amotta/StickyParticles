@@ -9,11 +9,11 @@
 #include <stdio.h>
 
 #include "game.h"
+#include "main.h"
 
 static int gameFileSkip(FILE* file){
     char c;
     bool comment = false;
-    bool separation = false;
     
     do{
         c = fgetc(file);
@@ -21,7 +21,6 @@ static int gameFileSkip(FILE* file){
         switch(c){
             case ' ':
             case '\t':
-                separation = true;
                 break;
             
             case '#':
@@ -31,53 +30,51 @@ static int gameFileSkip(FILE* file){
             case '\r':
             case '\n':
                 comment = false;
-                separation = true;
                 break;
                 
             case EOF:
-                printf("ERROR: Unexpected end-of-file\n");
-                return 2;
+                return GAME_ERROR_EOF;
                 break;
                 
             default:
                 if(!comment){
-                    if(separation){
-                        ungetc(c, file);
-                        return 0;
-                    }else{
-                        printf("ERROR: Invalid character\n");
-                        return 1;
-                    }
+                    ungetc(c, file);
+                    return OK;
                 }
         }
     }while(true);
 }
 
 static int gameFileReadScore(FILE* file){
+    int error = OK;
     unsigned int score;
-    while(fscanf(file, "%u", &score) < 1){
-        if(gameFileSkip(file)){
-            return 1;
-        }
+    
+    if(error = gameFileSkip(file)){
+        return error;
     }
     
+    if(fscanf(file, "%u", &score) < 1){
+        return GAME_ERROR_FORMAT;
+    }
+    
+    // DEBUG
     printf("Score read: %u\n", score);
     
-    return 0;
+    return OK;
 }
 
 extern int gameFileRead(char* name){
+    int error = OK;
     FILE* file = NULL;
     
     file = fopen(name, "r");
     if(!file){
-        printf("ERROR: Could not open file\n");
-        return 1;
+        return GAME_ERROR_FOPEN;
     }
     
-    gameFileReadScore(file);
+    error = error || gameFileReadScore(file);
     
     fclose(file);
     
-    return 0;
+    return OK;
 }
