@@ -18,6 +18,8 @@ static int gameFileSkip(FILE* file);
 static int gameFileReadScore(FILE* file);
 static int gameFileReadInterval(FILE* file);
 static int gameFileReadDisc(FILE* file);
+static int gameFileReadEmitter(FILE* file);
+static int gameFileReadEmitters(FILE* file);
 extern int gameFileRead(char* name);
 
 #endif

@@ -58,7 +58,7 @@ static int gameFileReadScore(FILE* file){
     }
     
     // DEBUG
-    printf("Score read: %u\n", score);
+    printf("Score: %u\n", score);
     
     return OK;
 }
@@ -76,7 +76,7 @@ static int gameFileReadInterval(FILE* file){
     }
     
     // DEBUG
-    printf("Interval read: %f\n", interval);
+    printf("Interval: %f\n", interval);
     
     return OK;
 }
@@ -101,7 +101,55 @@ static int gameFileReadDisc(FILE* file){
         return GAME_ERROR_FORMAT;
     }
     
-    printf("Disc X: %f, Disc Y: %f\n", x, y);
+    // DEBUG
+    printf("Disc\n");
+    printf(" X: %f, Y: %f\n", x, y);
+    
+    return OK;
+}
+
+static int gameFileReadEmitter(FILE* file){
+    int error = OK;
+    double x, y, alpha, flow, speed;
+    
+    if(error = gameFileSkip(file)){
+        return error;
+    }
+    
+    if(fscanf(file, "%lf %lf %lf %lf %lf", &x, &y, &alpha, &flow, &speed) < 5){
+        return GAME_ERROR_FORMAT;
+    }
+    
+    printf(
+        " X: %f, Y: %f, Alpha: %f, Flow: %f, Speed: %f\n",
+        x, y, alpha, flow, speed
+    );
+    
+    return OK;
+}
+
+static int gameFileReadEmitters(FILE* file){
+    int error = OK;
+    unsigned int numbEmitters;
+    
+    if(error = gameFileSkip(file)){
+        return error;
+    }
+    
+    if(fscanf(file, "%u", &numbEmitters) < 1){
+        return GAME_ERROR_FORMAT;
+    }
+    
+    // DEBUG
+    printf("Emitter count: %u\n", numbEmitters);
+    
+    // read emitters
+    unsigned int i;
+    for(i = 0; i < numbEmitters; i++){
+        if(error = gameFileReadEmitter(file)){
+            return error;
+        }
+    }
     
     return OK;
 }
@@ -118,6 +166,7 @@ extern int gameFileRead(char* name){
     error = error || gameFileReadScore(file);
     error = error || gameFileReadInterval(file);
     error = error || gameFileReadDisc(file);
+    error = error || gameFileReadEmitters(file);
     
     fclose(file);
     
