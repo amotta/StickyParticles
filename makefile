@@ -13,3 +13,6 @@ main.o: main.c main.h
 
 game.o: game.c game.h main.h
 	$(CC) $(FLAGS) -c $< -o $@
+
+clean:
+	rm *.o *.x
