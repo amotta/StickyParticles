@@ -12,6 +12,24 @@
 #include "game.h"
 #include "main.h"
 
+enum GAME_ERROR_CODES {
+    GAME_OK,
+    GAME_ERROR_EOF,
+    GAME_ERROR_FOPEN,
+    GAME_ERROR_SCORE,
+    GAME_ERROR_INTERVAL,
+    GAME_ERROR_DISC,
+    GAME_ERROR_EMITTER,
+    GAME_ERROR_EMITTERS,
+    GAME_ERROR_GROUPTYPE,
+    GAME_ERROR_GROUP,
+    GAME_ERROR_GROUPS,
+    GAME_ERROR_PART,
+    GAME_ERROR_PARTS,
+    GAME_ERROR_NEWLINE,
+    GAME_ERROR_FCLOSE
+};
+
 static int gameFileSkip(FILE* file);
 static int gameFileReadScore(FILE* file);
 static int gameFileReadInterval(FILE* file);
@@ -25,7 +43,7 @@ static int gameFileReadGroups(FILE* file);
 static int gameFileSkip(FILE* file){
     char c;
     bool comment = false;
-    bool separation = false;
+    bool newLine = false;
     
     do{
         c = fgetc(file);
@@ -33,31 +51,29 @@ static int gameFileSkip(FILE* file){
         switch(c){
             case ' ':
             case '\t':
-                separation = true;
-                break;
+                continue;
             
             case '#':
                 comment = true;
-                break;
+                continue;
             
             case '\r':
             case '\n':
                 comment = false;
-                separation = true;
-                break;
+                newLine = true;
+                continue;
                 
             case EOF:
                 return GAME_ERROR_EOF;
-                break;
                 
             default:
                 if(!comment){
                     ungetc(c, file);
                     
-                    if(separation){
+                    if(newLine){
                         return OK;
                     }else{
-                        return GAME_ERROR_NO_SEPA;
+                        return GAME_ERROR_NEWLINE;
                     }
                 }
         }
@@ -68,16 +84,15 @@ static int gameFileReadScore(FILE* file){
     int error = OK;
     unsigned int score;
     
-    // no separator needed at start of file
-    if(
-       error = gameFileSkip(file)
-       && error != GAME_ERROR_NO_SEPA
-    ){
+    error = gameFileSkip(file);
+    
+    // no line break needed before first value
+    if(error != GAME_OK && error != GAME_ERROR_NEWLINE){
         return error;
     }
     
     if(fscanf(file, "%u", &score) < 1){
-        return GAME_ERROR_FORMAT;
+        return GAME_ERROR_SCORE;
     }
     
     // DEBUG
@@ -90,12 +105,12 @@ static int gameFileReadInterval(FILE* file){
     int error = OK;
     double interval;
     
-    if(error = gameFileSkip(file)){
+    if((error = gameFileSkip(file)) != GAME_OK){
         return error;
     }
     
     if(fscanf(file, "%lf", &interval) < 1){
-        return GAME_ERROR_FORMAT;
+        return GAME_ERROR_INTERVAL;
     }
     
     // DEBUG
@@ -108,20 +123,12 @@ static int gameFileReadDisc(FILE* file){
     int error = OK;
     double x, y;
     
-    if(error = gameFileSkip(file)){
+    if((error = gameFileSkip(file)) != GAME_OK){
         return error;
     }
     
-    if(fscanf(file, "%lf", &x) < 1){
-        return GAME_ERROR_FORMAT;
-    }
-    
-    if(error = gameFileSkip(file)){
-        return error;
-    }
-    
-    if(fscanf(file, "%lf", &y) < 1){
-        return GAME_ERROR_FORMAT;
+    if(fscanf(file, "%lf %lf", &x, &y) < 2){
+        return GAME_ERROR_DISC;
     }
     
     // DEBUG
@@ -135,14 +142,15 @@ static int gameFileReadEmitter(FILE* file){
     int error = OK;
     double x, y, alpha, flow, speed;
     
-    if(error = gameFileSkip(file)){
+    if((error = gameFileSkip(file)) != GAME_OK){
         return error;
     }
     
     if(fscanf(file, "%lf %lf %lf %lf %lf", &x, &y, &alpha, &flow, &speed) < 5){
-        return GAME_ERROR_FORMAT;
+        return GAME_ERROR_EMITTER;
     }
     
+    // DEBUG
     printf(
         " X: %f, Y: %f, Alpha: %f, Flow: %f, Speed: %f\n",
         x, y, alpha, flow, speed
@@ -155,12 +163,12 @@ static int gameFileReadEmitters(FILE* file){
     int error = OK;
     unsigned int numbEmitters;
     
-    if(error = gameFileSkip(file)){
+    if((error = gameFileSkip(file)) != GAME_OK){
         return error;
     }
     
     if(fscanf(file, "%u", &numbEmitters) < 1){
-        return GAME_ERROR_FORMAT;
+        return GAME_ERROR_EMITTERS;
     }
     
     // DEBUG
@@ -169,7 +177,7 @@ static int gameFileReadEmitters(FILE* file){
     // read emitters
     unsigned int i;
     for(i = 0; i < numbEmitters; i++){
-        if(error = gameFileReadEmitter(file)){
+        if((error = gameFileReadEmitter(file)) != GAME_OK){
             return error;
         }
     }
@@ -180,7 +188,7 @@ static int gameFileReadEmitters(FILE* file){
 static int gameFileReadGroupType(FILE* file){
     int error = OK;
     
-    if(error = gameFileSkip(file)){
+    if((error = gameFileSkip(file)) != GAME_OK){
         return error;
     }
     
@@ -189,6 +197,7 @@ static int gameFileReadGroupType(FILE* file){
         return GROUP_TYPE_NONE;
     }
     
+    // check for valid values
     if(!strcmp(buf, "INOFFENSIF")){
         return GROUP_TYPE_HARMLESS;
     }else if(!strcmp(buf, "DANGEREUX")){
@@ -201,28 +210,22 @@ static int gameFileReadGroupType(FILE* file){
 static int gameFileReadGroup(FILE* file){
     int error = OK;
     double x, y, vx, vy, omega;
-    int type;
-    unsigned int numbParts;
+    unsigned int type, numbParts;
     
-    if(error = gameFileSkip(file)){
-        printf("ERROR 208\n");
+    if((error = gameFileSkip(file)) != GAME_OK){
         return error;
     }
     
     if(fscanf(file, "%lf %lf %lf %lf %lf", &x, &y, &vx, &vy, &omega) < 5){
-        printf("ERROR 213\n");
-        return GAME_ERROR_FORMAT;
+        return GAME_ERROR_GROUP;
     }
     
     if((type = gameFileReadGroupType(file)) == GROUP_TYPE_NONE){
-        // TODO proper error message
-        printf("ERROR 219\n");
-        return GAME_ERROR_FORMAT;
+        return GAME_ERROR_GROUPTYPE;
     }
     
     if(fscanf(file, "%u", &numbParts) < 1){
-        printf("ERROR 224\n");
-        return GAME_ERROR_FORMAT;
+        return GAME_ERROR_PARTS;
     }
     
     // DEBUG
@@ -235,6 +238,12 @@ static int gameFileReadGroup(FILE* file){
         numbParts
     );
     
+    unsigned int i;
+    for(i = 0; i < numbParts; i++){
+        // TODO
+        // gameFileReadPart(file);
+    }
+    
     return OK;
 }
 
@@ -242,12 +251,12 @@ static int gameFileReadGroups(FILE* file){
     int error = OK;
     unsigned int numbGroups;
     
-    if(error = gameFileSkip(file)){
+    if((error = gameFileSkip(file)) != GAME_OK){
         return error;
     }
     
     if(fscanf(file, "%u", &numbGroups) < 1){
-        return GAME_ERROR_FORMAT;
+        return GAME_ERROR_GROUPS;
     }
     
     // DEUBG
@@ -255,7 +264,7 @@ static int gameFileReadGroups(FILE* file){
     
     unsigned int i;
     for(i = 0; i < numbGroups; i++){
-        if(error = gameFileReadGroup(file)){
+        if((error = gameFileReadGroup(file)) != GAME_OK){
             return error;
         }
     }
