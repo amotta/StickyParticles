@@ -9,7 +9,6 @@
 #include <stdlib.h>
 
 #include "game.h"
-#include "main.h"
 
 static void usage(){
     printf(

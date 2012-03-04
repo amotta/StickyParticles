@@ -8,6 +8,6 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-#define OK 0
+
 
 #endif

@@ -10,7 +10,6 @@
 #include <string.h>
 
 #include "game.h"
-#include "main.h"
 
 enum GAME_ERROR_CODES {
     GAME_OK,
@@ -39,6 +38,7 @@ static int gameFileReadEmitters(FILE* file);
 static int gameFileReadGroupType(FILE* file);
 static int gameFileReadGroup(FILE* file);
 static int gameFileReadGroups(FILE* file);
+static int gameFileReadPart(FILE* file);
 
 static int gameFileSkip(FILE* file){
     char c;
@@ -71,7 +71,7 @@ static int gameFileSkip(FILE* file){
                     ungetc(c, file);
                     
                     if(newLine){
-                        return OK;
+                        return GAME_OK;
                     }else{
                         return GAME_ERROR_NEWLINE;
                     }
@@ -81,7 +81,7 @@ static int gameFileSkip(FILE* file){
 }
 
 static int gameFileReadScore(FILE* file){
-    int error = OK;
+    int error = GAME_OK;
     unsigned int score;
     
     error = gameFileSkip(file);
@@ -98,11 +98,11 @@ static int gameFileReadScore(FILE* file){
     // DEBUG
     printf("Score: %u\n", score);
     
-    return OK;
+    return GAME_OK;
 }
 
 static int gameFileReadInterval(FILE* file){
-    int error = OK;
+    int error = GAME_OK;
     double interval;
     
     if((error = gameFileSkip(file)) != GAME_OK){
@@ -116,11 +116,11 @@ static int gameFileReadInterval(FILE* file){
     // DEBUG
     printf("Interval: %f\n", interval);
     
-    return OK;
+    return GAME_OK;
 }
 
 static int gameFileReadDisc(FILE* file){
-    int error = OK;
+    int error = GAME_OK;
     double x, y;
     
     if((error = gameFileSkip(file)) != GAME_OK){
@@ -135,11 +135,11 @@ static int gameFileReadDisc(FILE* file){
     printf("Disc\n");
     printf(" X: %f, Y: %f\n", x, y);
     
-    return OK;
+    return GAME_OK;
 }
 
 static int gameFileReadEmitter(FILE* file){
-    int error = OK;
+    int error = GAME_OK;
     double x, y, alpha, flow, speed;
     
     if((error = gameFileSkip(file)) != GAME_OK){
@@ -156,11 +156,11 @@ static int gameFileReadEmitter(FILE* file){
         x, y, alpha, flow, speed
     );
     
-    return OK;
+    return GAME_OK;
 }
 
 static int gameFileReadEmitters(FILE* file){
-    int error = OK;
+    int error = GAME_OK;
     unsigned int numbEmitters;
     
     if((error = gameFileSkip(file)) != GAME_OK){
@@ -182,16 +182,10 @@ static int gameFileReadEmitters(FILE* file){
         }
     }
     
-    return OK;
+    return GAME_OK;
 }
 
 static int gameFileReadGroupType(FILE* file){
-    int error = OK;
-    
-    if((error = gameFileSkip(file)) != GAME_OK){
-        return error;
-    }
-    
     char buf[11];
     if(fscanf(file, "%10s", buf) < 1){
         return GROUP_TYPE_NONE;
@@ -208,7 +202,7 @@ static int gameFileReadGroupType(FILE* file){
 }
 
 static int gameFileReadGroup(FILE* file){
-    int error = OK;
+    int error = GAME_OK;
     double x, y, vx, vy, omega;
     unsigned int type, numbParts;
     
@@ -238,17 +232,21 @@ static int gameFileReadGroup(FILE* file){
         numbParts
     );
     
-    unsigned int i;
-    for(i = 0; i < numbParts; i++){
-        // TODO
-        // gameFileReadPart(file);
+    // read particles
+    if(numbParts > 1){
+        unsigned int i;
+        for(i = 0; i < numbParts; i++){
+            if((error = gameFileReadPart(file)) != GAME_OK){
+                return error;
+            }
+        }
     }
     
-    return OK;
+    return GAME_OK;
 }
 
 static int gameFileReadGroups(FILE* file){
-    int error = OK;
+    int error = GAME_OK;
     unsigned int numbGroups;
     
     if((error = gameFileSkip(file)) != GAME_OK){
@@ -269,15 +267,32 @@ static int gameFileReadGroups(FILE* file){
         }
     }
     
-    return OK;
+    return GAME_OK;
+}
+
+static int gameFileReadPart(FILE* file){
+    int error = GAME_OK;
+    double x, y;
+    
+    if((error = gameFileSkip(file)) != GAME_OK){
+        return error;
+    }
+    
+    if(fscanf(file, "%lf %lf", &x, &y) < 2){
+        return GAME_ERROR_PART;
+    }
+    
+    // DEBUG
+    printf("  X: %lf, Y: %lf\n", x, y);
+    
+    return GAME_OK;
 }
 
 extern int gameFileRead(char* name){
-    int error = OK;
+    int error = GAME_OK;
     FILE* file = NULL;
     
-    file = fopen(name, "r");
-    if(!file){
+    if((file = fopen(name, "r")) == NULL){
         return GAME_ERROR_FOPEN;
     }
     
@@ -289,5 +304,5 @@ extern int gameFileRead(char* name){
     
     fclose(file);
     
-    return OK;
+    return error;
 }
