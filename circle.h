@@ -10,10 +10,13 @@
 
 #include <stdbool.h>
 
-#define CIRCLE_X 0
-#define CIRCLE_Y 1
-#define CIRCLE_R 2
+#include "vector.h"
 
-extern bool isCircleInCircle(double circInt[], double circExt[]);
+typedef struct {
+    double r;
+    vect_t pos;
+} circ_t;
+
+extern bool isCircleInCircle(circ_t circInt, circ_t circExt);
 
 #endif

@@ -8,19 +8,21 @@
 #include <math.h>
 
 #include "circle.h"
+#include "vector.h"
 
-extern bool isCircleInCircle(double circInt[], double circExt[]){
-    if(circInt[CIRCLE_R] > circExt[CIRCLE_R]){
+extern bool isCircleInCircle(circ_t circInt, circ_t circExt){
+    // because we're lazy and efficient
+    if(circInt.r > circExt.r){
         return false;
     }
     
-    double centerDistSquare = 0;
-    centerDistSquare += pow(circInt[CIRCLE_X] - circExt[CIRCLE_X], 2);
-    centerDistSquare += pow(circInt[CIRCLE_Y] - circExt[CIRCLE_Y], 2);
+    double dist = vectLength(vectMinus(circInt.pos, circExt.pos));
     
-    if(centerDistSquare > pow(circExt[CIRCLE_R] - circInt[CIRCLE_R], 2)){
+    if(dist > circExt.r - circInt.r){
         return false;
     }else{
         return true;
     }
 }
+
+
