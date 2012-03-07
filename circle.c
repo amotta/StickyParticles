@@ -1,13 +1,12 @@
 //
-//  geometry.c
+//  circle.c
 //  StickyParticles
 //
-//  Created by Alessandro Motta on 3/4/12.
+//  Created by Alessandro Motta on 3/7/12.
 //
 
-#include <math.h>
-
-#include "geometry.h"
+#include "circle.h"
+#include "rectangle.h"
 #include "vector.h"
 
 extern bool geoIsCircInCirc(circ_t circInt, circ_t circExt){
@@ -27,18 +26,18 @@ extern bool geoIsCircInCirc(circ_t circInt, circ_t circExt){
 extern bool geoCircInRect(circ_t circ, rect_t rect){
     // hiiiiigh power!
     if(
-        rect.right - rect.left < circ.r
-        || rect.top - rect.bottom < circ.r
-    ){
+       rect.right - rect.left < circ.r
+       || rect.top - rect.bottom < circ.r
+       ){
         return false;
     }
     
     if(
-        circ.pos.x > rect.left + circ.r
-        && circ.pos.x < rect.right - circ.r
-        && circ.pos.y > rect.bottom + circ.r
-        && circ.pos.y < rect.top - circ.r
-    ){
+       circ.pos.x > rect.left + circ.r
+       && circ.pos.x < rect.right - circ.r
+       && circ.pos.y > rect.bottom + circ.r
+       && circ.pos.y < rect.top - circ.r
+       ){
         return true;
     }else{
         return false;
