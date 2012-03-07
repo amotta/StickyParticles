@@ -9,7 +9,10 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "circle.h"
+#include "constants.h"
 #include "game.h"
+#include "rectangle.h"
 
 enum GAME_ERROR_CODES {
     GAME_OK,
@@ -18,6 +21,7 @@ enum GAME_ERROR_CODES {
     GAME_ERROR_SCORE,
     GAME_ERROR_INTERVAL,
     GAME_ERROR_DISC,
+    GAME_ERROR_DISC_INVALID,
     GAME_ERROR_EMITTER,
     GAME_ERROR_EMITTERS,
     GAME_ERROR_GROUPTYPE,
@@ -28,6 +32,25 @@ enum GAME_ERROR_CODES {
     GAME_ERROR_NEWLINE,
     GAME_ERROR_FCLOSE
 };
+
+char* GAME_ERROR_MESSAGES[] = {
+    "No error",
+    "Reached end of file",
+    "Could not open file",
+    "Could not read score",
+    "Could not read interval",
+    "Could not read disc",
+    "Invalid placement of disc",
+    "Could not read number of emitters",
+    "Could not read emitter",
+    "Could not read group type",
+    "Could not read group",
+    "Could not read number of groups",
+    "Could not read particle",
+    "Could not read number of particles",
+    "No line break between two values",
+    "Could not close file"
+};  
 
 static int gameFileSkip(FILE* file);
 static int gameFileReadScore(FILE* file);
@@ -134,6 +157,20 @@ static int gameFileReadDisc(FILE* file){
     // DEBUG
     printf("Disc\n");
     printf(" X: %f, Y: %f\n", x, y);
+    
+    circ_t zone;
+    zone.pos.x = RECT_X / 2;
+    zone.pos.y = RECT_Y / 2;
+    zone.r = RECT_Y / 2;
+    
+    circ_t circ;
+    circ.pos.x = x;
+    circ.pos.y = y;
+    circ.r = R_DISC;
+    
+    if(!isCircInCirc(circ, zone)){
+        return GAME_ERROR_DISC_INVALID;
+    }
     
     return GAME_OK;
 }
@@ -296,13 +333,19 @@ extern int gameFileRead(char* name){
         return GAME_ERROR_FOPEN;
     }
     
-    error = error || gameFileReadScore(file);
-    error = error || gameFileReadInterval(file);
-    error = error || gameFileReadDisc(file);
-    error = error || gameFileReadEmitters(file);
-    error = error || gameFileReadGroups(file);
+    if(!error) error = gameFileReadScore(file);
+    if(!error) error = gameFileReadInterval(file);
+    if(!error) error = gameFileReadDisc(file);
+    if(!error) error = gameFileReadEmitters(file);
+    if(!error) error = gameFileReadGroups(file);
     
-    fclose(file);
+    if(fclose(file) > 0){
+        error = GAME_ERROR_FCLOSE;
+    }
     
     return error;
+}
+
+extern char* gameGetError(int error){
+    return GAME_ERROR_MESSAGES[error];
 }

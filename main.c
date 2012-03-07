@@ -23,9 +23,16 @@ int main(int argc, char** argv){
         return EXIT_SUCCESS;
     }
     
+    int error;
     unsigned int i;
     for(i = 1; i < argc; i++){
-        gameFileRead(argv[i]);
+        error = gameFileRead(argv[i]);
+        
+        if(error){
+            printf("\n");
+            printf("ERROR in %s\n", argv[i]);
+            printf(" %s\n", gameGetError(error));
+        }
     }
     
     return EXIT_SUCCESS;

@@ -16,5 +16,6 @@
 #define GROUP_TYPE_DANGEROUS 2
 
 extern int gameFileRead(char* name);
+extern char* gameGetError(int error);
 
 #endif

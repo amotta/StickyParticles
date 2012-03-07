@@ -30,7 +30,7 @@ extern bool isCircInRect(circ_t circ, rect_t rect){
     if(
        rect.right - rect.left < circ.r
        || rect.top - rect.bottom < circ.r
-       ){
+    ){
         return false;
     }
     
