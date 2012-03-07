@@ -5,11 +5,13 @@
 //  Created by Alessandro Motta on 3/7/12.
 //
 
+#include <stdbool.h>
+
 #include "circle.h"
 #include "rectangle.h"
 #include "vector.h"
 
-extern bool geoIsCircInCirc(circ_t circInt, circ_t circExt){
+extern bool isCircInCirc(circ_t circInt, circ_t circExt){
     // because we're lazy and efficient
     if(circInt.r > circExt.r){
         return false;
@@ -23,7 +25,7 @@ extern bool geoIsCircInCirc(circ_t circInt, circ_t circExt){
     }
 }
 
-extern bool geoCircInRect(circ_t circ, rect_t rect){
+extern bool isCircInRect(circ_t circ, rect_t rect){
     // hiiiiigh power!
     if(
        rect.right - rect.left < circ.r

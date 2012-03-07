@@ -10,6 +10,7 @@
 
 #include <stdbool.h>
 
+#include "rectangle.h"
 #include "vector.h"
 
 typedef struct {
@@ -17,8 +18,7 @@ typedef struct {
     vect_t pos;
 } circ_t;
 
-extern bool geoIsCircInCirc(circ_t circInt, circ_t circExt);
-extern bool geoIsCircInRect(circ_t circ, rect_t rect);
-
+extern bool isCircInCirc(circ_t circInt, circ_t circExt);
+extern bool isCircInRect(circ_t circ, rect_t rect);
 
 #endif
