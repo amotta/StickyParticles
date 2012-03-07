@@ -9,6 +9,14 @@
 
 #include "vector.h"
 
+extern vect_t vectPlus(vect_t vectOne, vect_t vectTwo){
+    vect_t res;
+    res.x = vectOne.x + vectTwo.x;
+    res.y = vectOne.y + vectTwo.y;
+    
+    return res;
+}
+
 extern vect_t vectMinus(vect_t vectOne, vect_t vectTwo){
     vect_t res;
     res.x = vectOne.x - vectTwo.x;

@@ -13,7 +13,8 @@ typedef struct {
     double y;
 } vect_t;
 
-extern vect_t vectMinus(vect_t vectOne, vect_t vecTwo);
+extern vect_t vectPlus(vect_t vectOne, vect_t vectTwo);
+extern vect_t vectMinus(vect_t vectOne, vect_t vectTwo);
 extern double vectLength(vect_t vect);
 
 #endif

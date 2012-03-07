@@ -5,13 +5,13 @@ FLAGS = -Wall
 
 all: sticky.x
 
-sticky.x: circle.o game.o main.o vector.o
+sticky.x: game.o geometry.o main.o vector.o
 	$(CC) $(FLAGS) $^ -o $@
 
-circle.o: circle.c circle.h vector.h
+game.o: game.c game.h
 	$(CC) $(FLAGS) -c $< -o $@
 
-game.o: game.c game.h
+geometry.o: geometry.c geometry.h
 	$(CC) $(FLAGS) -c $< -o $@
 
 main.o: main.c
