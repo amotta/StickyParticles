@@ -8,6 +8,7 @@
 #include <stdbool.h>
 
 #include "circle.h"
+#include "constants.h"
 #include "rectangle.h"
 #include "vector.h"
 
@@ -23,6 +24,22 @@ extern bool isCircInCirc(circ_t circInt, circ_t circExt){
     }else{
         return false;
     }
+}
+
+extern bool isCircInGameCirc(circ_t circ){
+    static circ_t gameCirc;
+    static bool gameCircInit;
+    
+    // init gameCirc if needed
+    if(!gameCircInit){
+        gameCirc.pos.x = RECT_X / 2;
+        gameCirc.pos.y = RECT_Y / 2;
+        gameCirc.r = RECT_Y / 2;
+        
+        gameCircInit = true;
+    }
+    
+    return isCircInCirc(circ, gameCirc);
 }
 
 extern bool isCircInRect(circ_t circ, rect_t rect){

@@ -8,7 +8,7 @@ all: sticky.x
 sticky.x: circle.o game.o  main.o vector.o
 	$(CC) $(FLAGS) $^ -o $@
 
-circle.o: circle.c circle.h rectangle.h vector.h
+circle.o: circle.c circle.h constants.h rectangle.h vector.h
 	$(CC) $(FLAGS) -c $< -o $@
 
 game.o: game.c game.h

@@ -144,31 +144,24 @@ static int gameFileReadInterval(FILE* file){
 
 static int gameFileReadDisc(FILE* file){
     int error = GAME_OK;
-    double x, y;
+    
+    circ_t disc;
+    disc.r = R_DISC;
     
     if((error = gameFileSkip(file)) != GAME_OK){
         return error;
     }
     
-    if(fscanf(file, "%lf %lf", &x, &y) < 2){
+    if(fscanf(file, "%lf %lf", &disc.pos.x, &disc.pos.y) < 2){
         return GAME_ERROR_DISC;
     }
     
     // DEBUG
     printf("Disc\n");
-    printf(" X: %f, Y: %f\n", x, y);
+    printf(" X: %f, Y: %f\n", disc.pos.x, disc.pos.y);
     
-    circ_t zone;
-    zone.pos.x = RECT_X / 2;
-    zone.pos.y = RECT_Y / 2;
-    zone.r = RECT_Y / 2;
-    
-    circ_t circ;
-    circ.pos.x = x;
-    circ.pos.y = y;
-    circ.r = R_DISC;
-    
-    if(!isCircInCirc(circ, zone)){
+    // validation
+    if(!isCircInGameCirc(disc)){
         return GAME_ERROR_DISC_INVALID;
     }
     
@@ -177,20 +170,27 @@ static int gameFileReadDisc(FILE* file){
 
 static int gameFileReadEmitter(FILE* file){
     int error = GAME_OK;
-    double x, y, alpha, flow, speed;
+    vect_t pos;
+    double alpha, flow, speed;
     
     if((error = gameFileSkip(file)) != GAME_OK){
         return error;
     }
     
-    if(fscanf(file, "%lf %lf %lf %lf %lf", &x, &y, &alpha, &flow, &speed) < 5){
+    if(
+        fscanf(
+            file,
+            "%lf %lf %lf %lf %lf",
+            &pos.x, &pos.y, &alpha, &flow, &speed
+        ) < 5
+    ){
         return GAME_ERROR_EMITTER;
     }
     
     // DEBUG
     printf(
         " X: %f, Y: %f, Alpha: %f, Flow: %f, Speed: %f\n",
-        x, y, alpha, flow, speed
+        pos.x, pos.y, alpha, flow, speed
     );
     
     return GAME_OK;
