@@ -47,18 +47,31 @@ extern bool isCircInRect(circ_t circ, rect_t rect){
     if(
        rect.right - rect.left < circ.r
        || rect.top - rect.bottom < circ.r
-    ){
+       ){
         return false;
     }
     
-    if(
-       circ.pos.x > rect.left + circ.r
-       && circ.pos.x < rect.right - circ.r
-       && circ.pos.y > rect.bottom + circ.r
-       && circ.pos.y < rect.top - circ.r
-       ){
-        return true;
-    }else{
-        return false;
-    }
+    rect_t zone = rect;
+    zone.left += circ.r;
+    zone.right -= circ.r;
+    zone.bottom += circ.r;
+    zone.top -= circ.r;
+    
+    return isVectInRect(circ.pos, zone);
+}
+
+extern bool isVectInCirc(vect_t vect, circ_t circExt){
+    circ_t circInt;
+    circInt.pos = vect;
+    circInt.r = 0;
+    
+    return isCircInCirc(circInt, circExt);
+}
+
+extern bool isVectInGameCirc(vect_t vect){
+    circ_t circInt;
+    circInt.pos = vect;
+    circInt.r = 0;
+    
+    return isCircInGameCirc(circInt);
 }

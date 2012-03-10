@@ -23,6 +23,7 @@ enum GAME_ERROR_CODES {
     GAME_ERROR_DISC,
     GAME_ERROR_DISC_INVALID,
     GAME_ERROR_EMITTER,
+    GAME_ERROR_EMITTER_POS_INVALID,
     GAME_ERROR_EMITTERS,
     GAME_ERROR_GROUPTYPE,
     GAME_ERROR_GROUP,
@@ -40,9 +41,10 @@ char* GAME_ERROR_MESSAGES[] = {
     "Could not read score",
     "Could not read interval",
     "Could not read disc",
-    "Invalid placement of disc",
-    "Could not read number of emitters",
+    "Position of disc is invalid",
     "Could not read emitter",
+    "Position of emitter is invalid",
+    "Could not read number of emitters",
     "Could not read group type",
     "Could not read group",
     "Could not read number of groups",
@@ -192,6 +194,14 @@ static int gameFileReadEmitter(FILE* file){
         " X: %f, Y: %f, Alpha: %f, Flow: %f, Speed: %f\n",
         pos.x, pos.y, alpha, flow, speed
     );
+    
+    // validation
+    if(isVectInGameCirc(pos) || !isVectInGameRect(pos)){
+        return GAME_ERROR_EMITTER_POS_INVALID;
+    }
+    
+    // TODO
+    // Further validation
     
     return GAME_OK;
 }
