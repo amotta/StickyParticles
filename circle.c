@@ -12,7 +12,13 @@
 #include "rectangle.h"
 #include "vector.h"
 
-extern bool isCircInCirc(circ_t circInt, circ_t circExt){
+circ_t gameCirc = {
+    .r = RECT_Y / 2,
+    .pos.x = RECT_X / 2,
+    .pos.y = RECT_Y / 2
+};
+
+bool isCircInCirc(circ_t circInt, circ_t circExt){
     // because we're lazy and efficient
     if(circInt.r > circExt.r){
         return false;
@@ -26,28 +32,16 @@ extern bool isCircInCirc(circ_t circInt, circ_t circExt){
     }
 }
 
-extern bool isCircInGameCirc(circ_t circ){
-    static circ_t gameCirc;
-    static bool gameCircInit;
-    
-    // init gameCirc if needed
-    if(!gameCircInit){
-        gameCirc.pos.x = RECT_X / 2;
-        gameCirc.pos.y = RECT_Y / 2;
-        gameCirc.r = RECT_Y / 2;
-        
-        gameCircInit = true;
-    }
-    
+bool isCircInGameCirc(circ_t circ){
     return isCircInCirc(circ, gameCirc);
 }
 
-extern bool isCircInRect(circ_t circ, rect_t rect){
+bool isCircInRect(circ_t circ, rect_t rect){
     // hiiiiigh power!
     if(
        rect.right - rect.left < circ.r
        || rect.top - rect.bottom < circ.r
-       ){
+    ){
         return false;
     }
     
@@ -60,7 +54,11 @@ extern bool isCircInRect(circ_t circ, rect_t rect){
     return isVectInRect(circ.pos, zone);
 }
 
-extern bool isVectInCirc(vect_t vect, circ_t circExt){
+bool isCircInGameRect(circ_t circ){
+    return isCircInRect(circ, gameRect);
+}
+
+bool isVectInCirc(vect_t vect, circ_t circExt){
     circ_t circInt;
     circInt.pos = vect;
     circInt.r = 0;
@@ -68,10 +66,6 @@ extern bool isVectInCirc(vect_t vect, circ_t circExt){
     return isCircInCirc(circInt, circExt);
 }
 
-extern bool isVectInGameCirc(vect_t vect){
-    circ_t circInt;
-    circInt.pos = vect;
-    circInt.r = 0;
-    
-    return isCircInGameCirc(circInt);
+bool isVectInGameCirc(vect_t vect){
+    return isVectInCirc(vect, gameCirc);
 }

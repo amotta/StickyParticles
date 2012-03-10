@@ -14,46 +14,6 @@
 #include "game.h"
 #include "rectangle.h"
 
-enum GAME_ERROR_CODES {
-    GAME_OK,
-    GAME_ERROR_EOF,
-    GAME_ERROR_FOPEN,
-    GAME_ERROR_SCORE,
-    GAME_ERROR_INTERVAL,
-    GAME_ERROR_DISC,
-    GAME_ERROR_DISC_INVALID,
-    GAME_ERROR_EMITTER,
-    GAME_ERROR_EMITTER_POS_INVALID,
-    GAME_ERROR_EMITTERS,
-    GAME_ERROR_GROUPTYPE,
-    GAME_ERROR_GROUP,
-    GAME_ERROR_GROUPS,
-    GAME_ERROR_PART,
-    GAME_ERROR_PARTS,
-    GAME_ERROR_NEWLINE,
-    GAME_ERROR_FCLOSE
-};
-
-char* GAME_ERROR_MESSAGES[] = {
-    "No error",
-    "Reached end of file",
-    "Could not open file",
-    "Could not read score",
-    "Could not read interval",
-    "Could not read disc",
-    "Position of disc is invalid",
-    "Could not read emitter",
-    "Position of emitter is invalid",
-    "Could not read number of emitters",
-    "Could not read group type",
-    "Could not read group",
-    "Could not read number of groups",
-    "Could not read particle",
-    "Could not read number of particles",
-    "No line break between two values",
-    "Could not close file"
-};  
-
 static int gameFileSkip();
 static int gameFileReadScore();
 static int gameFileReadInterval();
@@ -64,6 +24,52 @@ static int gameFileReadGroupType();
 static int gameFileReadGroup();
 static int gameFileReadGroups();
 static int gameFileReadPart();
+
+enum GAME_ERROR_CODES {
+    GAME_OK,
+    GAME_ERROR_EOF,
+    GAME_ERROR_FOPEN,
+    GAME_ERROR_SCORE,
+    GAME_ERROR_INTERVAL,
+    GAME_ERROR_DISC,
+    GAME_ERROR_DISC_POS,
+    GAME_ERROR_EMITTER,
+    GAME_ERROR_EMITTER_ALPHA,
+    GAME_ERROR_EMITTER_POS,
+    GAME_ERROR_EMITTERS,
+    GAME_ERROR_GROUPTYPE,
+    GAME_ERROR_GROUP,
+    GAME_ERROR_GROUP_SPEED,
+    GAME_ERROR_GROUPS,
+    GAME_ERROR_PART,
+    GAME_ERROR_PART_POS,
+    GAME_ERROR_PARTS,
+    GAME_ERROR_NEWLINE,
+    GAME_ERROR_FCLOSE
+};
+
+static char* GAME_ERROR_MESSAGES[] = {
+    "No error",
+    "Reached end of file",
+    "Could not open file",
+    "Could not read score",
+    "Could not read interval",
+    "Could not read disc",
+    "Position of disc is invalid",
+    "Could not read emitter",
+    "Emitter angle is invalid",
+    "Position of emitter is invalid",
+    "Could not read number of emitters",
+    "Could not read group type",
+    "Could not read group",
+    "Speed of group is invalid",
+    "Could not read number of groups",
+    "Could not read particle",
+    "Position of particle is invalid",
+    "Could not read number of particles",
+    "No line break between two values",
+    "Could not close file"
+};
 
 static int error;
 static bool debug;
@@ -183,7 +189,7 @@ static int gameFileReadDisc(){
     
     // validation
     if(!isCircInGameCirc(disc)){
-        return GAME_ERROR_DISC_INVALID;
+        return GAME_ERROR_DISC_POS;
     }
     
     return GAME_OK;
@@ -216,8 +222,12 @@ static int gameFileReadEmitter(){
     }
     
     // validation
+    if(alpha > MAX_ALPHA){
+        return GAME_ERROR_EMITTER_ALPHA;
+    }
+    
     if(isVectInGameCirc(pos) || !isVectInGameRect(pos)){
-        return GAME_ERROR_EMITTER_POS_INVALID;
+        return GAME_ERROR_EMITTER_POS;
     }
     
     // TODO
@@ -271,14 +281,22 @@ static int gameFileReadGroupType(){
 
 static int gameFileReadGroup(){
     int error = GAME_OK;
-    double x, y, vx, vy, omega;
+    vect_t pos;
+    vect_t speed;
+    double omega;
     unsigned int type, numbParts;
     
     if((error = gameFileSkip()) != GAME_OK){
         return error;
     }
     
-    if(fscanf(file, "%lf %lf %lf %lf %lf", &x, &y, &vx, &vy, &omega) < 5){
+    if(
+        fscanf(
+            file,
+            "%lf%*[ ^\n]%lf%*[ ^\n]%lf%*[ ^\n]%lf%*[ ^\n]%lf",
+            &pos.x, &pos.y, &speed.x, &speed.y, &omega
+        ) < 5
+    ){
         return GAME_ERROR_GROUP;
     }
     
@@ -296,11 +314,17 @@ static int gameFileReadGroup(){
             " OMEGA: %f,"
             " TYPE: %s,"
             " PARTS COUNT: %u\n",
-            x, y,vx, vy,
+            pos.x, pos.y, speed.x, speed.y,
             omega,
             type == GROUP_TYPE_HARMLESS ? "HARMLESS" : "DANGEROUS",
             numbParts
         );
+    }
+    
+    // validate speed
+    double speedLen = vectLength(speed);
+    if(speedLen > MAX_VG || speedLen < MIN_VG){
+        return GAME_ERROR_GROUP_SPEED;
     }
     
     // read particles
@@ -310,6 +334,14 @@ static int gameFileReadGroup(){
             if((error = gameFileReadPart()) != GAME_OK){
                 return error;
             }
+        }
+    }else{
+        circ_t part;
+        part.pos = pos;
+        part.r = R_PART;
+        
+        if(!isCircInGameRect(part)){
+            return GAME_ERROR_PART_POS;
         }
     }
     
@@ -344,24 +376,32 @@ static int gameFileReadGroups(){
 
 static int gameFileReadPart(){
     int error = GAME_OK;
-    double x, y;
+    vect_t pos;
     
     if((error = gameFileSkip()) != GAME_OK){
         return error;
     }
     
-    if(fscanf(file, "%lf %lf", &x, &y) < 2){
+    if(fscanf(file, "%lf %lf", &pos.x, &pos.y) < 2){
         return GAME_ERROR_PART;
     }
     
     if(debug){
-        printf("  X: %lf, Y: %lf\n", x, y);
+        printf("  X: %lf, Y: %lf\n", pos.x, pos.y);
+    }
+    
+    circ_t part;
+    part.pos = pos;
+    part.r = R_PART;
+    
+    if(!isCircInGameRect(part)){
+        return GAME_ERROR_PART_POS;
     }
     
     return GAME_OK;
 }
 
-extern int gameFileRead(char* name){
+int gameFileRead(char* name){
     error = GAME_OK;
     file = NULL;
     fileName = name;
@@ -384,12 +424,12 @@ extern int gameFileRead(char* name){
     return error;
 }
 
-extern void gamePrintError(){
+void gamePrintError(){
     printf("\n");
     printf("ERROR in %s on line %u\n", fileName, lineNumber);
     printf(" %s\n", GAME_ERROR_MESSAGES[error]);
 }
 
-extern void gameSetDebug(bool flag){
+void gameSetDebug(bool flag){
     debug = flag;
 }

@@ -9,7 +9,7 @@
 
 #include "vector.h"
 
-extern vect_t vectPlus(vect_t vectOne, vect_t vectTwo){
+vect_t vectPlus(vect_t vectOne, vect_t vectTwo){
     vect_t res;
     res.x = vectOne.x + vectTwo.x;
     res.y = vectOne.y + vectTwo.y;
@@ -17,7 +17,7 @@ extern vect_t vectPlus(vect_t vectOne, vect_t vectTwo){
     return res;
 }
 
-extern vect_t vectMinus(vect_t vectOne, vect_t vectTwo){
+vect_t vectMinus(vect_t vectOne, vect_t vectTwo){
     vect_t res;
     res.x = vectOne.x - vectTwo.x;
     res.y = vectOne.y - vectTwo.y;
@@ -25,6 +25,6 @@ extern vect_t vectMinus(vect_t vectOne, vect_t vectTwo){
     return res;
 }
 
-extern double vectLength(vect_t vect){
+double vectLength(vect_t vect){
     return sqrt(vect.x * vect.x + vect.y * vect.y);
 }

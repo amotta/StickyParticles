@@ -10,6 +10,7 @@
 
 #include <stdbool.h>
 
+#include "constants.h"
 #include "vector.h"
 
 typedef struct {
@@ -18,6 +19,8 @@ typedef struct {
     double bottom;
     double top;
 } rect_t;
+
+extern rect_t gameRect;
 
 extern bool isVectInRect(vect_t vect, rect_t rect);
 extern bool isVectInGameRect(vect_t vect);

@@ -11,7 +11,14 @@
 #include "rectangle.h"
 #include "vector.h"
 
-extern bool isVectInRect(vect_t vect, rect_t rect){
+rect_t gameRect = {
+    .left = 0,
+    .right = RECT_X,
+    .bottom = 0,
+    .top = RECT_Y
+};
+
+bool isVectInRect(vect_t vect, rect_t rect){
     if(
         rect.left < vect.x && vect.x < rect.right
         && rect.bottom < vect.y && vect.y < rect.top
@@ -22,18 +29,6 @@ extern bool isVectInRect(vect_t vect, rect_t rect){
     }
 }
 
-extern bool isVectInGameRect(vect_t vect){
-    static rect_t gameRect;
-    static bool gameRectInit;
-    
-    if(!gameRectInit){
-        gameRect.left = 0;
-        gameRect.right = RECT_X;
-        gameRect.bottom = 0;
-        gameRect.top = RECT_Y;
-        
-        gameRectInit = true;
-    }
-    
+bool isVectInGameRect(vect_t vect){
     return isVectInRect(vect, gameRect);
 }

@@ -11,12 +11,7 @@
 
 #include "game.h"
 
-static void usage(){
-    printf(
-        "Usage of Sticky Particles\n"
-        " sticky.x file1 [file2 file3 ... fileN]\n"
-    );
-}
+static void usage();
 
 int main(int argc, char** argv){
     if(argc < 2){
@@ -34,4 +29,11 @@ int main(int argc, char** argv){
     }
     
     return EXIT_SUCCESS;
+}
+
+static void usage(){
+    printf(
+           "Usage of Sticky Particles\n"
+           " sticky.x file1 [file2 file3 ... fileN]\n"
+           );
 }
