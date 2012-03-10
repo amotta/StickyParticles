@@ -8,6 +8,7 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include <stdbool.h>
 #include <stdio.h>
 
 // TODO: move to group.h
@@ -16,6 +17,7 @@
 #define GROUP_TYPE_DANGEROUS 2
 
 extern int gameFileRead(char* name);
-extern char* gameGetError(int error);
+extern void gamePrintError();
+extern void gameSetDebug(bool flag);
 
 #endif

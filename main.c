@@ -5,6 +5,7 @@
 //  Created by Alessandro Motta on 2/23/12.
 //
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -23,15 +24,12 @@ int main(int argc, char** argv){
         return EXIT_SUCCESS;
     }
     
-    int error;
+    gameSetDebug(true);
+    
     unsigned int i;
     for(i = 1; i < argc; i++){
-        error = gameFileRead(argv[i]);
-        
-        if(error){
-            printf("\n");
-            printf("ERROR in %s\n", argv[i]);
-            printf(" %s\n", gameGetError(error));
+        if(gameFileRead(argv[i])){
+            gamePrintError();
         }
     }
     
