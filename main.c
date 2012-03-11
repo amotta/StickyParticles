@@ -23,7 +23,7 @@ int main(int argc, char** argv){
     
     unsigned int i;
     for(i = 1; i < argc; i++){
-        if(gameFileRead(argv[i])){
+        if(!gameFileRead(argv[i])){
             gamePrintError();
         }
     }
@@ -33,7 +33,7 @@ int main(int argc, char** argv){
 
 static void usage(){
     printf(
-           "Usage of Sticky Particles\n"
-           " sticky.x file1 [file2 file3 ... fileN]\n"
-           );
+        "Usage of Sticky Particles\n"
+        " sticky.x file1 [file2 file3 ... fileN]\n"
+    );
 }
