@@ -40,6 +40,7 @@ enum GAME_ERROR_CODES {
     GAME_ERROR_EMITTER,
     GAME_ERROR_EMITTER_ALPHA,
     GAME_ERROR_EMITTER_POS,
+    GAME_ERROR_EMITTER_SPEED,
     GAME_ERROR_EMITTERS,
     GAME_ERROR_GROUPTYPE,
     GAME_ERROR_GROUP,
@@ -63,6 +64,7 @@ static char* GAME_ERROR_MESSAGES[] = {
     "Could not read emitter",
     "Emitter angle is invalid",
     "Position of emitter is invalid",
+    "Speed of emitter is invalid",
     "Could not read number of emitters",
     "Could not read group type",
     "Could not read group",
@@ -255,13 +257,15 @@ static bool gameFileReadEmitter(){
         return false;
     }
     
+    if(speed > MAX_VG || MIN_VG > speed){
+        error = GAME_ERROR_EMITTER_SPEED;
+        return false;
+    }
+    
     if(isVectInGameCirc(pos) || !isVectInGameRect(pos)){
         error = GAME_ERROR_EMITTER_POS;
         return false;
     }
-    
-    // TODO
-    // Further validation
     
     return true;
 }
