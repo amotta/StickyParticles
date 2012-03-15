@@ -5,10 +5,18 @@
 //  Created by Alessandro Motta on 2/23/12.
 //
 
+#ifndef GAME_H
+#define GAME_H
+
+#include <stdbool.h>
 #include <stdio.h>
 
-#define BUFSIZE 255
+// TODO: move to group.h
+#define GROUP_TYPE_HARMLESS 1
+#define GROUP_TYPE_DANGEROUS 2
 
-static int gameFileReadScore(FILE* file);
-static int gameFileParse(FILE* file);
-extern int gameFileRead(char* name);
+extern bool gameFileRead(char* name);
+extern void gamePrintError();
+extern void gameSetDebug(bool flag);
+
+#endif

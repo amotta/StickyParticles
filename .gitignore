@@ -1,2 +1,6 @@
+# filetypes
 *.o
 *.x
+
+# files & folders
+.DS_Store
