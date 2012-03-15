@@ -1,0 +1,21 @@
+#!/bin/bash
+
+exec="./sticky.x"
+testDir="../Test"
+min=$1
+max=$2
+
+if [ -z $min ] || [ $min -le 0 ]; then
+	echo "AYF*KM?!"
+	exit
+fi
+
+if [ -z $max ] || [ $max -lt $min ]; then
+	echo "Connard! - Stéphane Caseiro"
+	exit
+fi
+
+while [ $min -le $max ]; do
+	$exec $testDir/test$min.txt
+	let min++
+done
