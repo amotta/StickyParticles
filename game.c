@@ -17,7 +17,7 @@
 #define LINE_BUF_LEN 81
 
 static bool gameFileSkip();
-static char* gameFileReadLine();
+static bool gameFileReadLine(char* buf, int bufLen);
 static bool gameFileReadScore();
 static bool gameFileReadInterval();
 static bool gameFileReadDisc();
@@ -26,6 +26,7 @@ static bool gameFileReadEmitters();
 static bool gameFileReadGroup();
 static bool gameFileReadGroups();
 static bool gameFileReadPart();
+static void gameSetError(int errorCode);
 
 enum GAME_ERROR_CODES {
     GAME_OK,
@@ -115,7 +116,7 @@ static bool gameFileSkip(){
                 continue;
                 
             case EOF:
-                error = GAME_ERROR_EOF;
+                gameSetError(GAME_ERROR_EOF);
                 return false;
                 
             default:
@@ -127,46 +128,44 @@ static bool gameFileSkip(){
     }while(true);
 }
 
-static char* gameFileReadLine(){
-    static char line[LINE_BUF_LEN];
-    
+static bool gameFileReadLine(char* buf, int bufLen){
     if(!gameFileSkip()){
-        return NULL;
-    }
-    
-    if(fgets(line, LINE_BUF_LEN, file) == NULL){
-        error = GAME_ERROR_FGETS;
-        return NULL;
+        return false;
     }
     
     // level up
     lineNumber++;
     
+    if(fgets(buf, bufLen, file) == NULL){
+        gameSetError(GAME_ERROR_FGETS);
+        return false;
+    }
+    
     // check if we had enough space for the entire line
-    if(line[strlen(line) - 1] != '\n'){
-        error = GAME_ERROR_LINE_TOO_LONG;
-        return NULL;
+    if(buf[strlen(buf) - 1] != '\n'){
+        gameSetError(GAME_ERROR_LINE_TOO_LONG);
+        return false;
     }
     
     // seach for comment sign
-    char* comment = strstr(line, "#");
-    if(comment){
+    char* comment;
+    if((comment = strstr(buf, "#"))){
         *comment = '\0';
     }
     
-    return line;
+    return true;
 }
 
 static bool gameFileReadScore(){
-    char* line;
+    char line[LINE_BUF_LEN];
     unsigned int score;
     
-    if(!(line = gameFileReadLine())){
+    if(!gameFileReadLine(line, LINE_BUF_LEN)){
         return false;
     }
     
     if(sscanf(line, "%u", &score) < 1){
-        error = GAME_ERROR_SCORE;
+        gameSetError(GAME_ERROR_SCORE);
         return false;
     }
     
@@ -178,20 +177,20 @@ static bool gameFileReadScore(){
 }
 
 static bool gameFileReadInterval(){
-    char* line;
+    char line[LINE_BUF_LEN];
     double interval;
     
-    if(!(line = gameFileReadLine())){
+    if(!gameFileReadLine(line, LINE_BUF_LEN)){
         return false;
     }
     
     if(sscanf(line, "%lf", &interval) < 1){
-        error = GAME_ERROR_INTERVAL;
+        gameSetError(GAME_ERROR_INTERVAL);
         return false;
     }
     
     if(interval < 0){
-        error = GAME_ERROR_INTERVAL_NEGATIVE;
+        gameSetError(GAME_ERROR_INTERVAL_NEGATIVE);
         return false;
     }
     
@@ -203,28 +202,33 @@ static bool gameFileReadInterval(){
 }
 
 static bool gameFileReadDisc(){
-    char* line;
-    circ_t disc = {
-        .r = R_DISC
-    };
+    char line[LINE_BUF_LEN];
+    vect_t pos;
     
-    if(!(line = gameFileReadLine())){
+    if(!gameFileReadLine(line, LINE_BUF_LEN)){
         return false;
     }
     
-    if(sscanf(line, "%lf %lf", &disc.pos.x, &disc.pos.y) < 2){
-        error = GAME_ERROR_DISC;
+    if(sscanf(line, "%lf %lf", &pos.x, &pos.y) < 2){
+        gameSetError(GAME_ERROR_DISC);
         return false;
     }
     
     if(debug){
-        printf("Disc\n");
-        printf(" X: %f, Y: %f\n", disc.pos.x, disc.pos.y);
+        printf(
+            "Disc\n"
+            " X: %f, Y: %f\n", pos.x, pos.y
+        );
     }
     
     // validation
+    circ_t disc = {
+        .pos = pos,
+        .r = R_DISC
+    };
+    
     if(!isCircInGameCirc(disc)){
-        error = GAME_ERROR_DISC_POS;
+        gameSetError(GAME_ERROR_DISC_POS);
         return false;
     }
     
@@ -232,11 +236,11 @@ static bool gameFileReadDisc(){
 }
 
 static bool gameFileReadEmitter(){
-    char* line;
+    char line[LINE_BUF_LEN];
     vect_t pos;
     double alpha, flow, speed;
     
-    if(!(line = gameFileReadLine())){
+    if(!gameFileReadLine(line, LINE_BUF_LEN)){
         return false;
     }
     
@@ -247,7 +251,7 @@ static bool gameFileReadEmitter(){
             &pos.x, &pos.y, &alpha, &flow, &speed
         ) < 5
     ){
-        error = GAME_ERROR_EMITTER;
+        gameSetError(GAME_ERROR_EMITTER);
         return false;
     }
     
@@ -260,17 +264,17 @@ static bool gameFileReadEmitter(){
     
     // validation
     if(alpha > MAX_ALPHA){
-        error = GAME_ERROR_EMITTER_ALPHA;
+        gameSetError(GAME_ERROR_EMITTER_ALPHA);
         return false;
     }
     
     if(speed > MAX_VG || MIN_VG > speed){
-        error = GAME_ERROR_EMITTER_SPEED;
+        gameSetError(GAME_ERROR_EMITTER_SPEED);
         return false;
     }
     
     if(isVectInGameCirc(pos) || !isVectInGameRect(pos)){
-        error = GAME_ERROR_EMITTER_POS;
+        gameSetError(GAME_ERROR_EMITTER_POS);
         return false;
     }
     
@@ -278,15 +282,16 @@ static bool gameFileReadEmitter(){
 }
 
 static bool gameFileReadEmitters(){
-    char* line;
+    char line[LINE_BUF_LEN];
     unsigned int numbEmitters;
     
-    if(!(line = gameFileReadLine())){
+    if(!gameFileReadLine(line, LINE_BUF_LEN)){
         return false;
     }
     
     if(sscanf(line, "%u", &numbEmitters) < 1){
-        return GAME_ERROR_EMITTERS;
+        gameSetError(GAME_ERROR_EMITTERS);
+        return false;
     }
     
     if(debug){
@@ -305,15 +310,15 @@ static bool gameFileReadEmitters(){
 }
 
 static bool gameFileReadGroup(){
-    char* line;
     char buf[11];
+    char line[LINE_BUF_LEN];
     
     vect_t pos;
     vect_t speed;
     double omega;
     unsigned int type, numbParts;
     
-    if(!(line = gameFileReadLine())){
+    if(!gameFileReadLine(line, LINE_BUF_LEN)){
         return false;
     }
     
@@ -324,7 +329,7 @@ static bool gameFileReadGroup(){
             &pos.x, &pos.y, &speed.x, &speed.y, &omega, buf, &numbParts
         ) < 7
     ){
-        error = GAME_ERROR_GROUP;
+        gameSetError(GAME_ERROR_GROUP);
         return false;
     }
     
@@ -334,7 +339,7 @@ static bool gameFileReadGroup(){
     }else if(!strcmp(buf, "DANGEREUX")){
         type = GROUP_TYPE_DANGEROUS;
     }else{
-        error = GAME_ERROR_GROUPTYPE;
+        gameSetError(GAME_ERROR_GROUPTYPE);
         return false;
     }
     
@@ -354,7 +359,7 @@ static bool gameFileReadGroup(){
     // validate speed
     double speedLen = vectLength(speed);
     if(speedLen > MAX_VG || speedLen < MIN_VG){
-        error = GAME_ERROR_GROUP_SPEED;
+        gameSetError(GAME_ERROR_GROUP_SPEED);
         return false;
     }
     
@@ -373,7 +378,7 @@ static bool gameFileReadGroup(){
         };
         
         if(!isCircInGameRect(part)){
-            error = GAME_ERROR_PART_POS;
+            gameSetError(GAME_ERROR_PART_POS);
             return false;
         }
     }
@@ -382,10 +387,10 @@ static bool gameFileReadGroup(){
 }
 
 static bool gameFileReadGroups(){
-    char* line;
+    char line[LINE_BUF_LEN];
     unsigned int numbGroups;
     
-    if(!(line = gameFileReadLine())){
+    if(!gameFileReadLine(line, LINE_BUF_LEN)){
         return false;
     }
     
@@ -409,15 +414,15 @@ static bool gameFileReadGroups(){
 }
 
 static bool gameFileReadPart(){
-    char* line;
+    char line[LINE_BUF_LEN];
     vect_t pos;
     
-    if(!(line = gameFileReadLine())){
+    if(!gameFileReadLine(line, LINE_BUF_LEN)){
         return false;
     }
     
     if(sscanf(line, "%lf %lf", &pos.x, &pos.y) < 2){
-        error = GAME_ERROR_PART;
+        gameSetError(GAME_ERROR_PART);
         return false;
     }
     
@@ -431,7 +436,7 @@ static bool gameFileReadPart(){
     };
     
     if(!isCircInGameRect(part)){
-        error = GAME_ERROR_PART_POS;
+        gameSetError(GAME_ERROR_PART_POS);
         return false;
     }
     
@@ -439,16 +444,20 @@ static bool gameFileReadPart(){
 }
 
 bool gameFileRead(char* name){
-    error = GAME_OK;
-    file = NULL;
-    fileName = name;
-    lineNumber = 0;
-    
     bool ok = true;
     
-    if(!(file = fopen(fileName, "r"))){
+    error = GAME_OK;
+    fileName = name;
+    file = fopen(fileName, "r");
+    lineNumber = 0;
+    
+    if(debug){
+        printf("File: %s\n", fileName);
+    }
+    
+    if(!file){
         ok = false;
-        error = GAME_ERROR_FOPEN;
+        gameSetError(GAME_ERROR_FOPEN);
     }
     
     ok = ok && gameFileReadScore();
@@ -458,17 +467,28 @@ bool gameFileRead(char* name){
     ok = ok && gameFileReadGroups();
     
     if(file && fclose(file)){
-        ok = false;
-        error = GAME_ERROR_FCLOSE;
+        gameSetError(GAME_ERROR_FCLOSE);
     }
     
-    return ok;
+    if(debug){
+        printf("\n");
+    }
+    
+    if(error){
+        return false;
+    }else{
+        return true;
+    }
+}
+       
+void gameSetError(int errorCode){
+    error = errorCode;
 }
 
 void gamePrintError(){
-    printf("\n");
-    printf("ERROR in %s on line %u\n", fileName, lineNumber);
+    printf("ERROR in %s on line %u:\n", fileName, lineNumber);
     printf(" %s\n", GAME_ERROR_MESSAGES[error]);
+    printf("\n");
 }
 
 void gameSetDebug(bool flag){

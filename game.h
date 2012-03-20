@@ -9,7 +9,6 @@
 #define GAME_H
 
 #include <stdbool.h>
-#include <stdio.h>
 
 // TODO: move to group.h
 #define GROUP_TYPE_HARMLESS 1
