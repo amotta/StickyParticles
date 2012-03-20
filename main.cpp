@@ -9,7 +9,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "game.h"
+extern "C" {
+    #include "game.h"
+}
 
 static void usage();
 
@@ -21,7 +23,7 @@ int main(int argc, char** argv){
     
     gameSetDebug(true);
     
-    unsigned int i;
+    int i;
     for(i = 1; i < argc; i++){
         if(!gameFileRead(argv[i])){
             gamePrintError();
