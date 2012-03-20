@@ -35,6 +35,7 @@ enum GAME_ERROR_CODES {
     GAME_ERROR_LINE_TOO_LONG,
     GAME_ERROR_SCORE,
     GAME_ERROR_INTERVAL,
+    GAME_ERROR_INTERVAL_NEGATIVE,
     GAME_ERROR_DISC,
     GAME_ERROR_DISC_POS,
     GAME_ERROR_EMITTER,
@@ -59,6 +60,7 @@ static char* GAME_ERROR_MESSAGES[] = {
     "Line is too long",
     "Could not read score",
     "Could not read interval",
+    "Time interval is negative",
     "Could not read disc",
     "Position of disc is invalid",
     "Could not read emitter",
@@ -185,6 +187,11 @@ static bool gameFileReadInterval(){
     
     if(sscanf(line, "%lf", &interval) < 1){
         error = GAME_ERROR_INTERVAL;
+        return false;
+    }
+    
+    if(interval < 0){
+        error = GAME_ERROR_INTERVAL_NEGATIVE;
         return false;
     }
     
