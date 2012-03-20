@@ -20,8 +20,8 @@ rect_t gameRect = {
 
 bool isVectInRect(vect_t vect, rect_t rect){
     if(
-        rect.left < vect.x && vect.x < rect.right
-        && rect.bottom < vect.y && vect.y < rect.top
+        rect.left < vect.x + TOL && vect.x < rect.right - TOL
+        && rect.bottom < vect.y + TOL && vect.y < rect.top - TOL
     ){
         return true;
     }else{

@@ -263,12 +263,12 @@ static bool gameFileReadEmitter(){
     }
     
     // validation
-    if(alpha > MAX_ALPHA){
+    if(alpha > MAX_ALPHA + TOL){
         gameSetError(GAME_ERROR_EMITTER_ALPHA);
         return false;
     }
     
-    if(speed > MAX_VG || MIN_VG > speed){
+    if(speed > MAX_VG + TOL || MIN_VG - TOL > speed){
         gameSetError(GAME_ERROR_EMITTER_SPEED);
         return false;
     }
@@ -358,7 +358,7 @@ static bool gameFileReadGroup(){
     
     // validate speed
     double speedLen = vectLength(speed);
-    if(speedLen > MAX_VG || speedLen < MIN_VG){
+    if(speedLen > MAX_VG + TOL || MIN_VG - TOL > speedLen){
         gameSetError(GAME_ERROR_GROUP_SPEED);
         return false;
     }
