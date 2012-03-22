@@ -15,7 +15,6 @@
 #define GROUP_TYPE_DANGEROUS 2
 
 extern bool gameFileRead(char* name);
-extern void gamePrintError();
 extern void gameSetDebug(bool flag);
 
 #endif

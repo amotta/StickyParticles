@@ -17,7 +17,6 @@ extern "C" {
 static void usage();
 static bool isOpt(char* arg);
 static void handleOpt(char* arg);
-static void handleFile(char* arg);
 
 int main(int argc, char** argv){
     int i;
@@ -31,7 +30,7 @@ int main(int argc, char** argv){
         if(isOpt(argv[i])){
             handleOpt(argv[i]);
         }else{
-            handleFile(argv[i]);
+            gameFileRead(argv[i]);
         }
     }
     
@@ -51,12 +50,6 @@ static void handleOpt(char* arg){
         gameSetDebug(true);
     }else if(!strcmp("-s", arg)){
         gameSetDebug(false);
-    }
-}
-
-static void handleFile(char* file){
-    if(!gameFileRead(file)){
-        gamePrintError();
     }
 }
 

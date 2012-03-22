@@ -27,6 +27,7 @@ static bool gameFileReadGroup();
 static bool gameFileReadGroups();
 static bool gameFileReadPart();
 static void gameSetError(int errorCode);
+static void gamePrintStatus();
 
 enum GAME_ERROR_CODES {
     GAME_OK,
@@ -452,7 +453,10 @@ bool gameFileRead(char* name){
     lineNumber = 0;
     
     if(debug){
-        printf("File: %s\n", fileName);
+        printf(
+            "\n"
+            "File: %s\n",   fileName
+        );
     }
     
     if(!file){
@@ -474,6 +478,8 @@ bool gameFileRead(char* name){
         printf("\n");
     }
     
+    gamePrintStatus();
+    
     if(error){
         return false;
     }else{
@@ -485,10 +491,18 @@ void gameSetError(int errorCode){
     error = errorCode;
 }
 
-void gamePrintError(){
-    printf("ERROR in %s on line %u:\n", fileName, lineNumber);
-    printf(" %s\n", GAME_ERROR_MESSAGES[error]);
-    printf("\n");
+void gamePrintStatus(){
+    printf("FILE %s\n", fileName);
+    
+    if(error){
+        printf(
+            " ERROR on line %u: %s\n",
+            lineNumber,
+            GAME_ERROR_MESSAGES[error]
+        );
+    }else{
+        printf(" VALID\n");
+    }
 }
 
 void gameSetDebug(bool flag){
