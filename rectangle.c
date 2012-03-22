@@ -11,7 +11,7 @@
 #include "rectangle.h"
 #include "vector.h"
 
-rect_t gameRect = {
+const rect_t gameRect = {
     .left = 0,
     .right = RECT_X,
     .bottom = 0,

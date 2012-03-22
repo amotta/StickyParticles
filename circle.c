@@ -12,7 +12,7 @@
 #include "rectangle.h"
 #include "vector.h"
 
-circ_t gameCirc = {
+const circ_t gameCirc = {
     .r = RECT_Y / 2,
     .pos.x = RECT_X / 2,
     .pos.y = RECT_Y / 2

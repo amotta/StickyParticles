@@ -20,7 +20,7 @@ typedef struct {
     double top;
 } rect_t;
 
-extern rect_t gameRect;
+extern const rect_t gameRect;
 
 extern bool isVectInRect(vect_t vect, rect_t rect);
 extern bool isVectInGameRect(vect_t vect);

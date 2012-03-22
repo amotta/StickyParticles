@@ -18,7 +18,7 @@ typedef struct {
     vect_t pos;
 } circ_t;
 
-extern circ_t gameCirc;
+extern const circ_t gameCirc;
 
 extern bool isCircInCirc(circ_t circInt, circ_t circExt);
 extern bool isCircInGameCirc(circ_t circ);
