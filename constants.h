@@ -3,6 +3,7 @@
 //  StickyParticles
 //
 //  Created by Nicolas Vachicouras on 2/6/12.
+//  Modified by Alessandro Motta on 3/21/12.
 //
 
 #ifndef CONSTANTS_H
