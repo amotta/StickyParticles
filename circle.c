@@ -20,12 +20,12 @@ const circ_t gameCirc = {
 
 bool isCircInCirc(circ_t circInt, circ_t circExt){
     // because we're lazy and efficient
-    if(circInt.r > circExt.r + TOL){
+    if(circInt.r > circExt.r){
         return false;
     }
     
     double dist = vectLength(vectMinus(circInt.pos, circExt.pos));
-    if(dist < circExt.r - circInt.r + TOL){
+    if(dist < circExt.r - circInt.r){
         return true;
     }else{
         return false;
