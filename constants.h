@@ -8,13 +8,13 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
-#define RECT_X			8.f		//m 
-#define RECT_Y			6.f 	//m
-#define R_DISC			0.2f	//m
-#define R_PART			0.1f	//m
-#define MIN_VG			0.1f	//m/s
-#define MAX_VG			1.f		//m/s
-#define MAX_ALPHA	 	0.7f	//rd
-#define TOL	 			0.00001f	
+#define RECT_X		8.0		//m 
+#define RECT_Y		6.0     //m
+#define R_DISC		0.2     //m
+#define R_PART		0.1     //m
+#define MIN_VG		0.1     //m/s
+#define MAX_VG		1.0     //m/s
+#define MAX_ALPHA 	0.7     //rd
+#define TOL         0.00001
 
 #endif
