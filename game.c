@@ -496,9 +496,7 @@ void gamePrintStatus(){
     
     if(error){
         printf(
-            " ERROR on line %u: %s\n",
-            lineNumber,
-            GAME_ERROR_MESSAGES[error]
+            " ERROR on line %u: %s\n", lineNumber, GAME_ERROR_MESSAGES[error]
         );
     }else{
         printf(" VALID\n");
