@@ -12,7 +12,9 @@
 #include "circle.h"
 #include "constants.h"
 #include "game.h"
+#include "geometry.h"
 #include "rectangle.h"
+#include "vector.h"
 
 #define LINE_BUF_LEN 81
 
@@ -204,13 +206,15 @@ static bool gameFileReadInterval(){
 
 static bool gameFileReadDisc(){
     char line[LINE_BUF_LEN];
-    vect_t pos;
+    circ_t disc = {
+        .r = R_DISC
+    };
     
     if(!gameFileReadLine(line, LINE_BUF_LEN)){
         return false;
     }
     
-    if(sscanf(line, "%lf %lf", &pos.x, &pos.y) < 2){
+    if(sscanf(line, "%lf %lf", &disc.pos.x, &disc.pos.y) < 2){
         gameSetError(GAME_ERROR_DISC);
         return false;
     }
@@ -218,15 +222,9 @@ static bool gameFileReadDisc(){
     if(debug){
         printf(
             "Disc\n"
-            " X: %f, Y: %f\n", pos.x, pos.y
+            " X: %f, Y: %f\n", disc.pos.x, disc.pos.y
         );
     }
-    
-    // validation
-    circ_t disc = {
-        .pos = pos,
-        .r = R_DISC
-    };
     
     if(!isCircInGameCirc(disc)){
         gameSetError(GAME_ERROR_DISC_POS);
@@ -416,25 +414,22 @@ static bool gameFileReadGroups(){
 
 static bool gameFileReadPart(){
     char line[LINE_BUF_LEN];
-    vect_t pos;
+    circ_t part = {
+        .r = R_PART
+    };
     
     if(!gameFileReadLine(line, LINE_BUF_LEN)){
         return false;
     }
     
-    if(sscanf(line, "%lf %lf", &pos.x, &pos.y) < 2){
+    if(sscanf(line, "%lf %lf", &part.pos.x, &part.pos.y) < 2){
         gameSetError(GAME_ERROR_PART);
         return false;
     }
     
     if(debug){
-        printf("  X: %lf, Y: %lf\n", pos.x, pos.y);
+        printf("  X: %lf, Y: %lf\n", part.pos.x, part.pos.y);
     }
-    
-    circ_t part = {
-        .pos = pos,
-        .r = R_PART
-    };
     
     if(!isCircInGameRect(part)){
         gameSetError(GAME_ERROR_PART_POS);

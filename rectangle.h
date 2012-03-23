@@ -10,7 +10,6 @@
 
 #include <stdbool.h>
 
-#include "constants.h"
 #include "vector.h"
 
 typedef struct {

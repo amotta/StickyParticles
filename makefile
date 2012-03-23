@@ -1,19 +1,23 @@
 # makefile
+# for StickyParticles
 
 CC = gcc
 CPP = g++
 CFLAGS = -std=c99 -Wall -g
-CPPFLAGS = -ansi
+CPPFLAGS = -ansi -Wall -g
 
 all: sticky.x
 
-sticky.x: circle.o game.o main.o rectangle.o vector.o
+sticky.x: circle.o game.o geometry.o main.o rectangle.o vector.o
 	$(CC) $^ -o $@
 
-circle.o: circle.c circle.h constants.h rectangle.h vector.h
+circle.o: circle.c circle.h constants.h vector.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
-game.o: game.c constants.h game.h rectangle.h vector.h
+game.o: game.c circle.h constants.h game.h geometry.h rectangle.h vector.h
+	$(CC) $(CFLAGS) -c $< -o $@
+
+geometry.o: geometry.c circle.h geometry.h rectangle.h vector.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
 main.o: main.cpp game.h
@@ -26,4 +30,4 @@ vector.o: vector.c vector.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm *.o *.x
+	rm -f *.o *.x

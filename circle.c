@@ -9,7 +9,6 @@
 
 #include "circle.h"
 #include "constants.h"
-#include "rectangle.h"
 #include "vector.h"
 
 const circ_t gameCirc = {
@@ -34,28 +33,6 @@ bool isCircInCirc(circ_t circInt, circ_t circExt){
 
 bool isCircInGameCirc(circ_t circ){
     return isCircInCirc(circ, gameCirc);
-}
-
-bool isCircInRect(circ_t circ, rect_t rect){
-    // hiiiiigh power!
-    if(
-       rect.right - rect.left < circ.r
-       || rect.top - rect.bottom < circ.r
-    ){
-        return false;
-    }
-    
-    rect_t zone = rect;
-    zone.left += circ.r;
-    zone.right -= circ.r;
-    zone.bottom += circ.r;
-    zone.top -= circ.r;
-    
-    return isVectInRect(circ.pos, zone);
-}
-
-bool isCircInGameRect(circ_t circ){
-    return isCircInRect(circ, gameRect);
 }
 
 bool isVectInCirc(vect_t vect, circ_t circExt){

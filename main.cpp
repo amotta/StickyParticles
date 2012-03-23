@@ -5,12 +5,12 @@
 //  Created by Alessandro Motta on 2/23/12.
 //
 
-extern "C" {
-    #include <stdbool.h>
-    #include <stdio.h>
-    #include <stdlib.h>
-    #include <string.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
+extern "C" {
     #include "game.h"
 }
 
