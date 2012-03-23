@@ -11,11 +11,13 @@ if [ -z $min ] || [ $min -le 0 ]; then
 fi
 
 if [ -z $max ] || [ $max -lt $min ]; then
-	echo "Connard! - Stéphane Caseiro"
+	echo "Connard!"
 	exit
 fi
 
 while [ $min -le $max ]; do
-	$exec $testDir/test$min.txt
+	files+="${testDir}/test${min}.txt "
 	let min++
 done
+
+$exec $files
