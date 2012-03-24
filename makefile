@@ -5,11 +5,12 @@ CC = gcc
 CPP = g++
 CFLAGS = -std=c99 -Wall -g
 CPPFLAGS = -ansi -Wall -g
+LIBS = -lm
 
 all: sticky.x
 
 sticky.x: circle.o game.o geometry.o main.o rectangle.o vector.o
-	$(CC) $^ -o $@
+	$(CPP) $(LIBS) $^ -o $@
 
 circle.o: circle.c circle.h constants.h vector.h
 	$(CC) $(CFLAGS) -c $< -o $@
