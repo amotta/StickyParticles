@@ -9,6 +9,7 @@
 #define GAME_UI
 
 extern void gameUIInit();
+extern void gameUISetOnRedraw(void (*redraw)());
 extern int gameUIGetWindow();
 
 #endif
