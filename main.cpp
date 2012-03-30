@@ -6,10 +6,14 @@
 //
 
 #include <stdlib.h>
-#include <OpenGL/glu.h>
+#include <GLUT/glut.h>
 
 #include "controlui.h"
 
+extern "C" {
+	#include "gameui.h"
+}
+	
 void handleExit(){
 	exit(EXIT_SUCCESS);
 }
@@ -17,8 +21,11 @@ void handleExit(){
 int main(int argc, char** argv){
     glutInit(&argc, argv);
 	
+	gameUIInit();
+	
 	ctrlUIInit();
-	ctrlUIOnExit(handleExit);
+	ctrlUISetOnExit(handleExit);
+	ctrlUISetGameWindow(gameUIGetWindow());
     
     glutMainLoop();
 	

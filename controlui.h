@@ -11,7 +11,8 @@
 #include <GLUI/glui.h>
 
 extern void ctrlUIInit();
-extern void ctrlUIOnExit(void (*exit)());
+extern void ctrlUISetOnExit(void (*exit)());
+extern void ctrlUISetGameWindow(int gameWindow);
 extern void ctrlUIShow();
 extern void ctrlUIHandleEvent(int id);
 

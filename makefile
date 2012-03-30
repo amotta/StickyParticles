@@ -9,7 +9,7 @@ LIBS = -lm -framework GLUI -framework GLUT
 
 all: sticky.x
 
-sticky.x: circle.o controlui.o game.o geometry.o main.o rectangle.o vector.o
+sticky.x: circle.o controlui.o game.o gameui.o geometry.o main.o rectangle.o vector.o
 	$(CPP) $(LIBS) $^ -o $@
 
 circle.o: circle.c circle.h constants.h vector.h
@@ -19,6 +19,9 @@ controlui.o: controlui.cpp controlui.h
 	$(CPP) -c $< -o $@
 
 game.o: game.c circle.h constants.h game.h geometry.h rectangle.h vector.h
+	$(CC) $(CFLAGS) -c $< -o $@
+
+gameui.o: gameui.c gameui.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
 geometry.o: geometry.c circle.h geometry.h rectangle.h vector.h

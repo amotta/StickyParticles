@@ -27,8 +27,12 @@ void ctrlUIInit(){
 	exitButton = glui->add_button("EXIT", EXIT_ID, ctrlUIHandleEvent);
 }
 
-void ctrlUIOnExit(void (*exit)()){
+void ctrlUISetOnExit(void (*exit)()){
 	onExit = exit;
+}
+
+void ctrlUISetGameWindow(int wind){
+	glui->set_main_gfx_window(wind);
 }
 
 void ctrlUIHandleEvent(int id){
