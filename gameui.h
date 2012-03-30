@@ -10,6 +10,7 @@
 
 extern void gameUIInit();
 extern void gameUISetOnRedraw(void (*redraw)());
+extern void gameUISetOnIdle(void (*idle)());
 extern int gameUIGetWindow();
 
 #endif

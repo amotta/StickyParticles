@@ -6,26 +6,42 @@
 //
 
 #include <GLUT/glut.h>
+#include <OpenGL/gl.h>
 
+#include "constants.h"
 #include "gameui.h"
 
 static void gameUIHandleRedraw();
+static void gameUIHandleIdle();
 static void gameUIHandleReshape(int x, int y);
 
 static int sizeX, sizeY;
 static double aspectRatio;
 static int windowID;
 static void (*onRedraw)();
+static void (*onIdle)();
 
 void gameUIInit(){
+	sizeX = 600;
+	sizeY = 400;
+	
+	glutInitWindowSize(sizeX, sizeY);
+	glutInitWindowPosition(0, 0);
+	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
 	windowID = glutCreateWindow("Sticky Particles");
 	
-	glutInitWindowSize(600, 400);
-	glutInitWindowPosition(10, 10);
-	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
+	glColor3f(0, 0, 0);
+	glClearColor(1, 1, 1, 0);
+	
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0, RECT_X, 0, RECT_Y, -1, +1);
+	
+	glMatrixMode(GL_MODELVIEW);
 	
 	glutDisplayFunc(gameUIHandleRedraw);
 	glutReshapeFunc(gameUIHandleReshape);
+	glutIdleFunc(gameUIHandleIdle);
 }
 
 void gameUISetOnRedraw(void (*redraw)()){
@@ -33,21 +49,38 @@ void gameUISetOnRedraw(void (*redraw)()){
 }
 
 void gameUIHandleRedraw(){
-	// TODO
-	// glOrtho
-	// glClearColorBit
-	// glLoadIdenity
-	// blabla
+	glClear(GL_COLOR_BUFFER_BIT);
+	glLoadIdentity();
 	
 	if(onRedraw) onRedraw();
 	
 	glutSwapBuffers();
 }
 
-void gameUIHandleReshape(int x, int y){
+void gameUISetOnIdle(void (*idle)()){
+	onIdle = idle;
+}
+
+void gameUIHandleIdle(){
+	glutSetWindow(windowID);
+	
+	if(onIdle) onIdle();
+	
+	glutPostRedisplay();
+}
+
+void gameUIHandleReshape(int x, int	y){
 	sizeX = x;
 	sizeY = y;
 	aspectRatio = (double) x / y;
+	
+	glViewport(0, 0, sizeX, sizeY);
+	
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0, RECT_X, 0, RECT_Y, -1, +1);
+	
+	glMatrixMode(GL_MODELVIEW);
 	
 	glutPostRedisplay();
 }

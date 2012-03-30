@@ -5,7 +5,7 @@ CC = gcc
 CPP = g++
 CFLAGS = -std=c99 -Wall -g
 CPPFLAGS = -ansi -Wall -g
-LIBS = -lm -framework GLUI -framework GLUT
+LIBS = -lm -framework GLUI -framework GLUT -framework OpenGL
 
 all: sticky.x
 
