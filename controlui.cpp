@@ -9,15 +9,32 @@
 
 #include "controlui.h"
 
-ControlUI::ControlUI(){
-	exitHandle = NULL;
+#define EXIT_ID 1
+
+namespace {
+	// listeners
+	void (*onExit)();
+	
+	// GLUI
+	GLUI* glui;
+	GLUI_Button* exitButton;
 }
 
-void ControlUI::init(){
-    glui = GLUI_Master.create_glui("Control");
-	exitButton = glui->add_button("EXIT", CONTROLUI_EXIT_ID, exitHandle);
+void ctrlUIInit(){
+	onExit = NULL;
+	
+	glui = GLUI_Master.create_glui("Control");
+	exitButton = glui->add_button("EXIT", EXIT_ID, ctrlUIHandleEvent);
 }
 
-void ControlUI::onExit(void (*callback)(int)){
-	exitHandle = callback;
+void ctrlUIOnExit(void (*exit)()){
+	onExit = exit;
+}
+
+void ctrlUIHandleEvent(int id){
+	switch(id){
+		case EXIT_ID:
+			if(onExit) onExit();
+			break;
+	}
 }

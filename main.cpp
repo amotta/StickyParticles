@@ -10,16 +10,15 @@
 
 #include "controlui.h"
 
-void handleExit(int id){
+void handleExit(){
 	exit(EXIT_SUCCESS);
 }
 
 int main(int argc, char** argv){
     glutInit(&argc, argv);
-    
-    ControlUI controlUI;
-	controlUI.onExit(handleExit);
-	controlUI.init();
+	
+	ctrlUIInit();
+	ctrlUIOnExit(handleExit);
     
     glutMainLoop();
 	

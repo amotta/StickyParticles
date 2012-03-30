@@ -10,18 +10,9 @@
 
 #include <GLUI/glui.h>
 
-#define CONTROLUI_EXIT_ID 1
-	
-class ControlUI {
-    private:
-        GLUI* glui;
-		GLUI_Button* exitButton;
-		void (*exitHandle)(int);
-    
-    public:
-		ControlUI();
-		void init();
-		void onExit(void (*handle)(int));
-};
+extern void ctrlUIInit();
+extern void ctrlUIOnExit(void (*exit)());
+extern void ctrlUIShow();
+extern void ctrlUIHandleEvent(int id);
 
 #endif
