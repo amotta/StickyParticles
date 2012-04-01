@@ -11,28 +11,29 @@
 #include "controlui.h"
 
 extern "C" {
-	#include "gameui.h"
+    #include "game.h"
+    #include "gameui.h"
 }
 	
 void handleExit(){
-	exit(EXIT_SUCCESS);
+    exit(EXIT_SUCCESS);
 }
 
 int main(int argc, char** argv){
     glutInit(&argc, argv);
 	
-	gameUIInit();
-	gameUISetOnRedraw(NULL);
-	gameUISetOnIdle(NULL);
+    gameUIInit();
+    gameUISetOnRedraw(gameDraw);
+    gameUISetOnIdle(NULL);
+
+    ctrlUIInit();
+    ctrlUISetOnExit(handleExit);
+    ctrlUISetGameWindow(gameUIGetWindow());
 	
-	ctrlUIInit();
-	ctrlUISetOnExit(handleExit);
-	ctrlUISetGameWindow(gameUIGetWindow());
-	
-	// set idle listener
-	GLUI_Master.set_glutIdleFunc(gameUIHandleIdle);
+    // set idle listener
+    GLUI_Master.set_glutIdleFunc(gameUIHandleIdle);
     
     glutMainLoop();
 	
-	return EXIT_SUCCESS;
+    return EXIT_SUCCESS;
 }

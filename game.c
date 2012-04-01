@@ -13,6 +13,7 @@
 #include "constants.h"
 #include "game.h"
 #include "geometry.h"
+#include "graphics.h"
 #include "rectangle.h"
 #include "vector.h"
 
@@ -86,6 +87,11 @@ static bool debug;
 static FILE* file;
 static char* fileName;
 static unsigned int lineNumber;
+
+extern void gameDraw(){
+    gfxClear();
+    gfxGameCirc();
+}
 
 // This function skips comments and whitespaces
 // Muchas gracias to git for inspiration

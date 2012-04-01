@@ -14,6 +14,7 @@
 #define GROUP_TYPE_HARMLESS 1
 #define GROUP_TYPE_DANGEROUS 2
 
+extern void gameDraw();
 extern bool gameFileRead(char* name);
 extern void gameSetDebug(bool flag);
 
