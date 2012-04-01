@@ -12,7 +12,6 @@
 #include "gameui.h"
 
 static void gameUIHandleRedraw();
-static void gameUIHandleIdle();
 static void gameUIHandleReshape(int x, int y);
 
 static int sizeX, sizeY;
@@ -25,23 +24,20 @@ void gameUIInit(){
 	sizeX = 600;
 	sizeY = 400;
 	
+	// create window
 	glutInitWindowSize(sizeX, sizeY);
 	glutInitWindowPosition(0, 0);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
 	windowID = glutCreateWindow("Sticky Particles");
 	
-	glColor3f(0, 0, 0);
+	// init projection matrix
+	gameUIHandleRedraw(sizeX, sizeY);
+	
+	// set clear color
 	glClearColor(1, 1, 1, 0);
-	
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(0, RECT_X, 0, RECT_Y, -1, +1);
-	
-	glMatrixMode(GL_MODELVIEW);
 	
 	glutDisplayFunc(gameUIHandleRedraw);
 	glutReshapeFunc(gameUIHandleReshape);
-	glutIdleFunc(gameUIHandleIdle);
 }
 
 void gameUISetOnRedraw(void (*redraw)()){

@@ -23,10 +23,14 @@ int main(int argc, char** argv){
 	
 	gameUIInit();
 	gameUISetOnRedraw(NULL);
+	gameUISetOnIdle(NULL);
 	
 	ctrlUIInit();
 	ctrlUISetOnExit(handleExit);
 	ctrlUISetGameWindow(gameUIGetWindow());
+	
+	// set idle listener
+	GLUI_Master.set_glutIdleFunc(gameUIHandleIdle);
     
     glutMainLoop();
 	
