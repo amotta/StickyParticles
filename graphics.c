@@ -22,13 +22,13 @@ enum GFX_COLOR_CODES {
 
 static double GFX_COLOR_RGBS[][3] = {
     {1.00, 1.00, 1.00},
-    {0.75, 0.00, 0.10}
+    {0.75, 0.00, 0.00}
 };
 
 void gfxCircle(circ_t circ){
     int i = 0;
     
-    glBegin(GL_POLYGON);
+    glBegin(GL_LINE_LOOP);
     
     for(i = 0; i < CIRC_SEGMENTS; i++){
         glVertex3f(
