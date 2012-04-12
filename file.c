@@ -326,12 +326,9 @@ static bool fileReadEmitters(){
     
     emitterSet_t* emitters = emitterSetNew(numbEmitters);
     
-    // read emitters
-    unsigned int i;
-    for(i = 0; i < numbEmitters; i++){
-        if(!fileReadEmitter(&emitters->set[i])){
-            return false;
-        }
+    // read individual emitters
+    if(!emitterSetForEach(emitters, fileReadEmitter)){
+        return false;
     }
     
     gameSetEmitter(game, emitters);
