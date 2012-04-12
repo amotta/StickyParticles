@@ -8,6 +8,8 @@
 #ifndef GROUP_H
 #define GROUP_H
 
+#include "vector.h"
+
 #define GROUP_TYPE_HARMLESS 1
 #define GROUP_TYPE_DANGEROUS 2
 

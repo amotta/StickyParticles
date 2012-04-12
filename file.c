@@ -7,12 +7,17 @@
 
 #include <stdbool.h>
 #include <stdio.h>
+#include <string.h>
 
+#include "constants.h"
 #include "emitter.h"
 #include "emitterset.h"
+#include "file.h"
 #include "game.h"
 #include "group.h"
 #include "groupset.h"
+#include "particle.h"
+#include "particleset.h"
 
 #define LINE_BUF_LEN 81
 
@@ -209,7 +214,7 @@ static bool fileReadInterval(){
 
 static bool fileReadDisc(){
     char line[LINE_BUF_LEN];
-    double posX, double posY;
+    double posX, posY;
     
     if(!fileReadLine(line, LINE_BUF_LEN)){
         return false;
@@ -230,7 +235,7 @@ static bool fileReadDisc(){
     vect_t* pos = vectNew();
     vectSet(pos, posX, posY);
     
-    circ_t* disc = discNew();
+    circ_t* disc = circNew();
     circSetPos(disc, pos);
     circSetRadius(disc, R_DISC);
     
@@ -489,14 +494,13 @@ static bool fileReadPart(part_t* part){
     vect_t* pos = vectNew();
     vectSet(pos, posX, posY);
     
-    part_t* part = partNew();
-    partSetPos(part, pos);
-    
     // TODO
     // if(!isCircInGameRect(part)){
     //     fileSetError(FILE_ERROR_PART_POS);
     //     return false;
     // }
+    
+    partSetPos(part, pos);
     
     return true;
 }
@@ -510,7 +514,7 @@ void filePrintStatus(){
     
     if(error){
         printf(
-            " ERROR on line %u: %s\n", lineNumber, GAME_ERROR_MESSAGES[error]
+            " ERROR on line %u: %s\n", lineNumber, FILE_ERROR_MESSAGES[error]
         );
     }else{
         printf(" VALID\n");
