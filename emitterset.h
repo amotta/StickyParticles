@@ -10,6 +10,8 @@
 
 #include <stdbool.h>
 
+#include "emitter.h"
+
 typedef struct EMITTER_SET emitterSet_t;
 
 extern emitterSet_t* emitterSetNew(unsigned int numbEmitters);
