@@ -6,25 +6,41 @@
 //
 
 #include <math.h>
+#include <stdlib.h>
 
 #include "vector.h"
 
-vect_t vectPlus(vect_t vectOne, vect_t vectTwo){
-    vect_t res;
-    res.x = vectOne.x + vectTwo.x;
-    res.y = vectOne.y + vectTwo.y;
+struct VECT {
+    double x;
+    double y;
+};
+
+vect_t* vectNew(){
+    vect_t* vect = NULL;
     
-    return res;
+    if(vect = malloc(sizeof(vect_t))){
+        vectSet(vect, 0, 0);
+    }else{
+        printf("Could not allocate memory for new vector\n");
+        exit(EXIT_FAILURE);
+    }
+    
+    return vect;
 }
 
-vect_t vectMinus(vect_t vectOne, vect_t vectTwo){
-    vect_t res;
-    res.x = vectOne.x - vectTwo.x;
-    res.y = vectOne.y - vectTwo.y;
+void vectSet(vect_t* vect, double x, double y){
+    if(!vect) return;
     
-    return res;
+    vect->x = x;
+    vect->y = y;
 }
 
-double vectLength(vect_t vect){
-    return sqrt(vect.x * vect.x + vect.y * vect.y);
+void vectFree(vect_t* vect){
+    if(!vect) return;
+    
+    free(vect);
+}
+
+double vectDist(vect_t* start, vect_t* end){
+    return sqrt(pow(end->x - start->x, 2) + pow(end->y - start->y, 2));
 }

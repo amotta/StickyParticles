@@ -5,6 +5,14 @@
 //  Created by Alessandro Motta on 4/10/12.
 //
 
+#include <stdbool.h>
+#include <stdio.h>
+
+#include "emitter.h"
+#include "emitterset.h"
+#include "game.h"
+#include "group.h"
+#include "groupset.h"
 
 #define LINE_BUF_LEN 81
 
@@ -13,14 +21,15 @@ static bool fileReadLine(char* buf, int bufLen);
 static bool fileReadScore();
 static bool fileReadInterval();
 static bool fileReadDisc();
-static bool fileReadEmitter();
+static bool fileReadEmitter(emitter_t* emitter);
 static bool fileReadEmitters();
-static bool fileReadGroup();
+static bool fileReadGroup(group_t* group);
 static bool fileReadGroups();
-static bool fileReadPart();
+static bool fileReadPart(part_t* part);
 static void fileSetError(int errorCode);
 static void filePrintStatus();
 
+static game_t* game;
 static int error;
 static bool debug;
 static FILE* file;
@@ -166,6 +175,8 @@ static bool fileReadScore(){
         printf("Score: %u\n", score);
     }
     
+    gameSetScore(game, score);
+    
     return true;
 }
 
@@ -191,43 +202,55 @@ static bool fileReadInterval(){
         printf("Interval: %f\n", interval);
     }
     
+    gameSetInterval(game, interval);
+    
     return true;
 }
 
 static bool fileReadDisc(){
     char line[LINE_BUF_LEN];
-    circ_t disc = {
-        .r = R_DISC
-    };
+    double posX, double posY;
     
     if(!fileReadLine(line, LINE_BUF_LEN)){
         return false;
     }
     
-    if(sscanf(line, "%lf %lf", &disc.pos.x, &disc.pos.y) < 2){
+    if(sscanf(line, "%lf %lf", &posX, &posY) < 2){
         fileSetError(FILE_ERROR_DISC);
         return false;
     }
     
     if(debug){
         printf(
-               "Disc\n"
-               " X: %f, Y: %f\n", disc.pos.x, disc.pos.y
-               );
+            "Disc\n"
+            " X: %f, Y: %f\n", posX, posY
+        );
     }
     
-    if(!isCircInGameCirc(disc)){
-        fileSetError(FILE_ERROR_DISC_POS);
-        return false;
-    }
+    vect_t* pos = vectNew();
+    vectSet(pos, posX, posY);
+    
+    circ_t* disc = discNew();
+    circSetPos(disc, pos);
+    circSetRadius(disc, R_DISC);
+    
+    // TODO
+    // if(!isCircInGameCirc(disc)){
+    //     fileSetError(FILE_ERROR_DISC_POS);
+    //     return false;
+    // }
+    
+    gameSetDisc(game, disc);
     
     return true;
 }
 
-static bool fileReadEmitter(){
+static bool fileReadEmitter(emitter_t* emitter){
     char line[LINE_BUF_LEN];
-    vect_t pos;
+    double posX, posY;
     double alpha, flow, speed;
+    
+    if(!emitter) return false;
     
     if(!fileReadLine(line, LINE_BUF_LEN)){
         return false;
@@ -237,7 +260,7 @@ static bool fileReadEmitter(){
         sscanf(
             line,
             "%lf %lf %lf %lf %lf",
-            &pos.x, &pos.y, &alpha, &flow, &speed
+            &posX, &posY, &alpha, &flow, &speed
         ) < 5
     ){
         fileSetError(FILE_ERROR_EMITTER);
@@ -247,11 +270,11 @@ static bool fileReadEmitter(){
     if(debug){
         printf(
             " X: %f, Y: %f, Alpha: %f, Flow: %f, Speed: %f\n",
-            pos.x, pos.y, alpha, flow, speed
+            posX, posY, alpha, flow, speed
         );
     }
     
-    // validation
+    // validations
     if(alpha > MAX_ALPHA){
         fileSetError(FILE_ERROR_EMITTER_ALPHA);
         return false;
@@ -262,10 +285,19 @@ static bool fileReadEmitter(){
         return false;
     }
     
-    if(isVectInGameCirc(pos) || !isVectInGameRect(pos)){
-        fileSetError(FILE_ERROR_EMITTER_POS);
-        return false;
-    }
+    vect_t* pos = vectNew();
+    vectSet(pos, posX, posY);
+    
+    // TODO
+    // if(isVectInGameCirc(pos) || !isVectInGameRect(pos)){
+    //     fileSetError(FILE_ERROR_EMITTER_POS);
+    //     return false;
+    // }
+    
+    emitterSetPos(emitter, pos);
+    emitterSetAlpha(emitter, alpha);
+    emitterSetFlow(emitter, flow);
+    emitterSetSpeed(emitter, speed);
     
     return true;
 }
@@ -287,25 +319,31 @@ static bool fileReadEmitters(){
         printf("Emitter count: %u\n", numbEmitters);
     }
     
+    emitterSet_t* emitters = emitterSetNew(numbEmitters);
+    
     // read emitters
     unsigned int i;
     for(i = 0; i < numbEmitters; i++){
-        if(!fileReadEmitter()){
+        if(!fileReadEmitter(&emitters->set[i])){
             return false;
         }
     }
     
+    gameSetEmitter(game, emitters);
+    
     return true;
 }
 
-static bool fileReadGroup(){
+static bool fileReadGroup(group_t* group){
     char buf[11];
     char line[LINE_BUF_LEN];
-    
-    vect_t pos;
-    vect_t speed;
+    double posX, posY;
+    double speedX, speedY;
     double omega;
-    unsigned int type, numbParts;
+    unsigned int type;
+    unsigned int numbParts;
+    
+    if(!group) return false;
     
     if(!fileReadLine(line, LINE_BUF_LEN)){
         return false;
@@ -315,7 +353,7 @@ static bool fileReadGroup(){
         sscanf(
             line,
             "%lf %lf %lf %lf %lf %10s %u",
-            &pos.x, &pos.y, &speed.x, &speed.y, &omega, buf, &numbParts
+            &posX, &posY, &speedX, &speedY, &omega, buf, &numbParts
         ) < 7
     ){
         fileSetError(FILE_ERROR_GROUP);
@@ -338,38 +376,58 @@ static bool fileReadGroup(){
             " OMEGA: %f,"
             " TYPE: %s,"
             " PARTS COUNT: %u\n",
-            pos.x, pos.y, speed.x, speed.y,
+            posX, posY, speedX, speedY,
             omega,
             type == GROUP_TYPE_HARMLESS ? "HARMLESS" : "DANGEROUS",
             numbParts
         );
     }
     
+    vect_t* speed = vectNew();
+    vectSet(speed, speedX, speedY);
+    
     // validate speed
-    double speedLen = vectLength(speed);
-    if(speedLen > MAX_VG || speedLen < MIN_VG){
-        fileSetError(FILE_ERROR_GROUP_SPEED);
-        return false;
-    }
+    // TODO
+    // double speedLen = vectLength(speed);
+    // if(speedLen > MAX_VG || speedLen < MIN_VG){
+    //     fileSetError(FILE_ERROR_GROUP_SPEED);
+    //     return NULL;
+    // }
+    
+    vect_t* pos = vectNew();
+    vectSet(pos, posX, posY);
+    
+    groupSetPos(group, pos);
+    groupSetSpeed(group, speed);
+    groupSetOmega(group, omega);
+    groupSetType(group, type);
     
     // read particles
+    // TODO
     if(numbParts > 1){
         unsigned int i;
+        part_t* part = NULL;
+        
         for(i = 0; i < numbParts; i++){
-            if(!fileReadPart()){
+            part = partNew();
+            
+            if(fileReadPart(part)){
+                groupAdd(group, part);
+            }else{
                 return false;
             }
         }
     }else{
-        circ_t part = {
-            .pos = pos,
-            .r = R_PART
-        };
+        // TODO
+        // circ_t part = {
+        //     .pos = pos,
+        //     .r = R_PART
+        // };
         
-        if(!isCircInGameRect(part)){
-            fileSetError(FILE_ERROR_PART_POS);
-            return false;
-        }
+        // if(!isCircInGameRect(part)){
+        //     fileSetError(FILE_ERROR_PART_POS);
+        //     return false;
+        // }
     }
     
     return true;
@@ -392,39 +450,53 @@ static bool fileReadGroups(){
         printf("Group count: %u\n", numbGroups);
     }
     
-    unsigned int i;
+    int i;
+    group_t* group = NULL;
+    groupSet_t* groups = groupSetNew();
+    
     for(i = 0; i < numbGroups; i++){
-        if(!fileReadGroup()){
+        group = groupNew();
+        
+        if(fileReadGroup(group)){
+            groupSetAdd(groups, group);
+        }else{
             return false;
         }
     }
     
+    gameSetGroups(game, groups);
+    
     return true;
 }
 
-static bool fileReadPart(){
+static bool fileReadPart(part_t* part){
     char line[LINE_BUF_LEN];
-    circ_t part = {
-        .r = R_PART
-    };
+    double posX, posY;
     
     if(!fileReadLine(line, LINE_BUF_LEN)){
         return false;
     }
     
-    if(sscanf(line, "%lf %lf", &part.pos.x, &part.pos.y) < 2){
+    if(sscanf(line, "%lf %lf", &posX, &posY) < 2){
         fileSetError(FILE_ERROR_PART);
         return false;
     }
     
     if(debug){
-        printf("  X: %lf, Y: %lf\n", part.pos.x, part.pos.y);
+        printf("  X: %lf, Y: %lf\n", posX, posY);
     }
     
-    if(!isCircInGameRect(part)){
-        fileSetError(FILE_ERROR_PART_POS);
-        return false;
-    }
+    vect_t* pos = vectNew();
+    vectSet(pos, posX, posY);
+    
+    part_t* part = partNew();
+    partSetPos(part, pos);
+    
+    // TODO
+    // if(!isCircInGameRect(part)){
+    //     fileSetError(FILE_ERROR_PART_POS);
+    //     return false;
+    // }
     
     return true;
 }
@@ -448,9 +520,14 @@ void filePrintStatus(){
 bool fileRead(char* name){
     bool ok = true;
     
+    if(game){
+        gameInit(game);
+    }else{
+        game = gameNew();
+    }
+    
     error = FILE_OK;
     fileName = name;
-    file = fopen(fileName, "r");
     lineNumber = 0;
     
     if(debug){
@@ -459,6 +536,9 @@ bool fileRead(char* name){
             "File: %s\n", fileName
         );
     }
+    
+    // try to open file
+    file = fopen(fileName, "r");
     
     if(!file){
         ok = false;

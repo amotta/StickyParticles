@@ -10,12 +10,20 @@
 
 #include <stdbool.h>
 
-// TODO: move to group.h
-#define GROUP_TYPE_HARMLESS 1
-#define GROUP_TYPE_DANGEROUS 2
+#include "circle.h"
+#include "emitterset.h"
+#include "groupset.h"
 
+typedef struct GAME game_t;
+
+extern game_t* gameNew();
+extern void gameInit(game_t* game);
+extern void gameSetScore(game_t* game, unsigned int score);
+extern void gameSetTimeDiff(game_t* game, double timeDiff);
+extern void gameSetDisc(game_t* game, circ_t* disc);
+extern void gameSetEmitters(game_t* game, emitterSet_t* emitters);
+extern void gameSetGroups(game_t* game, groupSet_t* groups);
+extern void gameFree(game_t* game);
 extern void gameDraw();
-extern bool gameFileRead(char* name);
-extern void gameSetDebug(bool flag);
 
 #endif

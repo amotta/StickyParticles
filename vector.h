@@ -8,13 +8,11 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
-typedef struct {
-    double x;
-    double y;
-} vect_t;
+typedef struct VECT vect_t;
 
-extern vect_t vectPlus(vect_t vectOne, vect_t vectTwo);
-extern vect_t vectMinus(vect_t vectOne, vect_t vectTwo);
-extern double vectLength(vect_t vect);
+extern vect_t* vectNew();
+extern void vectSet(vect_t* vect, double x, double y);
+extern double vectDisc(vect_t* start, vect_t* end);
+extern void vectFree(vect_t* vect);
 
 #endif

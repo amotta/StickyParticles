@@ -11,20 +11,61 @@
 #include "constants.h"
 #include "vector.h"
 
-const circ_t gameCirc = {
-    .r = RECT_Y / 2,
-    .pos.x = RECT_X / 2,
-    .pos.y = RECT_Y / 2
+struct CIRC {
+    vect_t* pos;
+    double r;
 };
 
-bool isCircInCirc(circ_t circInt, circ_t circExt){
+circ_t* circNew(){
+    circ_t* circ = NULL;
+    
+    if(circ = malloc(sizeof(circ_t))){
+        circInit(circ);
+    }else{
+        printf("Could not allocate memory for new circle\n");
+        exit(EXIT_FAILURE);
+    }
+    
+    return circ;
+}
+
+void circInit(circ_t* circ){
+    if(!circ) return;
+    
+    vectFree(circ->pos);
+    circ->pos = NULL;
+    
+    circ->r = 0;
+}
+
+void circSetPos(circ_t* circ, vect_t* pos){
+    if(!circ || !pos) return;
+    
+    circ->pos = pos;
+}
+
+void circSetRadius(circ_t* circ, double radius){
+    if(!circ) return;
+    
+    circ->r = radius;
+}
+
+void circFree(circ_t* circ){
+    if(!circ) return;
+    
+    circInit(circ);
+    free(circ);
+}
+
+bool isCircInCirc(circ_t* circInt, circ_t* circExt){
+    if(!circInt || !circExt) return;
+    
     // because we're lazy and efficient
-    if(circInt.r > circExt.r){
+    if(circInt->r > circExt->r){
         return false;
     }
     
-    double dist = vectLength(vectMinus(circInt.pos, circExt.pos));
-    if(dist < circExt.r - circInt.r){
+    if(vectDist(circExt->pos, circInt->pos) < circExt->r - circInt->r){
         return true;
     }else{
         return false;
@@ -32,17 +73,21 @@ bool isCircInCirc(circ_t circInt, circ_t circExt){
 }
 
 bool isCircInGameCirc(circ_t circ){
+    // TODO
     return isCircInCirc(circ, gameCirc);
 }
 
-bool isVectInCirc(vect_t vect, circ_t circExt){
-    circ_t circInt;
-    circInt.pos = vect;
-    circInt.r = 0;
+bool isVectInCirc(vect_t* vect, circ_t* circExt){
+    if(!vect || !circExt) return;
+    
+    circ_t* circInt = circNew();
+    circSetPos(circInt, vect);
+    circSetRadius(circInt, 0);
     
     return isCircInCirc(circInt, circExt);
 }
 
 bool isVectInGameCirc(vect_t vect){
+    // TODO
     return isVectInCirc(vect, gameCirc);
 }

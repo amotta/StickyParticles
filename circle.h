@@ -12,12 +12,13 @@
 
 #include "vector.h"
 
-typedef struct {
-    double r;
-    vect_t pos;
-} circ_t;
+typedef struct CIRC circ_t;
 
-extern const circ_t gameCirc;
+extern circ_t* circNew();
+extern void circInit(circ_t* circ);
+extern void circSetPos(circ_t* circ, vect_t* vect);
+extern void circSetRadius(circ_t* circ, double radius);
+extern void circFree(circ_t* circ);
 
 extern bool isCircInCirc(circ_t circInt, circ_t circExt);
 extern bool isCircInGameCirc(circ_t circ);
