@@ -5,8 +5,13 @@
 //  Created by Alessandro Motta on 2/23/12.
 //
 
-#include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
+
+#include "circle.h"
+#include "emitterset.h"
+#include "game.h"
+#include "groupset.h"
 
 struct GAME {
     unsigned int score;
@@ -64,7 +69,7 @@ void gameSetDisc(game_t* game, circ_t* disc){
     game->disc = disc;
 }
 
-void gameSetEmitters(game_t* game, emitterSet_t* emitter){
+void gameSetEmitters(game_t* game, emitterSet_t* emitters){
     if(!game || !emitters) return;
     
     game->emitters = emitters;
