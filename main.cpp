@@ -13,6 +13,7 @@
 
 extern "C" {
     #include "file.h"
+    #include "game.h"
     #include "gameui.h"
 }
 
@@ -40,12 +41,12 @@ int main(int argc, char** argv){
     GLUI_Master.set_glutIdleFunc(gameUIHandleIdle);
     
     // handle arguments
-    f(argc < 2){
+    if(argc < 2){
         usage();
         return EXIT_SUCCESS;
     }
     
-    for(i = 1; i < argc; i++){
+    for(int i = 1; i < argc; i++){
         if(isOpt(argv[i])){
             handleOpt(argv[i]);
         }else{

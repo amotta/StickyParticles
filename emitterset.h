@@ -10,7 +10,7 @@
 
 typedef struct EMITTER_SET emitterSet_t;
 
-extern emitter_t* emitterSetNew(unsigned int numbEmitters);
+extern emitterSet_t* emitterSetNew(unsigned int numbEmitters);
 extern void emitterSetFree(emitterSet_t* set);
 
 #endif
