@@ -56,6 +56,9 @@ bool emitterSetForEach(emitterSet_t* set, bool (*handle)(emitter_t* emitter)){
 void emitterSetFree(emitterSet_t* set){
     if(!set) return;
     
+    // TODO
+    // emitterSetForEach(set, emitterFree);
+    
     if(set->set){
         int i;
         for(i = 0; i < set->numb; i++){
