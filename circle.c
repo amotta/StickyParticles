@@ -40,7 +40,7 @@ void circInit(circ_t* circ){
     circ->r = 0;
 }
 
-vect_t* vectGetPos(circ_t* circ){
+vect_t* circGetPos(circ_t* circ){
     if(!circ || !circ->pos) return NULL;
     
     return circ->pos;
