@@ -35,12 +35,24 @@ void vectSet(vect_t* vect, double x, double y){
     vect->y = y;
 }
 
-void vectFree(vect_t* vect){
-    if(!vect) return;
+double vectGetX(vect_t* vect){
+    if(!vect) return 0;
     
-    free(vect);
+    return vect->x;
+}
+
+double vectGetY(vect_t* vect){
+    if(!vect) return 0;
+    
+    return vect->y;
 }
 
 double vectDist(vect_t* start, vect_t* end){
     return sqrt(pow(end->x - start->x, 2) + pow(end->y - start->y, 2));
+}
+
+void vectFree(vect_t* vect){
+    if(!vect) return;
+    
+    free(vect);
 }
