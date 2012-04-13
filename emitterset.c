@@ -23,9 +23,16 @@ emitterSet_t* emitterSetNew(unsigned int numbEmitters){
     if((set = malloc(sizeof(emitterSet_t)))){
         set->numb = numbEmitters;
         
-        int i;
-        for(i = 0; i < set->numb; i++){
-            set->set[i] = emitterNew();
+        // TODO
+        // Improve this
+        if((set->set = malloc(numbEmitters * sizeof(emitter_t*)))){
+            unsigned int i;
+            for(i = 0; i < set->numb; i++){
+                set->set[i] = emitterNew();
+            }
+        }else{
+            printf("Could not allocate memory for new emitter set\n");
+            exit(EXIT_FAILURE);
         }
     }else{
         printf("Could not allocate memory for new emitter set\n");
