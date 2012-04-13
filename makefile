@@ -1,43 +1,21 @@
-# makefile
-# for StickyParticles
+# DO NOT DELETE
 
-CC = gcc
-CPP = g++
-CFLAGS = -std=c99 -Wall -g
-CPPFLAGS = -ansi -Wall -g
-LIBS = -lm -framework GLUI -framework GLUT -framework OpenGL
+DEPFILE = dependencies
+
+SRC = circle.c controlui.cpp emitter.c emitterset.c file.c game.c \
+gameui.c geometry.c graphics.c group.c groupset.c main.cpp \
+particle.c particleset.c rectangle.c vector.c
+
+OBS = $(SRC:.c=.o)
 
 all: sticky.x
 
-sticky.x: circle.o controlui.o game.o gameui.o geometry.o graphics.o main.o rectangle.o vector.o
-	$(CPP) $(LIBS) $^ -o $@
+sticky.x: $(OBS)
+	g++ $(OFILES) -o $@
 
-circle.o: circle.c circle.h constants.h vector.h
-	$(CC) $(CFLAGS) -c $< -o $@
+depend:
+	rm -f $(DEPFILE)
+	touch $(DEPFILE)
+	makedepend -Y -f $(DEPFILE) $(SRC)
 
-controlui.o: controlui.cpp controlui.h
-	$(CPP) -c $< -o $@
-
-game.o: game.c circle.h constants.h game.h geometry.h graphics.h rectangle.h vector.h
-	$(CC) $(CFLAGS) -c $< -o $@
-
-gameui.o: gameui.c gameui.h
-	$(CC) $(CFLAGS) -c $< -o $@
-
-geometry.o: geometry.c circle.h geometry.h rectangle.h vector.h
-	$(CC) $(CFLAGS) -c $< -o $@
-
-graphics.o: graphics.c graphics.h
-	$(CC) $(CFLAGS) -c $< -o $@
-
-main.o: main.cpp controlui.h game.h
-	$(CPP) $(CPPFLAGS) -c $< -o $@
-
-rectangle.o: rectangle.c constants.h rectangle.h vector.h
-	$(CC) $(CFLAGS) -c $< -o $@
-
-vector.o: vector.c vector.h
-	$(CC) $(CFLAGS) -c $< -o $@
-
-clean:
-	rm -f *.o *.x
+sinclude $(DEPFILE)
