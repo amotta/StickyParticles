@@ -17,12 +17,10 @@ extern "C" {
     #include "gameui.h"
 }
 
-namespace {
-    bool isOpt(char* arg);
-    void handleOpt(char* arg);
-    void usage();
-    void handleExit();
-}
+bool isOpt(char* arg);
+void handleOpt(char* arg);
+void usage();
+void handleExit();
 
 int main(int argc, char** argv){
     glutInit(&argc, argv);
