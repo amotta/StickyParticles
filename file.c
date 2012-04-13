@@ -17,7 +17,6 @@
 #include "group.h"
 #include "groupset.h"
 #include "particle.h"
-#include "particleset.h"
 
 #define LINE_BUF_LEN 81
 
@@ -331,7 +330,7 @@ static bool fileReadEmitters(){
         return false;
     }
     
-    gameSetEmitter(game, emitters);
+    gameSetEmitters(game, emitters);
     
     return true;
 }
@@ -560,7 +559,7 @@ bool fileRead(char* name){
         printf("\n");
     }
     
-    gamePrintStatus();
+    filePrintStatus();
     
     if(error){
         return false;
