@@ -1,6 +1,7 @@
 # filetypes
 *.o
 *.x
+*.bak
 
 # files & folders
 .DS_Store
