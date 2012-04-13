@@ -4,14 +4,21 @@ DEPFILE = dependencies
 
 SRC = circle.c controlui.cpp emitter.c emitterset.c file.c game.c \
 gameui.c geometry.c graphics.c group.c groupset.c main.cpp \
-particle.c particleset.c rectangle.c vector.c
+particle.c rectangle.c vector.c
 
-OBS = $(SRC:.c=.o)
+LIBS = -framework GLUI -framework GLUT -framework OpenGL
+
+TEMP = $(SRC:.c=.o)
+OBS = $(TEMP:.cpp=.o)
 
 all: sticky.x
 
 sticky.x: $(OBS)
-	g++ $(OFILES) -o $@
+	g++ $(OBS) $(LIBS) -o $@
+
+clean:
+	@rm -f *.o *.x
+	@rm -f $(DEPFILE)
 
 depend:
 	@rm -f $(DEPFILE)
