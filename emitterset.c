@@ -14,8 +14,8 @@
 
 struct EMITTER_SET {
     unsigned int numb;
-    emitter_t* set;
-}
+    emitter_t** set;
+};
 
 emitterSet_t* emitterSetNew(unsigned int numbEmitters){
     emitterSet_t* set = NULL;
@@ -23,14 +23,9 @@ emitterSet_t* emitterSetNew(unsigned int numbEmitters){
     if((set = malloc(sizeof(emitterSet_t)))){
         set->numb = numbEmitters;
         
-        if((set->set = calloc(set->numb, sizeof(emitter_t)))){
-            int i;
-            for(i = 0; i < set->numb; i++){
-                emitterInit(&set->set[i]);
-            }
-        }else{
-            printf("Could not allocate memory for new emitters\n");
-            exit(EXIT_FAILURE);
+        int i;
+        for(i = 0; i < set->numb; i++){
+            set->set[i] = emitterNew();
         }
     }else{
         printf("Could not allocate memory for new emitter set\n");
@@ -45,7 +40,7 @@ bool emitterSetForEach(emitterSet_t* set, bool (*handle)(emitter_t* emitter)){
     
     unsigned int i;
     for(i = 0; i < set->numb; i++){
-        if(!handle(&set->set[i])){
+        if(!handle(set->set[i])){
             return false;
         }
     }
@@ -62,10 +57,10 @@ void emitterSetFree(emitterSet_t* set){
     if(set->set){
         int i;
         for(i = 0; i < set->numb; i++){
-            emitterFree(&set->set[i]);
+            emitterFree(set->set[i]);
+            set->set[i] = NULL;
         }
         
-        free(set->set);
         set->set = NULL;
     }
     
