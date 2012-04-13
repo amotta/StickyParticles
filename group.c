@@ -5,10 +5,14 @@
 //  Created by Alessandro Motta on 4/11/12.
 //
 
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "group.h"
+#include "particle.h"
 #include "vector.h"
+
+static void groupFreeParts(part_t* part);
 
 struct GROUP {
     vect_t* pos;
@@ -16,7 +20,9 @@ struct GROUP {
     
     double omega;
     unsigned int type;
-    unsigned int numbParts;
+    
+    unsigned int numb;
+    part_t* part;
     
     group_t* next;
 };
@@ -47,9 +53,12 @@ void groupInit(group_t* group){
     
     group->omega = 0;
     group->type = 0;
-    group->numbParts = 0;
+    group->numb = 0;
     
-    // groupFree(group->next);
+    groupFreeParts(group->part);
+    group->part = NULL;
+    
+    groupFree(group->next);
     group->next = NULL;
 }
 
@@ -83,6 +92,15 @@ void groupSetNext(group_t* group, group_t* next){
     group->next = next;
 }
 
+void groupAdd(group_t* group, part_t* part){
+    if(!group || !part) return;
+    
+    partSetNext(part, group->part);
+    
+    group->part = part;
+    group->numb++;
+}
+
 void groupFree(group_t* group){
     if(!group){
         return;
@@ -90,4 +108,16 @@ void groupFree(group_t* group){
     
     groupInit(group);
     free(group);
+}
+
+void groupFreeParts(part_t* first){
+    part_t* cur = NULL;
+    part_t* next = first;
+    
+    while(next){
+        cur = next;
+        next = partGetNext(cur);
+        
+        partFree(cur);
+    }
 }
