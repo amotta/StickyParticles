@@ -40,14 +40,13 @@ void gameInit(game_t* game){
     game->score = 0;
     game->interval = 0;
     
-    discFree(game->disc);
+    circFree(game->disc);
     game->disc = NULL;
     
     emitterSetFree(game->emitters);
     game->emitters = NULL;
     
-    // TODO
-    // groupSetFree(game->groups);
+    groupSetFree(game->groups);
     game->groups = NULL;
 }
 
