@@ -14,8 +14,8 @@ sticky.x: $(OBS)
 	g++ $(OFILES) -o $@
 
 depend:
-	rm -f $(DEPFILE)
-	touch $(DEPFILE)
-	makedepend -Y -f $(DEPFILE) $(SRC)
+	@rm -f $(DEPFILE)
+	@touch $(DEPFILE)
+	@makedepend -Y -f $(DEPFILE) $(SRC)
 
 sinclude $(DEPFILE)
