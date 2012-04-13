@@ -8,6 +8,8 @@
 #ifndef GRAPHICS_H
 #define GRAPHICS_H
 
+#include "circle.h"
+
 extern void gfxClear();
 extern void gfxGameCirc();
 

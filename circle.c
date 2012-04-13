@@ -6,6 +6,8 @@
 //
 
 #include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #include "circle.h"
 #include "constants.h"
@@ -38,10 +40,22 @@ void circInit(circ_t* circ){
     circ->r = 0;
 }
 
+vect_t* vectGetPos(circ_t* circ){
+    if(!circ || !circ->pos) return NULL;
+    
+    return circ->pos;
+}
+
 void circSetPos(circ_t* circ, vect_t* pos){
-    if(!circ || !pos) return;
+    if(!circ) return;
     
     circ->pos = pos;
+}
+
+double circGetRadius(circ_t* circ){
+    if(!circ) return 0;
+    
+    return circ->r;
 }
 
 void circSetRadius(circ_t* circ, double radius){
@@ -57,6 +71,8 @@ void circFree(circ_t* circ){
     free(circ);
 }
 
+// TODO
+/*
 bool isCircInCirc(circ_t* circInt, circ_t* circExt){
     if(!circInt || !circExt) return;
     
@@ -91,3 +107,4 @@ bool isVectInGameCirc(vect_t vect){
     // TODO
     return isVectInCirc(vect, gameCirc);
 }
+*/

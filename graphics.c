@@ -13,7 +13,7 @@
 #define CIRC_SEGMENTS 360
 
 static void gfxColor(int color);
-static void gfxCircle(circ_t circ);
+static void gfxCircle(circ_t* circ);
 
 enum GFX_COLOR_CODES {
     GFX_CLEAR_COLOR,
@@ -25,15 +25,16 @@ static double GFX_COLOR_RGBS[][3] = {
     {0.75, 0.00, 0.00}
 };
 
-void gfxCircle(circ_t circ){
+void gfxCircle(circ_t* circ){
     int i = 0;
     
     glBegin(GL_LINE_LOOP);
-    
     for(i = 0; i < CIRC_SEGMENTS; i++){
         glVertex3f(
-            circ.pos.x + cos(2 * M_PI / CIRC_SEGMENTS * i) * circ.r,
-            circ.pos.y + sin(2 * M_PI / CIRC_SEGMENTS * i) * circ.r,
+            vectGetX(circGetPos(circ))
+            + cos(2 * M_PI / CIRC_SEGMENTS * i) * circGetRadius(circ),
+            vectGetY(circGetPos(circ))
+            + sin(2 * M_PI / CIRC_SEGMENTS * i) * circGetRadius(circ),
             0
         );
     }
@@ -56,6 +57,7 @@ void gfxColor(int color){
 
 void gfxGameCirc(){
     gfxColor(GFX_GAMECIRC_COLOR);
-    gfxCircle(gameCirc);
+    // TODO
+    // gfxCircle(gameCirc);
 }
 
