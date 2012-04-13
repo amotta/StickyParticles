@@ -22,22 +22,14 @@ circ_t* circNew(){
     circ_t* circ = NULL;
     
     if(circ = malloc(sizeof(circ_t))){
-        circInit(circ);
+        circ->pos = NULL;
+        circ->r = 0;
     }else{
         printf("Could not allocate memory for new circle\n");
         exit(EXIT_FAILURE);
     }
     
     return circ;
-}
-
-void circInit(circ_t* circ){
-    if(!circ) return;
-    
-    vectFree(circ->pos);
-    circ->pos = NULL;
-    
-    circ->r = 0;
 }
 
 vect_t* circGetPos(circ_t* circ){
@@ -67,7 +59,7 @@ void circSetRadius(circ_t* circ, double radius){
 void circFree(circ_t* circ){
     if(!circ) return;
     
-    circInit(circ);
+    vectFree(circ->pos);
     free(circ);
 }
 

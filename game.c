@@ -25,29 +25,17 @@ game_t* gameNew(){
     game_t* game = NULL;
     
     if(game = malloc(sizeof(game_t))){
-        gameInit(game);
+        game->score = 0;
+        game->interval = 0;
+        game->disc = NULL;
+        game->emitters = NULL;
+        game->groups = NULL;
     }else{
         printf("Could not allocate memory for new game\n");
         exit(EXIT_FAILURE);
     }
     
     return game;
-}
-
-void gameInit(game_t* game){
-    if(!game) return;
-    
-    game->score = 0;
-    game->interval = 0;
-    
-    circFree(game->disc);
-    game->disc = NULL;
-    
-    emitterSetFree(game->emitters);
-    game->emitters = NULL;
-    
-    groupSetFree(game->groups);
-    game->groups = NULL;
 }
 
 void gameSetScore(game_t* game, unsigned int score){
@@ -83,7 +71,9 @@ void gameSetGroups(game_t* game, groupSet_t* groups){
 void gameFree(game_t* game){
     if(!game) return;
     
-    gameInit(game);
+    circFree(game->disc);
+    emitterSetFree(game->emitters);
+    groupSetFree(game->groups);
     free(game);
 }
 

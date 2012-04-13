@@ -22,24 +22,16 @@ emitter_t* emitterNew(){
     emitter_t* emitter = NULL;
     
     if((emitter = malloc(sizeof(emitter_t)))){
-        emitterInit(emitter);
+        emitter->pos = NULL;
+        emitter->alpha = 0;
+        emitter->flow = 0;
+        emitter->speed = 0;
     }else{
         printf("Could not allocate memory for new emitter\n");
         exit(EXIT_FAILURE);
     }
     
     return emitter;
-}
-
-void emitterInit(emitter_t* emitter){
-    if(!emitter) return;
-    
-    vectFree(emitter->pos);
-    emitter->pos = NULL;
-    
-    emitter->alpha = 0;
-    emitter->flow = 0;
-    emitter->speed = 0;
 }
 
 void emitterSetPos(emitter_t* emitter, vect_t* pos){
@@ -69,6 +61,6 @@ void emitterSetSpeed(emitter_t* emitter, double speed){
 void emitterFree(emitter_t* emitter){
     if(!emitter) return;
     
-    emitterInit(emitter);
+    vectFree(emitter->pos);
     free(emitter);
 }

@@ -18,6 +18,8 @@ const rect_t gameRect = {
     .top = RECT_Y
 };
 
+// TODO
+/*
 bool isVectInRect(vect_t vect, rect_t rect){
     if(
         rect.left < vect.x && vect.x < rect.right
@@ -32,3 +34,4 @@ bool isVectInRect(vect_t vect, rect_t rect){
 bool isVectInGameRect(vect_t vect){
     return isVectInRect(vect, gameRect);
 }
+*/

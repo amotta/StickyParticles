@@ -13,7 +13,6 @@
 typedef struct EMITTER emitter_t;
 
 extern emitter_t* emitterNew();
-extern void emitterInit(emitter_t* emitter);
 extern void emitterSetPos(emitter_t* emitter, vect_t* pos);
 extern void emitterSetAlpha(emitter_t* emitter, double alpha);
 extern void emitterSetFlow(emitter_t* emitter, double flow);

@@ -15,7 +15,6 @@
 typedef struct CIRC circ_t;
 
 extern circ_t* circNew();
-extern void circInit(circ_t* circ);
 extern vect_t* circGetPos(circ_t* circ);
 extern void circSetPos(circ_t* circ, vect_t* vect);
 extern double circGetRadius(circ_t* circ);

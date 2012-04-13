@@ -520,11 +520,8 @@ void filePrintStatus(){
 bool fileRead(char* name){
     bool ok = true;
     
-    if(game){
-        gameInit(game);
-    }else{
-        game = gameNew();
-    }
+    gameFree(game);
+    game = gameNew();
     
     error = FILE_OK;
     fileName = name;

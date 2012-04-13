@@ -17,7 +17,6 @@
 typedef struct GAME game_t;
 
 extern game_t* gameNew();
-extern void gameInit(game_t* game);
 extern void gameSetScore(game_t* game, unsigned int score);
 extern void gameSetTimeDiff(game_t* game, double timeDiff);
 extern void gameSetDisc(game_t* game, circ_t* disc);

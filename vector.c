@@ -20,7 +20,8 @@ vect_t* vectNew(){
     vect_t* vect = NULL;
     
     if(vect = malloc(sizeof(vect_t))){
-        vectSet(vect, 0, 0);
+        vect->x = 0;
+        vect->y = 0;
     }else{
         printf("Could not allocate memory for new vector\n");
         exit(EXIT_FAILURE);

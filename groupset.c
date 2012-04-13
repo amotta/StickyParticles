@@ -42,4 +42,14 @@ void groupSetAdd(groupSet_t* set, group_t* group){
 // TODO
 void groupSetFree(groupSet_t* set){
     if(!set) return;
+    
+    group_t* cur = NULL;
+    group_t* next = set->group;
+    
+    while(next){
+        cur = next;
+        next = groupGetNext(cur);
+        
+        groupFree(cur);
+    }
 }

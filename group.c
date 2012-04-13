@@ -17,13 +17,10 @@ static void groupFreeParts(part_t* part);
 struct GROUP {
     vect_t* pos;
     vect_t* speed;
-    
     double omega;
     unsigned int type;
-    
     unsigned int numb;
     part_t* part;
-    
     group_t* next;
 };
 
@@ -31,35 +28,19 @@ group_t* groupNew(){
     group_t* group = NULL;
     
     if((group = malloc(sizeof(group_t)))){
-        groupInit(group);
+        group->pos = NULL;
+        group->speed = NULL;
+        group->omega = 0;
+        group->type = 0;
+        group->numb = 0;
+        group->part = NULL;
+        group->next = NULL;
     }else{
         printf("Could not allocate memory for new group\n");
         exit(EXIT_FAILURE);
     }
     
     return group;
-}
-
-void groupInit(group_t* group){
-    if(!group){
-        return;
-    }
-    
-    vectFree(group->pos);
-    group->pos = NULL;
-    
-    vectFree(group->speed);
-    group->speed = NULL;
-    
-    group->omega = 0;
-    group->type = 0;
-    group->numb = 0;
-    
-    groupFreeParts(group->part);
-    group->part = NULL;
-    
-    groupFree(group->next);
-    group->next = NULL;
 }
 
 void groupSetPos(group_t* group, vect_t* pos){
@@ -86,6 +67,12 @@ void groupSetType(group_t* group, unsigned int type){
     group->type = type;
 }
 
+group_t* groupGetNext(group_t* group){
+    if(!group) return;
+    
+    return group->next;
+}
+
 void groupSetNext(group_t* group, group_t* next){
     if(!group) return;
     
@@ -106,7 +93,9 @@ void groupFree(group_t* group){
         return;
     }
     
-    groupInit(group);
+    vectFree(group->pos);
+    vectFree(group->speed);
+    partFree(group->part);
     free(group);
 }
 

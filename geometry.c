@@ -11,6 +11,8 @@
 #include "geometry.h"
 #include "rectangle.h"
 
+// TODO
+/*
 bool isCircInRect(circ_t circ, rect_t rect){
     // hiiiiigh power!
     if(
@@ -32,3 +34,4 @@ bool isCircInRect(circ_t circ, rect_t rect){
 bool isCircInGameRect(circ_t circ){
     return isCircInRect(circ, gameRect);
 }
+*/
