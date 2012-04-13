@@ -5,6 +5,7 @@
 //  Created by Alessandro Motta on 4/10/12.
 //
 
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "emitter.h"
@@ -39,6 +40,12 @@ void emitterInit(emitter_t* emitter){
     emitter->alpha = 0;
     emitter->flow = 0;
     emitter->speed = 0;
+}
+
+void emitterSetPos(emitter_t* emitter, vect_t* pos){
+    if(!emitter || !pos) return;
+    
+    emitter->pos = pos;
 }
 
 void emitterSetAlpha(emitter_t* emitter, double alpha){
