@@ -5,6 +5,7 @@
 //  Created by Alessandro Motta on 4/12/12.
 //
 
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "particle.h"
@@ -42,6 +43,12 @@ void partSetPos(part_t* part, vect_t* pos){
     if(!part || !pos) return;
     
     part->pos = pos;
+}
+
+part_t* partGetNext(part_t* part){
+    if(!part) return NULL;
+    
+    return part->next;
 }
 
 void partSetNext(part_t* part, part_t* next){
