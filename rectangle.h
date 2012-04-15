@@ -8,16 +8,12 @@
 #ifndef RECTANGLE_H
 #define RECTANGLE_H
 
-#include <stdbool.h>
+typedef struct RECT rect_t;
 
-typedef struct {
-    double left;
-    double right;
-    double bottom;
-    double top;
-} rect_t;
+extern rect_t* rectNew();
+extern void rectFree(rect_t* rect);
 
-extern const rect_t gameRect;
+extern rect_t* getGameRect();
 
 // TODO
 /*
