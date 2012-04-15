@@ -238,11 +238,10 @@ static bool fileReadDisc(){
     circSetPos(disc, pos);
     circSetRadius(disc, R_DISC);
     
-    // TODO
-    // if(!isCircInGameCirc(disc)){
-    //     fileSetError(FILE_ERROR_DISC_POS);
-    //     return false;
-    // }
+    if(!isCircInGameCirc(disc)){
+        fileSetError(FILE_ERROR_DISC_POS);
+        return false;
+    }
     
     gameSetDisc(game, disc);
     
@@ -292,11 +291,10 @@ static bool fileReadEmitter(emitter_t* emitter){
     vect_t* pos = vectNew();
     vectSet(pos, posX, posY);
     
-    // TODO
-    // if(isVectInGameCirc(pos) || !isVectInGameRect(pos)){
-    //     fileSetError(FILE_ERROR_EMITTER_POS);
-    //     return false;
-    // }
+    if(isVectInGameCirc(pos) || !isVectInGameRect(pos)){
+        fileSetError(FILE_ERROR_EMITTER_POS);
+        return false;
+    }
     
     emitterSetPos(emitter, pos);
     emitterSetAlpha(emitter, alpha);
@@ -388,12 +386,11 @@ static bool fileReadGroup(group_t* group){
     vectSet(speed, speedX, speedY);
     
     // validate speed
-    // TODO
-    // double speedLen = vectLength(speed);
-    // if(speedLen > MAX_VG || speedLen < MIN_VG){
-    //     fileSetError(FILE_ERROR_GROUP_SPEED);
-    //     return NULL;
-    // }
+    double speedLen = vectLen(speed);
+    if(speedLen > MAX_VG || speedLen < MIN_VG){
+        fileSetError(FILE_ERROR_GROUP_SPEED);
+        return NULL;
+    }
     
     vect_t* pos = vectNew();
     vectSet(pos, posX, posY);
@@ -404,7 +401,6 @@ static bool fileReadGroup(group_t* group){
     groupSetType(group, type);
     
     // read particles
-    // TODO
     if(numbParts > 1){
         unsigned int i;
         part_t* part = NULL;
@@ -419,16 +415,25 @@ static bool fileReadGroup(group_t* group){
             }
         }
     }else{
-        // TODO
-        // circ_t part = {
-        //     .pos = pos,
-        //     .r = R_PART
-        // };
+        bool valid = false;
         
-        // if(!isCircInGameRect(part)){
-        //     fileSetError(FILE_ERROR_PART_POS);
-        //     return false;
-        // }
+        circ_t* circ = circNew();
+        circSetPos(circ, pos);
+        circSetRadius(circ, R_PART);
+        
+        // check
+        // TODO
+        // valid = isCircInGameRect(circ);
+        valid = true;
+        
+        // free circ
+        circSetPos(circ, NULL);
+        circFree(circ);
+        
+        if(!valid){
+            fileSetError(FILE_ERROR_PART_POS);
+            return false;
+        }
     }
     
     return true;
