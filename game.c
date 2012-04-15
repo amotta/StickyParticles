@@ -11,6 +11,7 @@
 #include "circle.h"
 #include "emitterset.h"
 #include "game.h"
+#include "graphics.h"
 #include "groupset.h"
 
 struct GAME {
@@ -78,7 +79,10 @@ void gameFree(game_t* game){
 }
 
 void gameDraw(){
+    gfxColor(1, 1, 1);
     gfxClear();
-    gfxGameCirc();
+    
+    gfxColor(1, 0.8, 0.8);
+    gfxCirc(getGameCirc(), true);
 }
 

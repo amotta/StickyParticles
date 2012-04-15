@@ -6,35 +6,39 @@
 //
 
 #include <math.h>
+#include <stdbool.h>
 #include <OpenGL/gl.h>
 
 #include "circle.h"
+#include "graphics.h"
 
 #define CIRC_SEGMENTS 360
 
-static void gfxColor(int color);
-static void gfxCircle(circ_t* circ);
+static double color[3];
 
-enum GFX_COLOR_CODES {
-    GFX_CLEAR_COLOR,
-    GFX_GAMECIRC_COLOR
-};
-
-static double GFX_COLOR_RGBS[][3] = {
-    {1.00, 1.00, 1.00},
-    {0.75, 0.00, 0.00}
-};
-
-void gfxCircle(circ_t* circ){
+void gfxCirc(circ_t* circ, bool filled){
     int i = 0;
+    double posX, posY;
+    double radius;
+    double angle;
     
-    glBegin(GL_LINE_LOOP);
+    if(!circ) return;
+    
+    posX = vectGetX(circGetPos(circ));
+    posY = vectGetY(circGetPos(circ));
+    radius = circGetRadius(circ);
+    angle = 2 * M_PI / CIRC_SEGMENTS;
+    
+    if(filled){
+        glBegin(GL_POLYGON);
+    }else{
+        glBegin(GL_LINE_LOOP);
+    }
+    
     for(i = 0; i < CIRC_SEGMENTS; i++){
         glVertex3f(
-            vectGetX(circGetPos(circ))
-            + cos(2 * M_PI / CIRC_SEGMENTS * i) * circGetRadius(circ),
-            vectGetY(circGetPos(circ))
-            + sin(2 * M_PI / CIRC_SEGMENTS * i) * circGetRadius(circ),
+            posX + cos(angle * i) * radius,
+            posY + sin(angle * i) * radius,
             0
         );
     }
@@ -43,20 +47,10 @@ void gfxCircle(circ_t* circ){
 }
 
 void gfxClear(){
-    glClearColor(1, 1, 1, 1);
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
-void gfxColor(int color){
-    glColor3d(
-        GFX_COLOR_RGBS[color][0],
-        GFX_COLOR_RGBS[color][1],
-        GFX_COLOR_RGBS[color][2]
-    );
+void gfxColor(double r, double g, double b){
+    glColor3d(r, g, b);
+    glClearColor(r, g, b, 1);
 }
-
-void gfxGameCirc(){
-    gfxColor(GFX_GAMECIRC_COLOR);
-    gfxCircle(getGameCirc());
-}
-
