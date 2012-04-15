@@ -22,12 +22,9 @@ extern void circSetRadius(circ_t* circ, double radius);
 extern void circFree(circ_t* circ);
 
 extern circ_t* getGameCirc();
+extern bool isCircInCirc(circ_t* circInt, circ_t* circExt);
+extern bool isCircInGameCirc(circ_t* circ);
+extern bool isVectInCirc(vect_t* vect, circ_t* circExt);
+extern bool isVectInGameCirc(vect_t* vect);
 
-// TODO
-/*
-extern bool isCircInCirc(circ_t circInt, circ_t circExt);
-extern bool isCircInGameCirc(circ_t circ);
-extern bool isVectInCirc(vect_t vect, circ_t circExt);
-extern bool isVectInGameCirc(vect_t vect);
-*/
 #endif

@@ -33,7 +33,7 @@ circ_t* circNew(){
 }
 
 vect_t* circGetPos(circ_t* circ){
-    if(!circ || !circ->pos) return NULL;
+    if(!circ) return NULL;
     
     return circ->pos;
 }
@@ -75,8 +75,6 @@ circ_t* getGameCirc(){
     return gameCirc;
 }
 
-// TODO
-/*
 bool isCircInCirc(circ_t* circInt, circ_t* circExt){
     if(!circInt || !circExt) return;
     
@@ -92,23 +90,21 @@ bool isCircInCirc(circ_t* circInt, circ_t* circExt){
     }
 }
 
-bool isCircInGameCirc(circ_t circ){
-    // TODO
-    return isCircInCirc(circ, gameCirc);
+bool isCircInGameCirc(circ_t* circ){
+    return isCircInCirc(circ, getGameCirc());
 }
 
 bool isVectInCirc(vect_t* vect, circ_t* circExt){
     if(!vect || !circExt) return;
     
-    circ_t* circInt = circNew();
-    circSetPos(circInt, vect);
-    circSetRadius(circInt, 0);
+    circ_t circInt = {
+        .pos = vect,
+        .r = 0
+    };
     
-    return isCircInCirc(circInt, circExt);
+    return isCircInCirc(&circInt, circExt);
 }
 
-bool isVectInGameCirc(vect_t vect){
-    // TODO
-    return isVectInCirc(vect, gameCirc);
+bool isVectInGameCirc(vect_t* vect){
+    return isVectInCirc(vect, getGameCirc());
 }
-*/
