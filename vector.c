@@ -50,6 +50,12 @@ double vectGetY(vect_t* vect){
     return vect->y;
 }
 
+double vectLen(vect_t* vect){
+    if(!vect) return 0;
+    
+    return sqrt(vect->x * vect->x + vect->y * vect->y);
+}
+
 double vectDist(vect_t* start, vect_t* end){
     return sqrt(pow(end->x - start->x, 2) + pow(end->y - start->y, 2));
 }
