@@ -34,6 +34,54 @@ rect_t* rectNew(){
     return rect;
 }
 
+double rectGetLeft(rect_t* rect){
+    if(!rect) return 0;
+    
+    return rect->left;
+}
+
+void rectSetLeft(rect_t* rect, double left){
+    if(!rect) return;
+    
+    rect->left = left;
+}
+
+double rectGetRight(rect_t* rect){
+    if(!rect) return 0;
+    
+    return rect->right;
+}
+
+void rectSetRight(rect_t* rect, double right){
+    if(!rect) return;
+    
+    rect->right = right;
+}
+
+double rectGetBottom(rect_t* rect){
+    if(!rect) return 0;
+    
+    return rect->bottom;
+}
+
+void rectSetBottom(rect_t* rect, double bottom){
+    if(!rect) return;
+    
+    rect->bottom = bottom;
+}
+
+double rectGetTop(rect_t* rect){
+    if(!rect) return 0;
+    
+    return rect->top;
+}
+
+void rectSetTop(rect_t* rect, double top){
+    if(!rect) return;
+    
+    rect->top = top;
+}
+
 void rectFree(rect_t* rect){
     if(!rect) return;
     
@@ -52,21 +100,4 @@ rect_t* getGameRect(){
     }
     
     return gameRect;
-}
-
-bool isVectInRect(vect_t* vect, rect_t* rect){
-    if(!vect || !rect) return false;
-    
-    if(
-        rect->left < vectGetX(vect) && vectGetX(vect) < rect->right
-        && rect->bottom < vectGetY(vect) && vectGetY(vect) < rect->top
-    ){
-        return true;
-    }else{
-        return false;
-    }
-}
-
-bool isVectInGameRect(vect_t* vect){
-    return isVectInRect(vect, getGameRect());
 }
