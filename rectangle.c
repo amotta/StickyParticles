@@ -54,12 +54,12 @@ rect_t* getGameRect(){
     return gameRect;
 }
 
-// TODO
-/*
-bool isVectInRect(vect_t vect, rect_t rect){
+bool isVectInRect(vect_t* vect, rect_t* rect){
+    if(!vect || !rect) return false;
+    
     if(
-        rect.left < vect.x && vect.x < rect.right
-        && rect.bottom < vect.y && vect.y < rect.top
+        rect->left < vectGetX(vect) && vectGetX(vect) < rect->right
+        && rect->bottom < vectGetY(vect) && vectGetY(vect) < rect->top
     ){
         return true;
     }else{
@@ -67,7 +67,6 @@ bool isVectInRect(vect_t vect, rect_t rect){
     }
 }
 
-bool isVectInGameRect(vect_t vect){
-    return isVectInRect(vect, gameRect);
+bool isVectInGameRect(vect_t* vect){
+    return isVectInRect(vect, getGameRect());
 }
-*/
