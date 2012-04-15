@@ -11,6 +11,7 @@
 typedef struct VECT vect_t;
 
 extern vect_t* vectNew();
+extern vect_t* vectCopy(vect_t* vect);
 extern void vectSet(vect_t* vect, double x, double y);
 extern double vectGetX(vect_t* vect);
 extern double vectGetY(vect_t* vect);

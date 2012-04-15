@@ -20,7 +20,7 @@ struct VECT {
 vect_t* vectNew(){
     vect_t* vect = NULL;
     
-    if(vect = malloc(sizeof(vect_t))){
+    if((vect = malloc(sizeof(vect_t)))){
         vect->x = 0;
         vect->y = 0;
     }else{
@@ -29,6 +29,15 @@ vect_t* vectNew(){
     }
     
     return vect;
+}
+
+vect_t* vectCopy(vect_t* src){
+    vect_t* copy = NULL;
+    
+    copy = vectNew();
+    copy = memcpy(copy, src, sizeof(vect_t));
+    
+    return copy;
 }
 
 void vectSet(vect_t* vect, double x, double y){
