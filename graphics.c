@@ -57,7 +57,6 @@ void gfxColor(int color){
 
 void gfxGameCirc(){
     gfxColor(GFX_GAMECIRC_COLOR);
-    // TODO
-    // gfxCircle(gameCirc);
+    gfxCircle(getGameCirc());
 }
 
