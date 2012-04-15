@@ -95,14 +95,26 @@ bool isCircInGameCirc(circ_t* circ){
 }
 
 bool isVectInCirc(vect_t* vect, circ_t* circExt){
+    static circ_t* circInt;
+    bool valid;
+    
     if(!vect || !circExt) return;
     
-    circ_t circInt = {
-        .pos = vect,
-        .r = 0
-    };
+    if(!circInt){
+        circInt = circNew();
+        circSetRadius(circInt, 0);
+    }
     
-    return isCircInCirc(&circInt, circExt);
+    // set circle position
+    circSetPos(circInt, vect);
+    
+    // check
+    valid = isCircInCirc(circInt, circExt);
+    
+    // unset pos
+    circSetPos(circInt, NULL);
+    
+    return valid;
 }
 
 bool isVectInGameCirc(vect_t* vect){

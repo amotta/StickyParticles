@@ -66,7 +66,10 @@ double vectLen(vect_t* vect){
 }
 
 double vectDist(vect_t* start, vect_t* end){
-    return sqrt(pow(end->x - start->x, 2) + pow(end->y - start->y, 2));
+    return sqrt(
+        (end->x - start->x) * (end->x - start->x) 
+        + (end->y - start->y) * (end->y - start->y)
+    );
 }
 
 void vectFree(vect_t* vect){
