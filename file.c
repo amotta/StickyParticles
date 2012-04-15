@@ -522,7 +522,7 @@ void filePrintStatus(){
     }
 }
 
-bool fileRead(char* name){
+game_t* fileRead(char* name){
     bool ok = true;
     
     gameFree(game);
@@ -564,9 +564,9 @@ bool fileRead(char* name){
     filePrintStatus();
     
     if(error){
-        return false;
+        return NULL;
     }else{
-        return true;
+        return game;
     }
 }
 

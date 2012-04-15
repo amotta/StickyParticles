@@ -5,6 +5,7 @@
 //  Created by Alessandro Motta on 4/11/12.
 //
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -37,6 +38,28 @@ void groupSetAdd(groupSet_t* set, group_t* group){
     
     set->numb++;
     set->group = group;
+}
+
+bool groupSetForEach(groupSet_t* set, bool (*handle)(group_t* group)){
+    group_t* cur = NULL;
+    group_t* next = NULL;
+    
+    if(!set || !handle) return false;
+    
+    // init
+    next = set->group;
+    
+    // let's dance
+    while(next){
+        cur = next;
+        next = groupGetNext(cur);
+        
+        if(!handle(cur)){
+            return false;
+        }
+    }
+    
+    return true;
 }
 
 // TODO

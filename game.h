@@ -23,6 +23,9 @@ extern void gameSetDisc(game_t* game, circ_t* disc);
 extern void gameSetEmitters(game_t* game, emitterSet_t* emitters);
 extern void gameSetGroups(game_t* game, groupSet_t* groups);
 extern void gameFree(game_t* game);
+
+extern void gameLoad(char* file);
 extern void gameDraw();
+extern void gameSetDebug(bool flag);
 
 #endif

@@ -5,6 +5,7 @@
 //  Created by Alessandro Motta on 4/11/12.
 //
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -86,6 +87,28 @@ void groupAdd(group_t* group, part_t* part){
     
     group->part = part;
     group->numb++;
+}
+
+bool groupForEach(group_t* group, bool (*handle)(part_t* part)){
+    part_t* cur = NULL;
+    part_t* next = NULL;
+    
+    if(!group || !handle) return false;
+    
+    // init
+    next = group->part;
+    
+    // run
+    while(next){
+        cur = next;
+        next = partGetNext(cur);
+        
+        if(!handle(cur)){
+            return false;
+        }
+    }
+    
+    return true;
 }
 
 void groupFree(group_t* group){

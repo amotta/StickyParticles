@@ -30,6 +30,12 @@ part_t* partNew(){
     return part;
 }
 
+vect_t* partGetPos(part_t* part){
+    if(!part) return NULL;
+    
+    return part->pos;
+}
+
 void partSetPos(part_t* part, vect_t* pos){
     if(!part || !pos) return;
     

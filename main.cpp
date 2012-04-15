@@ -12,7 +12,6 @@
 #include "controlui.h"
 
 extern "C" {
-    #include "file.h"
     #include "game.h"
     #include "gameui.h"
 }
@@ -48,7 +47,7 @@ int main(int argc, char** argv){
         if(isOpt(argv[i])){
             handleOpt(argv[i]);
         }else{
-            fileRead(argv[i]);
+            gameLoad(argv[i]);
         }
     }
     
@@ -67,9 +66,9 @@ bool isOpt(char* arg){
 
 void handleOpt(char* arg){
     if(!strcmp("-v", arg)){
-        fileSetDebug(true);
+        gameSetDebug(true);
     }else if(!strcmp("-s", arg)){
-        fileSetDebug(false);
+        gameSetDebug(false);
     }
 }
 

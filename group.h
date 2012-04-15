@@ -8,6 +8,9 @@
 #ifndef GROUP_H
 #define GROUP_H
 
+#include <stdbool.h>
+
+#include "particle.h"
 #include "vector.h"
 
 #define GROUP_TYPE_HARMLESS 1
@@ -22,6 +25,8 @@ extern void groupSetOmega(group_t* group, double omega);
 extern void groupSetType(group_t* group, unsigned int type);
 extern group_t* groupGetNext(group_t* group);
 extern void groupSetNext(group_t* group, group_t* next);
+extern void groupAdd(group_t* group, part_t* part);
+extern bool groupForEach(group_t* group, bool (*handle)(part_t* part));
 extern void groupFree(group_t* group);
 
 #endif
