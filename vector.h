@@ -17,4 +17,6 @@ extern double vectGetY(vect_t* vect);
 extern double vectDist(vect_t* start, vect_t* end);
 extern void vectFree(vect_t* vect);
 
+extern vect_t* getGameCenter();
+
 #endif

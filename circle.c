@@ -63,6 +63,18 @@ void circFree(circ_t* circ){
     free(circ);
 }
 
+circ_t* getGameCirc(){
+    static circ_t* gameCirc;
+    
+    if(!gameCirc){
+        gameCirc = circNew();
+        circSetPos(gameCirc, getGameCenter());
+        circSetRadius(gameCirc, RECT_Y / 2);
+    }
+    
+    return gameCirc;
+}
+
 // TODO
 /*
 bool isCircInCirc(circ_t* circInt, circ_t* circExt){

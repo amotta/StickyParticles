@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "constants.h"
 #include "vector.h"
 
 struct VECT {
@@ -57,4 +58,15 @@ void vectFree(vect_t* vect){
     if(!vect) return;
     
     free(vect);
+}
+
+vect_t* getGameCenter(){
+    static vect_t* gameCenter;
+    
+    if(!gameCenter){
+        gameCenter = vectNew();
+        vectSet(gameCenter, RECT_X / 2, RECT_Y / 2);
+    }
+    
+    return gameCenter;
 }

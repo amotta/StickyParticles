@@ -21,6 +21,8 @@ extern double circGetRadius(circ_t* circ);
 extern void circSetRadius(circ_t* circ, double radius);
 extern void circFree(circ_t* circ);
 
+extern circ_t* getGameCirc();
+
 // TODO
 /*
 extern bool isCircInCirc(circ_t circInt, circ_t circExt);
