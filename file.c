@@ -415,8 +415,6 @@ static bool fileReadGroup(group_t* group){
             }
         }
     }else{
-        bool valid = false;
-        
         // copy group pos
         vect_t* partPos = vectCopy(pos);
         
@@ -424,11 +422,7 @@ static bool fileReadGroup(group_t* group){
         part_t* part = partNew();
         partSetPos(part, partPos);
         
-        // TODO
-        // valid = isPartInGameRect(circ);
-        valid = true;
-        
-        if(!valid){
+        if(!isPartInGameRect(part)){
             fileSetError(FILE_ERROR_PART_POS);
             return false;
         }
@@ -495,13 +489,13 @@ static bool fileReadPart(part_t* part){
     vect_t* pos = vectNew();
     vectSet(pos, posX, posY);
     
-    // TODO
-    // if(!isCircInGameRect(part)){
-    //     fileSetError(FILE_ERROR_PART_POS);
-    //     return false;
-    // }
-    
+    // set pos
     partSetPos(part, pos);
+    
+    if(!isPartInGameRect(part)){
+        fileSetError(FILE_ERROR_PART_POS);
+        return false;
+    }
     
     return true;
 }
