@@ -53,6 +53,18 @@ void emitterSetPos(emitter_t* emitter, vect_t* pos){
     emitter->angle = atan2(diffY, diffX) + M_PI;
 }
 
+double emitterGetAngle(emitter_t* emitter){
+    if(!emitter) return 0;
+    
+    return emitter->angle;
+}
+
+double emitterGetAlpha(emitter_t* emitter){
+    if(!emitter) return 0;
+    
+    return emitter->alpha;
+}
+
 void emitterSetAlpha(emitter_t* emitter, double alpha){
     if(!emitter) return;
     
