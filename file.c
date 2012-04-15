@@ -417,23 +417,23 @@ static bool fileReadGroup(group_t* group){
     }else{
         bool valid = false;
         
-        circ_t* circ = circNew();
-        circSetPos(circ, pos);
-        circSetRadius(circ, R_PART);
+        // copy group pos
+        vect_t* partPos = vectCopy(pos);
         
-        // check
+        // create new part
+        part_t* part = partNew();
+        partSetPos(part, partPos);
+        
         // TODO
-        // valid = isCircInGameRect(circ);
+        // valid = isPartInGameRect(circ);
         valid = true;
-        
-        // free circ
-        circSetPos(circ, NULL);
-        circFree(circ);
         
         if(!valid){
             fileSetError(FILE_ERROR_PART_POS);
             return false;
         }
+        
+        groupAdd(group, part);
     }
     
     return true;
