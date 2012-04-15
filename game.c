@@ -36,7 +36,7 @@ struct GAME {
 game_t* gameNew(){
     game_t* game = NULL;
     
-    if(game = malloc(sizeof(game_t))){
+    if((game = malloc(sizeof(game_t)))){
         game->score = 0;
         game->interval = 0;
         game->disc = NULL;

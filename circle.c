@@ -21,7 +21,7 @@ struct CIRC {
 circ_t* circNew(){
     circ_t* circ = NULL;
     
-    if(circ = malloc(sizeof(circ_t))){
+    if((circ = malloc(sizeof(circ_t)))){
         circ->pos = NULL;
         circ->r = 0;
     }else{
