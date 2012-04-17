@@ -5,11 +5,13 @@
 //  Created by Alessandro Motta on 2/23/12.
 //
 
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "constants.h"
 #include "circle.h"
+#include "emitter.h"
 #include "emitterset.h"
 #include "file.h"
 #include "game.h"
@@ -18,6 +20,7 @@
 #include "groupset.h"
 #include "particle.h"
 
+static bool gameDrawEmitter(emitter_t* emitter);
 static void gameDrawGroups();
 static bool gameDrawGroup(group_t* group);
 static bool gameDrawPart(part_t* part);
@@ -108,6 +111,34 @@ void gameDraw(){
     
     // for each group in game
     groupSetForEach(currentGame->groups, gameDrawGroup);
+    
+    // for each emitter in game
+    emitterSetForEach(currentGame->emitters, gameDrawEmitter);
+}
+
+bool gameDrawEmitter(emitter_t* emitter){
+    double lineLen = 0.75;
+    double posX, posY;
+    double alphaOne, alphaTwo;
+    
+    if(!emitter) return false;
+    
+    posX = vectGetX(emitterGetPos(emitter));
+    posY = vectGetY(emitterGetPos(emitter));
+    
+    // alphas
+    alphaOne = emitterGetAngle(emitter) - emitterGetAlpha(emitter);
+    alphaTwo = emitterGetAngle(emitter) + emitterGetAlpha(emitter);
+    
+    gfxColor(0, 0, 0);
+    gfxLine(
+        posX, posY,
+        posX + 0.5 * cos(alphaOne), posY + lineLen * sin(alphaOne)
+    );
+    gfxLine(
+        posX, posY,
+        posX + 0.5 * cos(alphaTwo), posY + lineLen * sin(alphaTwo)
+    );
 }
 
 bool gameDrawGroup(group_t* group){

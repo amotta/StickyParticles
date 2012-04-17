@@ -38,6 +38,12 @@ emitter_t* emitterNew(){
     return emitter;
 }
 
+vect_t* emitterGetPos(emitter_t* emitter){
+    if(!emitter) return NULL;
+    
+    return emitter->pos;
+}
+
 void emitterSetPos(emitter_t* emitter, vect_t* pos){
     double diffX, diffY;
     
