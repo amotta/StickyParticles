@@ -18,7 +18,7 @@
 bool isCircInRect(circ_t* circ, rect_t* rect){
     static rect_t* rectInt;
     bool valid = false;
-    double radius;
+    double radius = 0;
     
     if(!circ || !rect) return;
     
@@ -61,14 +61,10 @@ bool isPartInGameCirc(part_t* part){
         circSetRadius(circ, R_PART);
     }
     
-    // set pos
-    circSetPos(circ, partGetPos(part));
-    
     // check
+    circSetPos(circ, partGetPos(part));
     valid = isCircInGameCirc(circ);
-    
-    // unset pos
-    circSetPos(circ, NULL);
+    circUnsetPos(circ);
     
     return valid;
 }
@@ -84,14 +80,10 @@ bool isPartInGameRect(part_t* part){
         circSetRadius(circ, R_PART);
     }
     
-    // set pos
-    circSetPos(circ, partGetPos(part));
-    
     // check
+    circSetPos(circ, partGetPos(part));
     valid = isCircInGameRect(circ);
-    
-    // unset pos
-    circSetPos(circ, NULL);
+    circUnsetPos(circ);
     
     return valid;
 }
@@ -107,14 +99,10 @@ bool isVectInCirc(vect_t* vect, circ_t* circExt){
         circSetRadius(circInt, 0);
     }
     
-    // set circle position
-    circSetPos(circInt, vect);
-    
     // check
+    circSetPos(circInt, vect);
     valid = isCircInCirc(circInt, circExt);
-    
-    // unset pos
-    circSetPos(circInt, NULL);
+    circUnsetPos(circInt);
     
     return valid;
 }

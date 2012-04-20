@@ -167,7 +167,7 @@ bool gameDrawPart(part_t* part){
     gfxCirc(circ, false);
     
     // unset pos
-    circSetPos(circ, NULL);
+    circUnsetPos(circ);
     
     return true;
 }

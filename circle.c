@@ -39,9 +39,15 @@ vect_t* circGetPos(circ_t* circ){
 }
 
 void circSetPos(circ_t* circ, vect_t* pos){
-    if(!circ) return;
+    if(!circ || !pos) return;
     
     circ->pos = pos;
+}
+
+void circUnsetPos(circ_t* circ){
+    if(!circ) return;
+    
+    circ->pos = NULL;
 }
 
 double circGetRadius(circ_t* circ){
