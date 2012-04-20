@@ -24,7 +24,7 @@ emitterSet_t* emitterSetNew(unsigned int numbEmitters){
         set->numb = numbEmitters;
         
         // TODO
-        // Improve this
+        // Improve
         if((set->set = malloc(numbEmitters * sizeof(emitter_t*)))){
             unsigned int i;
             for(i = 0; i < set->numb; i++){
@@ -58,11 +58,8 @@ bool emitterSetForEach(emitterSet_t* set, bool (*handle)(emitter_t* emitter)){
 void emitterSetFree(emitterSet_t* set){
     if(!set) return;
     
-    // TODO
-    // emitterSetForEach(set, emitterFree);
-    
     if(set->set){
-        int i;
+        unsigned int i;
         for(i = 0; i < set->numb; i++){
             emitterFree(set->set[i]);
             set->set[i] = NULL;
