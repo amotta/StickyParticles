@@ -8,6 +8,8 @@
 #ifndef EMITTER_H
 #define EMITTER_H
 
+#include <stdbool.h>
+
 #include "vector.h"
 
 typedef struct EMITTER emitter_t;
@@ -19,7 +21,9 @@ extern double emitterGetAngle(emitter_t* emitter);
 extern double emitterGetAlpha(emitter_t* emitter);
 extern void emitterSetAlpha(emitter_t* emitter, double alpha);
 extern void emitterSetFlow(emitter_t* emitter, double flow);
+extern double emitterGetSpeed(emitter_t* emitter);
 extern void emitterSetSpeed(emitter_t* emitter, double speed);
+extern bool emitterDraw(emitter_t* emitter);
 extern void emitterFree(emitter_t* emitter);
 
 #endif

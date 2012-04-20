@@ -9,21 +9,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "constants.h"
 #include "circle.h"
-#include "emitter.h"
 #include "emitterset.h"
 #include "file.h"
 #include "game.h"
 #include "graphics.h"
-#include "group.h"
 #include "groupset.h"
-#include "particle.h"
-
-static bool gameDrawEmitter(emitter_t* emitter);
-static void gameDrawGroups();
-static bool gameDrawGroup(group_t* group);
-static bool gameDrawPart(part_t* part);
 
 static bool debug;
 static game_t* currentGame;
@@ -97,7 +88,7 @@ void gameLoad(char* file){
     
     if((game = fileRead(file))){
         // TODO
-        // Create complete copy
+        // Create deep copy
         currentGame = game;
     }
 }
@@ -109,67 +100,11 @@ void gameDraw(){
     gfxColor(1, 0.8, 0.8);
     gfxCirc(getGameCirc(), true);
     
-    // for each group in game
-    groupSetForEach(currentGame->groups, gameDrawGroup);
-    
-    // for each emitter in game
-    emitterSetForEach(currentGame->emitters, gameDrawEmitter);
-}
-
-bool gameDrawEmitter(emitter_t* emitter){
-    double lineLen = 0.75;
-    double posX, posY;
-    double alphaOne, alphaTwo;
-    
-    if(!emitter) return false;
-    
-    posX = vectGetX(emitterGetPos(emitter));
-    posY = vectGetY(emitterGetPos(emitter));
-    
-    // alphas
-    alphaOne = emitterGetAngle(emitter) - emitterGetAlpha(emitter);
-    alphaTwo = emitterGetAngle(emitter) + emitterGetAlpha(emitter);
-    
-    gfxColor(0, 0, 0);
-    gfxLine(
-        posX, posY,
-        posX + 0.5 * cos(alphaOne), posY + lineLen * sin(alphaOne)
-    );
-    gfxLine(
-        posX, posY,
-        posX + 0.5 * cos(alphaTwo), posY + lineLen * sin(alphaTwo)
-    );
-}
-
-bool gameDrawGroup(group_t* group){
-    gfxColor(0.5, 0.5, 1);
-    
-    // for each particle of group
-    groupForEach(group, gameDrawPart);
-    
-    return true;
-}
-
-bool gameDrawPart(part_t* part){
-    static circ_t* circ;
-    
-    if(!part) return false;
-    
-    if(!circ){
-        circ = circNew();
-        circSetRadius(circ, R_PART);
+    // if game loaded
+    if(currentGame){
+        groupSetForEach(currentGame->groups, groupDraw);
+        emitterSetForEach(currentGame->emitters, emitterDraw);
     }
-    
-    // set up circle
-    circSetPos(circ, partGetPos(part));
-    
-    // draw circle
-    gfxCirc(circ, false);
-    
-    // unset pos
-    circUnsetPos(circ);
-    
-    return true;
 }
 
 void gameSetDebug(bool flag){

@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "graphics.h"
 #include "group.h"
 #include "particle.h"
 #include "vector.h"
@@ -107,6 +108,14 @@ bool groupForEach(group_t* group, bool (*handle)(part_t* part)){
             return false;
         }
     }
+    
+    return true;
+}
+
+bool groupDraw(group_t* group){
+    gfxColor(0.5, 0.5, 1);
+    
+    groupForEach(group, partDraw);
     
     return true;
 }

@@ -11,7 +11,10 @@
 
 #include "constants.h"
 #include "emitter.h"
+#include "graphics.h"
 #include "vector.h"
+
+#define MAX_EMITTER_LEN 1.0
 
 struct EMITTER {
     vect_t* pos;
@@ -83,10 +86,44 @@ void emitterSetFlow(emitter_t* emitter, double flow){
     emitter->flow = flow;
 }
 
+double emitterGetSpeed(emitter_t* emitter){
+    if(!emitter) return 0;
+    
+    return emitter->speed;
+}
+
 void emitterSetSpeed(emitter_t* emitter, double speed){
     if(!emitter) return;
     
     emitter->speed = speed;
+}
+
+bool emitterDraw(emitter_t* emitter){
+    double lineLen;
+    double posX, posY;
+    double alphaOne, alphaTwo;
+    
+    if(!emitter) return false;
+    
+    posX = vectGetX(emitterGetPos(emitter));
+    posY = vectGetY(emitterGetPos(emitter));
+    
+    // alphas
+    alphaOne = emitterGetAngle(emitter) - emitterGetAlpha(emitter);
+    alphaTwo = emitterGetAngle(emitter) + emitterGetAlpha(emitter);
+    
+    // line length
+    lineLen = MAX_EMITTER_LEN / MAX_VG * emitterGetSpeed(emitter);
+    
+    gfxColor(0, 0, 0);
+    gfxLine(
+        posX, posY,
+        posX + lineLen * cos(alphaOne), posY + lineLen * sin(alphaOne)
+    );
+    gfxLine(
+        posX, posY,
+        posX + lineLen * cos(alphaTwo), posY + lineLen * sin(alphaTwo)
+    );
 }
 
 void emitterFree(emitter_t* emitter){

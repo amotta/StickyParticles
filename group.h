@@ -27,6 +27,7 @@ extern group_t* groupGetNext(group_t* group);
 extern void groupSetNext(group_t* group, group_t* next);
 extern void groupAdd(group_t* group, part_t* part);
 extern bool groupForEach(group_t* group, bool (*handle)(part_t* part));
+extern bool groupDraw(group_t* group);
 extern void groupFree(group_t* group);
 
 #endif

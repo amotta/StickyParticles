@@ -8,6 +8,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "constants.h"
+#include "graphics.h"
 #include "particle.h"
 #include "vector.h"
 
@@ -52,6 +54,24 @@ void partSetNext(part_t* part, part_t* next){
     if(!part) return;
     
     part->next = next;
+}
+
+bool partDraw(part_t* part){
+    static circ_t* circ;
+    
+    if(!part) return false;
+    
+    if(!circ){
+        circ = circNew();
+        circSetRadius(circ, R_PART);
+    }
+    
+    // draw circle
+    circSetPos(circ, partGetPos(part));
+    gfxCirc(circ, false);
+    circUnsetPos(circ);
+    
+    return true;
 }
 
 void partFree(part_t* part){
