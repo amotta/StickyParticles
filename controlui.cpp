@@ -23,11 +23,19 @@ namespace {
 	// listeners
 	void (*onExit)() = NULL;
     void (*onLoad)(const char* file) = NULL;
+    
+    // getters and setters
+    double (*intGet)() = NULL;
+    void (*intSet)(double value) = NULL;
+    unsigned int (*scoreGet)() = NULL;
 	
 	// GLUI
 	GLUI* glui = NULL;
     GLUI_EditText* fileText = NULL;
     GLUI_Spinner* deltaSpinner = NULL;
+    GLUI_EditText* timeText = NULL;
+    GLUI_EditText* scoreText = NULL;
+    GLUI_EditText* statusText = NULL;
 }
 
 void ctrlUIInit(){
@@ -52,6 +60,7 @@ void ctrlUIInit(){
     
     // simulation panel
     panel = glui->add_panel("Simulation");
+    
     glui->add_spinner_to_panel(
         panel,
         "Interval",
@@ -66,9 +75,22 @@ void ctrlUIInit(){
     
     // information panel
     panel = glui->add_panel("Informations");
-    glui->add_edittext_to_panel(panel, "Time", GLUI_EDITTEXT_FLOAT);
-    glui->add_edittext_to_panel(panel, "Score", GLUI_EDITTEXT_INT);
-    glui->add_edittext_to_panel(panel, "Status", GLUI_EDITTEXT_TEXT);
+    
+    timeText = glui->add_edittext_to_panel(
+        panel, "Time", GLUI_EDITTEXT_FLOAT
+    );
+    
+    scoreText = glui->add_edittext_to_panel(
+        panel,
+        "Score",
+        GLUI_EDITTEXT_INT
+    );
+    
+    statusText = glui->add_edittext_to_panel(
+        panel,
+        "Status",
+        GLUI_EDITTEXT_TEXT
+    );
     
     // exit button
 	glui->add_button("Exit", UI_ID_EXIT, ctrlUIHandleEvent);
@@ -82,8 +104,25 @@ void ctrlUISetOnExit(void (*exit)()){
 	onExit = exit;
 }
 
+void ctrlUISetIntervalGetter(double (*func)()){
+    intGet = func;
+}
+
+void ctrlUISetIntervalSetter(void (*func)(double val)){
+    intSet = func;
+}
+
+void ctrlUISetScoreGetter(unsigned int (*func)()){
+    scoreGet = func;
+}
+
 void ctrlUISetGameWindow(int wind){
 	glui->set_main_gfx_window(wind);
+}
+                             
+void ctrlUIUpdate(){
+    if(intGet) timeText->set_float_val(intGet());
+    if(scoreGet) scoreText->set_int_val(scoreGet());
 }
 
 void ctrlUIHandleEvent(int id){
@@ -94,6 +133,10 @@ void ctrlUIHandleEvent(int id){
             
         case UI_ID_LOAD:
             if(onLoad) onLoad(fileText->get_text());
+            
+            // update UI
+            ctrlUIUpdate();
+            
             break;
             
         case UI_ID_SAVE:

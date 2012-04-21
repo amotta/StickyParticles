@@ -11,8 +11,12 @@
 extern void ctrlUIInit();
 extern void ctrlUISetOnLoad(void (*load)(const char* file));
 extern void ctrlUISetOnExit(void (*exit)());
+extern void ctrlUISetIntervalGetter(double (*func)());
+extern void ctrlUISetIntervalSetter(void (*func)(double value));
+extern void ctrlUISetScoreGetter(unsigned int (*func)());
 extern void ctrlUISetGameWindow(int gameWindow);
 extern void ctrlUIShow();
+extern void ctrlUIUpdate();
 extern void ctrlUIHandleEvent(int id);
 
 #endif

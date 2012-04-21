@@ -44,10 +44,22 @@ game_t* gameNew(){
     return game;
 }
 
+unsigned int gameGetCurrentScore(){
+    if(!currentGame) return 0;
+    
+    return currentGame->score;
+}
+
 void gameSetScore(game_t* game, unsigned int score){
     if(!game) return;
     
     game->score = score;
+}
+
+double gameGetCurrentInterval(){
+    if(!currentGame) return 0;
+    
+    return currentGame->interval;
 }
 
 void gameSetInterval(game_t* game, double interval){

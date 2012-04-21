@@ -34,6 +34,9 @@ int main(int argc, char** argv){
     ctrlUIInit();
     ctrlUISetOnLoad(gameLoad);
     ctrlUISetOnExit(handleExit);
+    ctrlUISetIntervalGetter(gameGetCurrentInterval);
+    ctrlUISetIntervalSetter(NULL);
+    ctrlUISetScoreGetter(gameGetCurrentScore);
     ctrlUISetGameWindow(gameUIGetWindow());
 	
     // set idle listener
