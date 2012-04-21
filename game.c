@@ -86,11 +86,10 @@ void gameFree(game_t* game){
 void gameLoad(const char* file){
     game_t* game = NULL;
     
-    if((game = fileRead(file))){
-        // TODO
-        // Create deep copy
-        currentGame = game;
-    }
+    // TODO
+    // Create deep copy
+    game = fileRead(file);
+    currentGame = game;
 }
 
 void gameDraw(){
