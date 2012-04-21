@@ -10,7 +10,7 @@
 
 #include "game.h"
 
-extern game_t* fileRead(char* name);
+extern game_t* fileRead(const char* name);
 extern void fileSetDebug(bool flag);
 
 #endif

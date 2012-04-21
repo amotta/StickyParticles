@@ -37,7 +37,7 @@ static game_t* game;
 static int error;
 static bool debug;
 static FILE* file;
-static char* fileName;
+static const char* fileName;
 static unsigned int lineNumber;
 
 enum FILE_ERROR_CODES {
@@ -516,7 +516,7 @@ void filePrintStatus(){
     }
 }
 
-game_t* fileRead(char* name){
+game_t* fileRead(const char* name){
     bool ok = true;
     
     gameFree(game);
