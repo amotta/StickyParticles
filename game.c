@@ -83,7 +83,7 @@ void gameFree(game_t* game){
     free(game);
 }
 
-void gameLoad(char* file){
+void gameLoad(const char* file){
     game_t* game = NULL;
     
     if((game = fileRead(file))){

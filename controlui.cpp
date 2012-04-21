@@ -10,21 +10,46 @@
 #include "controlui.h"
 
 #define EXIT_ID 1
+#define FILE_ID 2
+#define LOAD_ID 3
+#define SAVE_ID 4
 
 namespace {
 	// listeners
-	void (*onExit)();
+	void (*onExit)() = NULL;
+    void (*onLoad)(const char* file) = NULL;
 	
 	// GLUI
-	GLUI* glui;
-	GLUI_Button* exitButton;
+	GLUI* glui = NULL;
+    GLUI_EditText* fileText = NULL;
 }
 
 void ctrlUIInit(){
-	onExit = NULL;
+    GLUI_Panel* panel = NULL;
 	
 	glui = GLUI_Master.create_glui("Control");
-	exitButton = glui->add_button("EXIT", EXIT_ID, ctrlUIHandleEvent);
+    
+    // load / save panel
+    panel = glui->add_panel("Load/Save");
+    
+    fileText = glui->add_edittext_to_panel(
+        panel,
+        "File",
+        GLUI_EDITTEXT_TEXT,
+        NULL,
+        FILE_ID,
+        ctrlUIHandleEvent
+    );
+    
+    glui->add_button_to_panel(panel, "Load", LOAD_ID, ctrlUIHandleEvent);
+    glui->add_button_to_panel(panel, "Save", SAVE_ID, ctrlUIHandleEvent);
+    
+    // exit button
+	glui->add_button("Exit", EXIT_ID, ctrlUIHandleEvent);
+}
+
+void ctrlUISetOnLoad(void (*load)(const char* file)){
+    onLoad = load;
 }
 
 void ctrlUISetOnExit(void (*exit)()){
@@ -40,5 +65,12 @@ void ctrlUIHandleEvent(int id){
 		case EXIT_ID:
 			if(onExit) onExit();
 			break;
+            
+        case LOAD_ID:
+            if(onLoad) onLoad(fileText->get_text());
+            break;
+            
+        case SAVE_ID:
+            break;
 	}
 }

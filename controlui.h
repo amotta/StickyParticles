@@ -8,9 +8,8 @@
 #ifndef CONTROLUI_H
 #define CONTROLUI_H
 
-#include <GLUI/glui.h>
-
 extern void ctrlUIInit();
+extern void ctrlUISetOnLoad(void (*load)(const char* file));
 extern void ctrlUISetOnExit(void (*exit)());
 extern void ctrlUISetGameWindow(int gameWindow);
 extern void ctrlUIShow();

@@ -7,6 +7,7 @@
 
 #include <stdbool.h>
 #include <stdlib.h>
+#include <GLUI/glui.h>
 #include <GLUT/glut.h>
 
 #include "controlui.h"
@@ -31,6 +32,7 @@ int main(int argc, char** argv){
 
     // set up control UI
     ctrlUIInit();
+    ctrlUISetOnLoad(gameLoad);
     ctrlUISetOnExit(handleExit);
     ctrlUISetGameWindow(gameUIGetWindow());
 	
