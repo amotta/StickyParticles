@@ -39,11 +39,8 @@ int main(int argc, char** argv){
     // set idle listener
     GLUI_Master.set_glutIdleFunc(gameUIHandleIdle);
     
-    // handle arguments
-    if(argc < 2){
-        usage();
-        return EXIT_SUCCESS;
-    }
+    // show usage indications
+    usage();
     
     for(int i = 1; i < argc; i++){
         if(isOpt(argv[i])){
@@ -76,11 +73,12 @@ void handleOpt(char* arg){
 
 void usage(){
     printf(
-           "Usage of Sticky Particles\n"
-           " sticky.x file1 [file2 ... fileN]\n"
-           " -v    Activate debugging\n"
-           " -s    Deactivate debugging\n"
-           );
+        "Usage of Sticky Particles\n"
+        " sticky.x file1 [file2 ... fileN]\n"
+        " -v    Activate debugging\n"
+        " -s    Deactivate debugging\n"
+        "\n"
+    );
 }
 
 void handleExit(){
