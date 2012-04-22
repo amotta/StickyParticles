@@ -98,13 +98,17 @@ void gameUIHandleReshape(int x, int	y){
         yMax = RECT_Y + diff;
     }
 	
+    // use full window
 	glViewport(0, 0, sizeX, sizeY);
 	
+    // set coordinates
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(xMin, xMax, yMin, yMax, -1, +1);
 	
+    // change to modelview matrix
 	glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
 	
 	glutPostRedisplay();
 }
