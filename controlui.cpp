@@ -5,9 +5,15 @@
 //  Created by Alessandro Motta on 3/28/12.
 //
 
+#include <stdlib.h>
 #include <GLUI/glui.h>
 
 #include "controlui.h"
+
+extern "C" {
+    #include "game.h"
+    #include "gameui.h"
+}
 
 enum UI_IDS {
     UI_ID_EXIT,
@@ -20,16 +26,7 @@ enum UI_IDS {
 };
 
 namespace {
-	// listeners
-	void (*onExit)() = NULL;
-    void (*onLoad)(const char* file) = NULL;
-    
-    // getters and setters
-    double (*intGet)() = NULL;
-    void (*intSet)(double value) = NULL;
-    unsigned int (*scoreGet)() = NULL;
-	
-	// GLUI
+    // GLUI
 	GLUI* glui = NULL;
     GLUI_EditText* fileText = NULL;
     GLUI_Spinner* deltaSpinner = NULL;
@@ -38,9 +35,13 @@ namespace {
     GLUI_EditText* statusText = NULL;
 }
 
+static void ctrlUIHandleEvent(int id);
+static void ctrlUIUpdate();
+
 void ctrlUIInit(){
     GLUI_Panel* panel = NULL;
 	
+    // new window
 	glui = GLUI_Master.create_glui("Control");
     
     // load / save panel
@@ -61,7 +62,7 @@ void ctrlUIInit(){
     // simulation panel
     panel = glui->add_panel("Simulation");
     
-    glui->add_spinner_to_panel(
+    deltaSpinner = glui->add_spinner_to_panel(
         panel,
         "Interval",
         GLUI_SPINNER_FLOAT,
@@ -96,50 +97,36 @@ void ctrlUIInit(){
 	glui->add_button("Exit", UI_ID_EXIT, ctrlUIHandleEvent);
 }
 
-void ctrlUISetOnLoad(void (*load)(const char* file)){
-    onLoad = load;
-}
-
-void ctrlUISetOnExit(void (*exit)()){
-	onExit = exit;
-}
-
-void ctrlUISetIntervalGetter(double (*func)()){
-    intGet = func;
-}
-
-void ctrlUISetIntervalSetter(void (*func)(double val)){
-    intSet = func;
-}
-
-void ctrlUISetScoreGetter(unsigned int (*func)()){
-    scoreGet = func;
-}
-
 void ctrlUISetGameWindow(int wind){
 	glui->set_main_gfx_window(wind);
 }
                              
 void ctrlUIUpdate(){
-    if(intGet) timeText->set_float_val(intGet());
-    if(scoreGet) scoreText->set_int_val(scoreGet());
+    deltaSpinner->set_float_val(gameGetCurrentInterval());
+    scoreText->set_int_val(gameGetCurrentScore());
 }
 
 void ctrlUIHandleEvent(int id){
 	switch(id){
 		case UI_ID_EXIT:
-			if(onExit) onExit();
+            // TODO
+            // free game
+            
+            exit(EXIT_SUCCESS);
 			break;
             
         case UI_ID_LOAD:
-            if(onLoad) onLoad(fileText->get_text());
+            // load game file
+            gameLoad(fileText->get_text());
             
             // update UI
             ctrlUIUpdate();
-            
+            gameUIUpdate();
             break;
             
         case UI_ID_SAVE:
+            // TODO
+            // gameSaveCurrent(fileText->get_text());
             break;
 	}
 }

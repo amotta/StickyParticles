@@ -9,16 +9,14 @@
 #include <OpenGL/gl.h>
 
 #include "constants.h"
+#include "game.h"
 #include "gameui.h"
 
 static void gameUIHandleRedraw();
 static void gameUIHandleReshape(int x, int y);
 
 static int sizeX, sizeY;
-static double aspectRatio;
 static int windowID;
-static void (*onRedraw)();
-static void (*onIdle)();
 
 void gameUIInit(){
 	sizeX = 600;
@@ -33,39 +31,42 @@ void gameUIInit(){
 	// init projection matrix
 	gameUIHandleRedraw(sizeX, sizeY);
 	
-	// set clear color
-	glClearColor(1, 1, 1, 0);
-	
 	glutDisplayFunc(gameUIHandleRedraw);
 	glutReshapeFunc(gameUIHandleReshape);
 }
 
-void gameUISetOnRedraw(void (*redraw)()){
-	onRedraw = redraw;
-}
-
 void gameUIHandleRedraw(){
-	glClear(GL_COLOR_BUFFER_BIT);
-	glLoadIdentity();
-	
-	if(onRedraw) onRedraw();
+    glClearColor(1, 1, 1, 0);
+    glClear(GL_COLOR_BUFFER_BIT);
+    
+    // Don't ask me why
+    glLoadIdentity();
+    
+    // invoke drawing
+    gameDraw();
 	
 	glutSwapBuffers();
 }
 
-void gameUISetOnIdle(void (*idle)()){
-	onIdle = idle;
-}
-
 void gameUIHandleIdle(){
 	glutSetWindow(windowID);
-	
-	if(onIdle) onIdle();
-	
-	glutPostRedisplay();
+    
+    // TODO
+    // gameUpdate();
+    
+    gameUIUpdate();
+}
+
+void gameUIUpdate(){
+    glutPostRedisplay();
+}
+
+int gameUIGetWindow(){
+	return windowID;
 }
 
 void gameUIHandleReshape(int x, int	y){
+    double aspectRatio;
     double xMin, xMax;
     double yMin, yMax;
     double pxPerUnit;
@@ -73,7 +74,7 @@ void gameUIHandleReshape(int x, int	y){
     
 	sizeX = x;
 	sizeY = y;
-	aspectRatio = (double) x / y;
+    aspectRatio = (double) x / y;
     
     // calculate extremes
     if(aspectRatio > RECT_X / RECT_Y){
@@ -108,11 +109,6 @@ void gameUIHandleReshape(int x, int	y){
 	
     // change to modelview matrix
 	glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
 	
 	glutPostRedisplay();
-}
-
-int gameUIGetWindow(){
-	return windowID;
 }

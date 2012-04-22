@@ -20,27 +20,19 @@ extern "C" {
 bool isOpt(char* arg);
 void handleOpt(char* arg);
 void usage();
-void handleExit();
 
 int main(int argc, char** argv){
     glutInit(&argc, argv);
 	
     // set up game UI
     gameUIInit();
-    gameUISetOnRedraw(gameDraw);
-    gameUISetOnIdle(NULL);
 
     // set up control UI
     ctrlUIInit();
-    ctrlUISetOnLoad(gameLoad);
-    ctrlUISetOnExit(handleExit);
-    ctrlUISetIntervalGetter(gameGetCurrentInterval);
-    ctrlUISetIntervalSetter(NULL);
-    ctrlUISetScoreGetter(gameGetCurrentScore);
     ctrlUISetGameWindow(gameUIGetWindow());
 	
     // set idle listener
-    GLUI_Master.set_glutIdleFunc(gameUIHandleIdle);
+    GLUI_Master.set_glutIdleFunc(NULL);
     
     // show usage indications
     usage();
@@ -82,8 +74,4 @@ void usage(){
         " -s    Deactivate debugging\n"
         "\n"
     );
-}
-
-void handleExit(){
-    exit(EXIT_SUCCESS);
 }
