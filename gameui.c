@@ -66,15 +66,43 @@ void gameUIHandleIdle(){
 }
 
 void gameUIHandleReshape(int x, int	y){
+    double xMin, xMax;
+    double yMin, yMax;
+    double pxPerUnit;
+    double diff;
+    
 	sizeX = x;
 	sizeY = y;
 	aspectRatio = (double) x / y;
+    
+    // calculate extremes
+    if(aspectRatio > RECT_X / RECT_Y){
+        // too wide
+        yMin = 0;
+        yMax = RECT_Y;
+        
+        pxPerUnit = sizeY / RECT_Y;
+        diff = (sizeX / pxPerUnit - RECT_X) / 2;
+        
+        xMin = 0 - diff;
+        xMax = RECT_X + diff;
+    }else{
+        // too high
+        xMin = 0;
+        xMax = RECT_X;
+        
+        pxPerUnit = sizeX / RECT_X;
+        diff = (sizeY / pxPerUnit - RECT_Y) / 2;
+        
+        yMin = 0 - diff;
+        yMax = RECT_Y + diff;
+    }
 	
 	glViewport(0, 0, sizeX, sizeY);
 	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(0, RECT_X, 0, RECT_Y, -1, +1);
+	glOrtho(xMin, xMax, yMin, yMax, -1, +1);
 	
 	glMatrixMode(GL_MODELVIEW);
 	
