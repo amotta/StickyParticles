@@ -108,12 +108,20 @@ void gameDraw(){
     gfxColor(1, 1, 1);
     gfxClear();
     
+    // game circ
     gfxColor(1, 0.8, 0.8);
     gfxCirc(getGameCirc(), true);
     
     // if game loaded
     if(currentGame){
+        // game disc
+        gfxColor(1, 0, 0);
+        gfxCirc(currentGame->disc, true);
+        
+        // groups
         groupSetForEach(currentGame->groups, groupDraw);
+        
+        // emitters
         emitterSetForEach(currentGame->emitters, emitterDraw);
     }
 }
