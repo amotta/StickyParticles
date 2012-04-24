@@ -24,7 +24,22 @@ enum UI_IDS {
     UI_ID_PLAY
 };
 
+enum STATES {
+    STATE_READY,
+    STATE_FILE_OK,
+    STATE_FILE_NOK,
+    STATE_GAME_OVER
+};
+
 namespace {
+    int state = STATE_READY;
+    char* STATE_MESSAGES[] = {
+        "Ready",
+        "File OK",
+        "File NOK",
+        "Game Over"
+    };
+    
     // GLUI
 	GLUI* glui = NULL;
     GLUI_EditText* fileText = NULL;
@@ -79,6 +94,7 @@ void ctrlUIInit(){
     statusText = glui->add_edittext_to_panel(
         panel, "Status", GLUI_EDITTEXT_TEXT
     );
+    statusText->set_text(STATE_MESSAGES[state]);
     
     // exit button
 	glui->add_button("Exit", UI_ID_EXIT, ctrlUIHandleEvent);
@@ -91,6 +107,7 @@ void ctrlUISetGameWindow(int wind){
 void ctrlUIUpdate(){
     deltaSpinner->set_float_val(gameGetCurrentInterval());
     scoreText->set_int_val(gameGetCurrentScore());
+    statusText->set_text(STATE_MESSAGES[state]);
 }
 
 void ctrlUIHandleEvent(int id){
@@ -104,7 +121,11 @@ void ctrlUIHandleEvent(int id){
             
         case UI_ID_LOAD:
             // load game file
-            gameLoad(fileText->get_text());
+            if(gameLoad(fileText->get_text())){
+                state = STATE_FILE_OK;
+            }else{
+                state = STATE_FILE_NOK;
+            }
             
             // update UI
             ctrlUIUpdate();

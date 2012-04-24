@@ -95,13 +95,19 @@ void gameFree(game_t* game){
     free(game);
 }
 
-void gameLoad(const char* file){
+bool gameLoad(const char* file){
     game_t* game = NULL;
     
     // TODO
     // Create deep copy
     game = fileRead(file);
     currentGame = game;
+    
+    if(game){
+        return true;
+    }else{
+        return false;
+    }
 }
 
 void gameDraw(){
