@@ -126,7 +126,7 @@ void gameDraw(){
     // if game loaded
     if(currentGame){
         // game disc
-        gfxColor(1, 0, 0);
+        gfxColor(0, 0, 1);
         gfxCirc(currentGame->disc, true);
         
         // groups
