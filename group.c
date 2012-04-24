@@ -113,8 +113,14 @@ bool groupForEach(group_t* group, bool (*handle)(part_t* part)){
 }
 
 bool groupDraw(group_t* group){
-    gfxColor(0.5, 0.5, 1);
+    // decide on color
+    if(group->type == GROUP_TYPE_DANGEROUS){
+        gfxColor(0.8, 0, 0);
+    }else{
+        gfxColor(0, 0.8, 0);
+    }
     
+    // draw particles
     groupForEach(group, partDraw);
     
     return true;
