@@ -54,7 +54,6 @@ bool isPartInGameCirc(part_t* part){
 bool isPartInGameRect(part_t* part){
     if(!part) return;
     
-    // HERE!
     circ_t circ = {
         .pos = partGetPos(part),
         .r = R_PART
@@ -63,10 +62,7 @@ bool isPartInGameRect(part_t* part){
     return isCircInGameRect(circ);
 }
 
-bool isVectInCirc(vect_t* vect, circ_t circExt){
-    if(!vect) return;
-    
-    // HERE
+bool isVectInCirc(vect_t vect, circ_t circExt){
     circ_t circInt = {
         .pos = vect,
         .r = 0
@@ -75,18 +71,18 @@ bool isVectInCirc(vect_t* vect, circ_t circExt){
     return isCircInCirc(circInt, circExt);
 }
 
-bool isVectInGameCirc(vect_t* vect){
+bool isVectInGameCirc(vect_t vect){
     return isVectInCirc(vect, getGameCirc());
 }
 
-bool isVectInRect(vect_t* vect, rect_t* rect){
-    if(!vect || !rect) return false;
+bool isVectInRect(vect_t vect, rect_t* rect){
+    if(!rect) return false;
     
     if(
-       rectGetLeft(rect) < vectGetX(vect)
-       && vectGetX(vect) < rectGetRight(rect)
-       && rectGetBottom(rect) < vectGetY(vect)
-       && vectGetY(vect) < rectGetTop(rect)
+       rectGetLeft(rect) < vect.x
+       && vect.x < rectGetRight(rect)
+       && rectGetBottom(rect) < vect.y
+       && vect.y < rectGetTop(rect)
     ){
         return true;
     }else{
@@ -94,6 +90,6 @@ bool isVectInRect(vect_t* vect, rect_t* rect){
     }
 }
 
-bool isVectInGameRect(vect_t* vect){
+bool isVectInGameRect(vect_t vect){
     return isVectInRect(vect, getGameRect());
 }

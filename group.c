@@ -17,8 +17,8 @@
 static void groupFreeParts(part_t* part);
 
 struct GROUP {
-    vect_t* pos;
-    vect_t* speed;
+    vect_t pos;
+    vect_t speed;
     double omega;
     unsigned int type;
     unsigned int numb;
@@ -45,14 +45,14 @@ group_t* groupNew(){
     return group;
 }
 
-void groupSetPos(group_t* group, vect_t* pos){
-    if(!group || !pos) return;
+void groupSetPos(group_t* group, vect_t pos){
+    if(!group) return;
     
     group->pos = pos;
 }
 
-void groupSetSpeed(group_t* group, vect_t* speed){
-    if(!group || !speed) return;
+void groupSetSpeed(group_t* group, vect_t speed){
+    if(!group) return;
     
     group->speed = speed;
 }

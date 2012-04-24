@@ -10,6 +10,8 @@
 
 #include <stdbool.h>
 
+#include "vector.h"
+
 typedef struct {
     vect_t pos;
     double r;

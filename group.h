@@ -19,8 +19,8 @@
 typedef struct GROUP group_t;
 
 extern group_t* groupNew();
-extern void groupSetPos(group_t* group, vect_t* pos);
-extern void groupSetSpeed(group_t* group, vect_t* speed);
+extern void groupSetPos(group_t* group, vect_t pos);
+extern void groupSetSpeed(group_t* group, vect_t speed);
 extern void groupSetOmega(group_t* group, double omega);
 extern void groupSetType(group_t* group, unsigned int type);
 extern group_t* groupGetNext(group_t* group);

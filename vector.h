@@ -8,17 +8,14 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
-typedef struct VECT vect_t;
+typedef struct {
+    double x;
+    double y;
+} vect_t;
 
-extern vect_t* vectNew();
-extern vect_t* vectCopy(vect_t* vect);
-extern void vectSet(vect_t* vect, double x, double y);
-extern double vectGetX(vect_t* vect);
-extern double vectGetY(vect_t* vect);
-extern double vectLen(vect_t* vect);
-extern double vectDist(vect_t* start, vect_t* end);
-extern void vectFree(vect_t* vect);
+extern double vectLen(vect_t vect);
+extern double vectDist(vect_t start, vect_t end);
 
-extern vect_t* getGameCenter();
+extern vect_t getGameCenter();
 
 #endif

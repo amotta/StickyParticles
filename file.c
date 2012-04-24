@@ -213,13 +213,13 @@ static bool fileReadInterval(){
 
 static bool fileReadDisc(){
     char line[LINE_BUF_LEN];
-    double posX, posY;
+    vect_t pos;
     
     if(!fileReadLine(line, LINE_BUF_LEN)){
         return false;
     }
     
-    if(sscanf(line, "%lf %lf", &posX, &posY) < 2){
+    if(sscanf(line, "%lf %lf", &pos.x, &pos.y) < 2){
         fileSetError(FILE_ERROR_DISC);
         return false;
     }
@@ -227,14 +227,10 @@ static bool fileReadDisc(){
     if(debug){
         printf(
             "Disc\n"
-            " X: %f, Y: %f\n", posX, posY
+            " X: %f, Y: %f\n", pos.x, pos.y
         );
     }
     
-    vect_t* pos = vectNew();
-    vectSet(pos, posX, posY);
-    
-    // HERE
     circ_t disc = {
         .pos = pos,
         .r = R_DISC
@@ -252,7 +248,7 @@ static bool fileReadDisc(){
 
 static bool fileReadEmitter(emitter_t* emitter){
     char line[LINE_BUF_LEN];
-    double posX, posY;
+    vect_t pos;
     double alpha, flow, speed;
     
     if(!emitter) return false;
@@ -265,7 +261,7 @@ static bool fileReadEmitter(emitter_t* emitter){
         sscanf(
             line,
             "%lf %lf %lf %lf %lf",
-            &posX, &posY, &alpha, &flow, &speed
+            &pos.x, &pos.y, &alpha, &flow, &speed
         ) < 5
     ){
         fileSetError(FILE_ERROR_EMITTER);
@@ -275,7 +271,7 @@ static bool fileReadEmitter(emitter_t* emitter){
     if(debug){
         printf(
             " X: %f, Y: %f, Alpha: %f, Flow: %f, Speed: %f\n",
-            posX, posY, alpha, flow, speed
+            pos.x, pos.y, alpha, flow, speed
         );
     }
     
@@ -289,9 +285,6 @@ static bool fileReadEmitter(emitter_t* emitter){
         fileSetError(FILE_ERROR_EMITTER_SPEED);
         return false;
     }
-    
-    vect_t* pos = vectNew();
-    vectSet(pos, posX, posY);
     
     if(isVectInGameCirc(pos) || !isVectInGameRect(pos)){
         fileSetError(FILE_ERROR_EMITTER_POS);
@@ -338,8 +331,8 @@ static bool fileReadEmitters(){
 static bool fileReadGroup(group_t* group){
     char buf[11];
     char line[LINE_BUF_LEN];
-    double posX, posY;
-    double speedX, speedY;
+    vect_t pos;
+    vect_t speed;
     double omega;
     unsigned int type;
     unsigned int numbParts;
@@ -354,7 +347,7 @@ static bool fileReadGroup(group_t* group){
         sscanf(
             line,
             "%lf %lf %lf %lf %lf %10s %u",
-            &posX, &posY, &speedX, &speedY, &omega, buf, &numbParts
+            &pos.x, &pos.y, &speed.x, &speed.y, &omega, buf, &numbParts
         ) < 7
     ){
         fileSetError(FILE_ERROR_GROUP);
@@ -377,15 +370,12 @@ static bool fileReadGroup(group_t* group){
             " OMEGA: %f,"
             " TYPE: %s,"
             " PARTS COUNT: %u\n",
-            posX, posY, speedX, speedY,
+            pos.x, pos.y, speed.x, speed.y,
             omega,
             type == GROUP_TYPE_HARMLESS ? "HARMLESS" : "DANGEROUS",
             numbParts
         );
     }
-    
-    vect_t* speed = vectNew();
-    vectSet(speed, speedX, speedY);
     
     // validate speed
     double speedLen = vectLen(speed);
@@ -393,9 +383,6 @@ static bool fileReadGroup(group_t* group){
         fileSetError(FILE_ERROR_GROUP_SPEED);
         return NULL;
     }
-    
-    vect_t* pos = vectNew();
-    vectSet(pos, posX, posY);
     
     groupSetPos(group, pos);
     groupSetSpeed(group, speed);
@@ -417,12 +404,9 @@ static bool fileReadGroup(group_t* group){
             }
         }
     }else{
-        // copy group pos
-        vect_t* partPos = vectCopy(pos);
-        
         // create new part
         part_t* part = partNew();
-        partSetPos(part, partPos);
+        partSetPos(part, pos);
         
         if(!isPartInGameRect(part)){
             fileSetError(FILE_ERROR_PART_POS);
@@ -473,23 +457,20 @@ static bool fileReadGroups(){
 
 static bool fileReadPart(part_t* part){
     char line[LINE_BUF_LEN];
-    double posX, posY;
+    vect_t pos;
     
     if(!fileReadLine(line, LINE_BUF_LEN)){
         return false;
     }
     
-    if(sscanf(line, "%lf %lf", &posX, &posY) < 2){
+    if(sscanf(line, "%lf %lf", &pos.x, &pos.y) < 2){
         fileSetError(FILE_ERROR_PART);
         return false;
     }
     
     if(debug){
-        printf("  X: %lf, Y: %lf\n", posX, posY);
+        printf("  X: %lf, Y: %lf\n", pos.x, pos.y);
     }
-    
-    vect_t* pos = vectNew();
-    vectSet(pos, posX, posY);
     
     // set pos
     partSetPos(part, pos);

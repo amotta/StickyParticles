@@ -19,7 +19,7 @@
 #define MAX_EMITTER_LEN 1.0
 
 struct EMITTER {
-    vect_t* pos;
+    vect_t pos;
     double angle;
     double alpha;
     double flow;
@@ -43,23 +43,26 @@ emitter_t* emitterNew(){
     return emitter;
 }
 
-vect_t* emitterGetPos(emitter_t* emitter){
+vect_t emitterGetPos(emitter_t* emitter){
+    // TODO
     if(!emitter) return NULL;
     
     return emitter->pos;
 }
 
-void emitterSetPos(emitter_t* emitter, vect_t* pos){
+void emitterSetPos(emitter_t* emitter, vect_t pos){
+    circ_t gameCenter;
     double diffX, diffY;
     
-    if(!emitter || !pos) return;
+    if(!emitter) return;
     
     // set pos
     emitter->pos = pos;
     
     // update angle
-    diffX = vectGetX(emitter->pos) - vectGetX(getGameCenter());
-    diffY = vectGetY(emitter->pos) - vectGetY(getGameCenter());
+    gameCenter = getGameCenter();
+    diffX = pos.x - gameCenter.x;
+    diffY = pos.y - gameCenter.y;
     
     emitter->angle = atan2(diffY, diffX) + M_PI;
 }

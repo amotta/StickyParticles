@@ -14,7 +14,7 @@
 #include "vector.h"
 
 struct PARTICLE {
-    vect_t* pos;
+    vect_t pos;
     part_t* next;
 };
 
@@ -32,14 +32,14 @@ part_t* partNew(){
     return part;
 }
 
-vect_t* partGetPos(part_t* part){
+vect_t partGetPos(part_t* part){
     if(!part) return NULL;
     
     return part->pos;
 }
 
-void partSetPos(part_t* part, vect_t* pos){
-    if(!part || !pos) return;
+void partSetPos(part_t* part, vect_t pos){
+    if(!part) return;
     
     part->pos = pos;
 }
