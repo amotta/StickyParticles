@@ -57,17 +57,17 @@ void gfxLine(double x1, double y1, double x2, double y2){
     glEnd();
 }
 
-void gfxRect(rect_t* rect, bool filled){
+void gfxRect(rect_t rect, bool filled){
     if(filled){
         glBegin(GL_POLYGON);
     }else{
         glBegin(GL_LINE_LOOP);
     }
     
-    glVertex3f(rectGetLeft(rect), rectGetTop(rect), 0);
-    glVertex3f(rectGetRight(rect), rectGetTop(rect), 0);
-    glVertex3f(rectGetRight(rect), rectGetBottom(rect), 0);
-    glVertex3f(rectGetLeft(rect), rectGetBottom(rect), 0);
+    glVertex3f(rect.left, rect.top, 0);
+    glVertex3f(rect.right, rect.top, 0);
+    glVertex3f(rect.right, rect.bottom, 0);
+    glVertex3f(rect.left, rect.bottom, 0);
     
     glEnd();
 }

@@ -15,22 +15,21 @@
 #include "rectangle.h"
 #include "vector.h"
 
-bool isCircInRect(circ_t circ, rect_t* rect){
-    static rect_t* rectInt;
-    
+bool isCircInRect(circ_t circ, rect_t rect){
     // hiiiiigh power!
     if(
-       rectGetRight(rect) - rectGetLeft(rect) < circ.r
-       || rectGetTop(rect) - rectGetBottom(rect) < circ.r
+       rect.right - rect.left < circ.r
+       || rect.top - rect.bottom < circ.r
     ){
         return false;
     }
     
-    // set up rect
-    rectSetLeft(rectInt, rectGetLeft(rect) + circ.r);
-    rectSetRight(rectInt, rectGetRight(rect) - circ.r);
-    rectSetBottom(rectInt, rectGetBottom(rect) + circ.r);
-    rectSetTop(rectInt, rectGetTop(rect) - circ.r);
+    rect_t rectInt = {
+        .left = rect.left + circ.r,
+        .right = rect.right - circ.r,
+        .bottom = rect.bottom + circ.r,
+        .top rect.top - circ.r
+    }
     
     return isVectInRect(circ.pos, rectInt);
 }
@@ -42,7 +41,6 @@ bool isCircInGameRect(circ_t circ){
 bool isPartInGameCirc(part_t* part){
     if(!part) return;
     
-    // HERE
     circ_t circ = {
         .pos = partGetPos(part),
         .r = R_PART
@@ -75,14 +73,12 @@ bool isVectInGameCirc(vect_t vect){
     return isVectInCirc(vect, getGameCirc());
 }
 
-bool isVectInRect(vect_t vect, rect_t* rect){
-    if(!rect) return false;
-    
+bool isVectInRect(vect_t vect, rect_t rect){
     if(
-       rectGetLeft(rect) < vect.x
-       && vect.x < rectGetRight(rect)
-       && rectGetBottom(rect) < vect.y
-       && vect.y < rectGetTop(rect)
+       rect.left < vect.x
+       && vect.x < rect.right
+       && rect.bottom < vect.y
+       && vect.y < rect.toop
     ){
         return true;
     }else{

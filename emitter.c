@@ -104,15 +104,9 @@ void emitterSetSpeed(emitter_t* emitter, double speed){
 }
 
 bool emitterDraw(emitter_t* emitter){
-    static rect_t* rect = NULL;
-    
     double lineLen;
     double posX, posY;
     double alphaOne, alphaTwo;
-    
-    if(!rect){
-        rect = rectNew();
-    }
     
     if(!emitter) return false;
     
@@ -136,11 +130,13 @@ bool emitterDraw(emitter_t* emitter){
         posX + lineLen * cos(alphaTwo), posY + lineLen * sin(alphaTwo)
     );
     
-    // draw rect
-    rectSetLeft(rect, posX - EMITTER_SIZE / 2);
-    rectSetRight(rect, posX + EMITTER_SIZE / 2);
-    rectSetBottom(rect, posY - EMITTER_SIZE / 2);
-    rectSetTop(rect, posY + EMITTER_SIZE / 2);
+    // calculate rectangle
+    rect_t rect = {
+        .left = posX - EMITTER_SIZE / 2,
+        .right = posX + EMITTER_SIZE / 2,
+        .bottom = posY - EMITTER_SIZE / 2,
+        .top = posY + EMITTER_SIZE / 2
+    };
     
     gfxRect(rect, true);
 }
