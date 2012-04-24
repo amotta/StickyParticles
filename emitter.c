@@ -9,11 +9,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "circle.h"
 #include "constants.h"
 #include "emitter.h"
 #include "graphics.h"
 #include "vector.h"
 
+#define EMITTER_SIZE 0.1
 #define MAX_EMITTER_LEN 1.0
 
 struct EMITTER {
@@ -99,9 +101,16 @@ void emitterSetSpeed(emitter_t* emitter, double speed){
 }
 
 bool emitterDraw(emitter_t* emitter){
+    static circ_t* circ = NULL;
+    
     double lineLen;
     double posX, posY;
     double alphaOne, alphaTwo;
+    
+    if(!circ){
+        circ = circNew();
+        circSetRadius(circ, EMITTER_SIZE);
+    }
     
     if(!emitter) return false;
     
@@ -124,6 +133,11 @@ bool emitterDraw(emitter_t* emitter){
         posX, posY,
         posX + lineLen * cos(alphaTwo), posY + lineLen * sin(alphaTwo)
     );
+    
+    // draw circle
+    circSetPos(circ, emitterGetPos(emitter));
+    gfxCirc(circ, true);
+    circUnsetPos(circ);
 }
 
 void emitterFree(emitter_t* emitter){
