@@ -17,8 +17,10 @@ typedef struct {
     double r;
 } circ_t;
 
-extern circ_t getGameCirc();
 extern bool isCircInCirc(circ_t circInt, circ_t circExt);
 extern bool isCircInGameCirc(circ_t circ);
+
+extern circ_t circGetNull();
+extern circ_t getGameCirc();
 
 #endif

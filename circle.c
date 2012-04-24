@@ -9,18 +9,6 @@
 #include "constants.h"
 #include "vector.h"
 
-circ_t getGameCirc(){
-    static circ_t gameCirc = {
-        .pos = {
-            .x = RECT_X / 2,
-            .y = RECT_Y / 2
-        },
-        .r = RECT_Y / 2
-    };
-    
-    return gameCirc;
-}
-
 bool isCircInCirc(circ_t circInt, circ_t circExt){
     // because we're lazy and efficient
     if(circInt.r > circExt.r){
@@ -36,4 +24,22 @@ bool isCircInCirc(circ_t circInt, circ_t circExt){
 
 bool isCircInGameCirc(circ_t circ){
     return isCircInCirc(circ, getGameCirc());
+}
+
+circ_t circGetNull(){
+    circ_t nullCirc = {
+        .pos = vectGetNull(),
+        .r = 0
+    };
+    
+    return nullCirc;
+}
+
+circ_t getGameCirc(){
+    circ_t gameCirc = {
+        .pos = getGameCenter(),
+        .r = RECT_Y / 2
+    };
+    
+    return gameCirc;
 }

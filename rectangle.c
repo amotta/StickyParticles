@@ -11,7 +11,7 @@
 #include "rectangle.h"
 
 rect_t getGameRect(){
-    static rect_t gameRect = {
+    rect_t gameRect = {
         .left = 0,
         .right = RECT_X,
         .bottom = 0,

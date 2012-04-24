@@ -30,7 +30,7 @@ emitter_t* emitterNew(){
     emitter_t* emitter = NULL;
     
     if((emitter = malloc(sizeof(emitter_t)))){
-        emitter->pos = NULL;
+        emitter->pos = vectGetNull();
         emitter->angle = 0;
         emitter->alpha = 0;
         emitter->flow = 0;
@@ -44,14 +44,13 @@ emitter_t* emitterNew(){
 }
 
 vect_t emitterGetPos(emitter_t* emitter){
-    // TODO
-    if(!emitter) return NULL;
+    if(!emitter) return vectGetNull();
     
     return emitter->pos;
 }
 
 void emitterSetPos(emitter_t* emitter, vect_t pos){
-    circ_t gameCenter;
+    vect_t gameCenter;
     double diffX, diffY;
     
     if(!emitter) return;
@@ -104,14 +103,14 @@ void emitterSetSpeed(emitter_t* emitter, double speed){
 }
 
 bool emitterDraw(emitter_t* emitter){
+    vect_t pos;
     double lineLen;
-    double posX, posY;
     double alphaOne, alphaTwo;
     
     if(!emitter) return false;
     
-    posX = vectGetX(emitterGetPos(emitter));
-    posY = vectGetY(emitterGetPos(emitter));
+    // get pos
+    pos = emitterGetPos(emitter);
     
     // alphas
     alphaOne = emitterGetAngle(emitter) - emitterGetAlpha(emitter);
@@ -122,20 +121,20 @@ bool emitterDraw(emitter_t* emitter){
     
     gfxColor(0, 0, 0);
     gfxLine(
-        posX, posY,
-        posX + lineLen * cos(alphaOne), posY + lineLen * sin(alphaOne)
+        pos.x, pos.y,
+        pos.x + lineLen * cos(alphaOne), pos.y + lineLen * sin(alphaOne)
     );
     gfxLine(
-        posX, posY,
-        posX + lineLen * cos(alphaTwo), posY + lineLen * sin(alphaTwo)
+        pos.x, pos.y,
+        pos.x + lineLen * cos(alphaTwo), pos.y + lineLen * sin(alphaTwo)
     );
     
     // calculate rectangle
     rect_t rect = {
-        .left = posX - EMITTER_SIZE / 2,
-        .right = posX + EMITTER_SIZE / 2,
-        .bottom = posY - EMITTER_SIZE / 2,
-        .top = posY + EMITTER_SIZE / 2
+        .left = pos.x - EMITTER_SIZE / 2,
+        .right = pos.x + EMITTER_SIZE / 2,
+        .bottom = pos.y - EMITTER_SIZE / 2,
+        .top = pos.y + EMITTER_SIZE / 2
     };
     
     gfxRect(rect, true);
@@ -144,6 +143,5 @@ bool emitterDraw(emitter_t* emitter){
 void emitterFree(emitter_t* emitter){
     if(!emitter) return;
     
-    vectFree(emitter->pos);
     free(emitter);
 }

@@ -16,6 +16,7 @@ typedef struct {
 extern double vectLen(vect_t vect);
 extern double vectDist(vect_t start, vect_t end);
 
+extern vect_t vectGetNull();
 extern vect_t getGameCenter();
 
 #endif

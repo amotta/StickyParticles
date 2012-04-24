@@ -22,7 +22,7 @@ part_t* partNew(){
     part_t* part = NULL;
     
     if((part = malloc(sizeof(part_t)))){
-        part->pos = NULL;
+        part->pos = vectGetNull();
         part->next = NULL;
     }else{
         printf("Could not allocate memory for new particle\n");
@@ -33,7 +33,7 @@ part_t* partNew(){
 }
 
 vect_t partGetPos(part_t* part){
-    if(!part) return NULL;
+    if(!part) return vectGetNull();
     
     return part->pos;
 }
@@ -59,7 +59,6 @@ void partSetNext(part_t* part, part_t* next){
 bool partDraw(part_t* part){
     if(!part) return false;
     
-    // HERE
     circ_t circ = {
         .pos = partGetPos(part),
         .r = R_PART
@@ -73,6 +72,5 @@ bool partDraw(part_t* part){
 void partFree(part_t* part){
     if(!part) return;
     
-    vectFree(part->pos);
     free(part);
 }

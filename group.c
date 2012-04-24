@@ -30,8 +30,8 @@ group_t* groupNew(){
     group_t* group = NULL;
     
     if((group = malloc(sizeof(group_t)))){
-        group->pos = NULL;
-        group->speed = NULL;
+        group->pos = vectGetNull();
+        group->speed = vectGetNull();
         group->omega = 0;
         group->type = 0;
         group->numb = 0;
@@ -131,8 +131,6 @@ void groupFree(group_t* group){
         return;
     }
     
-    vectFree(group->pos);
-    vectFree(group->speed);
     partFree(group->part);
     free(group);
 }

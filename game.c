@@ -34,7 +34,7 @@ game_t* gameNew(){
     if((game = malloc(sizeof(game_t)))){
         game->score = 0;
         game->interval = 0;
-        game->disc = NULL;
+        game->disc = circGetNull();
         game->emitters = NULL;
         game->groups = NULL;
     }else{
@@ -90,7 +90,6 @@ void gameSetGroups(game_t* game, groupSet_t* groups){
 void gameFree(game_t* game){
     if(!game) return;
     
-    circFree(game->disc);
     emitterSetFree(game->emitters);
     groupSetFree(game->groups);
     free(game);

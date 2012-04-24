@@ -1,6 +1,6 @@
 #!/bin/bash
 
-exec="./sticky.x"
+exec="./sticky.x -v"
 testDir="../Test"
 min=$1
 max=$2

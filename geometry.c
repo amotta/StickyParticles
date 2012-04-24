@@ -28,8 +28,8 @@ bool isCircInRect(circ_t circ, rect_t rect){
         .left = rect.left + circ.r,
         .right = rect.right - circ.r,
         .bottom = rect.bottom + circ.r,
-        .top rect.top - circ.r
-    }
+        .top = rect.top - circ.r
+    };
     
     return isVectInRect(circ.pos, rectInt);
 }
@@ -78,7 +78,7 @@ bool isVectInRect(vect_t vect, rect_t rect){
        rect.left < vect.x
        && vect.x < rect.right
        && rect.bottom < vect.y
-       && vect.y < rect.toop
+       && vect.y < rect.top
     ){
         return true;
     }else{

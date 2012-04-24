@@ -21,8 +21,17 @@ double vectDist(vect_t start, vect_t end){
     );
 }
 
+vect_t vectGetNull(){
+    vect_t nullVect = {
+        .x = 0,
+        .y = 0
+    };
+    
+    return nullVect;
+}
+
 vect_t getGameCenter(){
-    static vect_t gameCenter = {
+    vect_t gameCenter = {
         .x = RECT_X / 2,
         .y = RECT_Y / 2
     };
