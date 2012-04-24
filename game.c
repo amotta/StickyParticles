@@ -15,6 +15,7 @@
 #include "game.h"
 #include "graphics.h"
 #include "groupset.h"
+#include "rectangle.h"
 
 static bool debug;
 static game_t* currentGame;
@@ -114,9 +115,13 @@ void gameDraw(){
     gfxColor(1, 1, 1);
     gfxClear();
     
+    // game rect
+    gfxColor(0, 0, 0);
+    gfxRect(getGameRect(), false);
+    
     // game circ
-    gfxColor(1, 0.8, 0.8);
-    gfxCirc(getGameCirc(), true);
+    gfxColor(0, 0, 0);
+    gfxCirc(getGameCirc(), false);
     
     // if game loaded
     if(currentGame){
