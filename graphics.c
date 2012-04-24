@@ -17,17 +17,11 @@
 
 static double color[3];
 
-void gfxCirc(circ_t* circ, bool filled){
-    int i = 0;
-    double posX, posY;
-    double radius;
+void gfxCirc(circ_t circ, bool filled){
+    int i;
     double angle;
     
-    if(!circ) return;
-    
-    posX = vectGetX(circGetPos(circ));
-    posY = vectGetY(circGetPos(circ));
-    radius = circGetRadius(circ);
+    // calculate angle
     angle = 2 * M_PI / CIRC_SEGMENTS;
     
     if(filled){
@@ -38,8 +32,8 @@ void gfxCirc(circ_t* circ, bool filled){
     
     for(i = 0; i < CIRC_SEGMENTS; i++){
         glVertex3f(
-            posX + cos(angle * i) * radius,
-            posY + sin(angle * i) * radius,
+            circ.pos.x + cos(angle * i) * circ.r,
+            circ.pos.y + sin(angle * i) * circ.r,
             0
         );
     }

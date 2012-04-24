@@ -23,7 +23,7 @@ static game_t* currentGame;
 struct GAME {
     unsigned int score;
     double interval;
-    circ_t* disc;
+    circ_t disc;
     emitterSet_t* emitters;
     groupSet_t* groups;
 };
@@ -69,8 +69,8 @@ void gameSetInterval(game_t* game, double interval){
     game->interval = interval;
 }
 
-void gameSetDisc(game_t* game, circ_t* disc){
-    if(!game || !disc) return;
+void gameSetDisc(game_t* game, circ_t disc){
+    if(!game) return;
     
     game->disc = disc;
 }

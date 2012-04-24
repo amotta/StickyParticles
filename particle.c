@@ -57,19 +57,15 @@ void partSetNext(part_t* part, part_t* next){
 }
 
 bool partDraw(part_t* part){
-    static circ_t* circ;
-    
     if(!part) return false;
     
-    if(!circ){
-        circ = circNew();
-        circSetRadius(circ, R_PART);
-    }
+    // HERE
+    circ_t circ = {
+        .pos = partGetPos(part),
+        .r = R_PART
+    };
     
-    // draw circle
-    circSetPos(circ, partGetPos(part));
     gfxCirc(circ, false);
-    circUnsetPos(circ);
     
     return true;
 }

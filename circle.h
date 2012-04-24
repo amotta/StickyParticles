@@ -10,20 +10,13 @@
 
 #include <stdbool.h>
 
-#include "vector.h"
+typedef struct {
+    vect_t pos;
+    double r;
+} circ_t;
 
-typedef struct CIRC circ_t;
-
-extern circ_t* circNew();
-extern vect_t* circGetPos(circ_t* circ);
-extern void circSetPos(circ_t* circ, vect_t* vect);
-extern void circUnsetPos(circ_t* circ);
-extern double circGetRadius(circ_t* circ);
-extern void circSetRadius(circ_t* circ, double radius);
-extern void circFree(circ_t* circ);
-
-extern circ_t* getGameCirc();
-extern bool isCircInCirc(circ_t* circInt, circ_t* circExt);
-extern bool isCircInGameCirc(circ_t* circ);
+extern circ_t getGameCirc();
+extern bool isCircInCirc(circ_t circInt, circ_t circExt);
+extern bool isCircInGameCirc(circ_t circ);
 
 #endif

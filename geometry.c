@@ -15,96 +15,64 @@
 #include "rectangle.h"
 #include "vector.h"
 
-bool isCircInRect(circ_t* circ, rect_t* rect){
+bool isCircInRect(circ_t circ, rect_t* rect){
     static rect_t* rectInt;
-    bool valid = false;
-    double radius = 0;
-    
-    if(!circ || !rect) return;
-    
-    if(!rectInt){
-        rectInt = rectNew();
-    }
-    
-    // get radius
-    radius = circGetRadius(circ);
     
     // hiiiiigh power!
     if(
-       rectGetRight(rect) - rectGetLeft(rect) < radius
-       || rectGetTop(rect) - rectGetBottom(rect) < radius
+       rectGetRight(rect) - rectGetLeft(rect) < circ.r
+       || rectGetTop(rect) - rectGetBottom(rect) < circ.r
     ){
         return false;
     }
     
     // set up rect
-    rectSetLeft(rectInt, rectGetLeft(rect) + radius);
-    rectSetRight(rectInt, rectGetRight(rect) - radius);
-    rectSetBottom(rectInt, rectGetBottom(rect) + radius);
-    rectSetTop(rectInt, rectGetTop(rect) - radius);
+    rectSetLeft(rectInt, rectGetLeft(rect) + circ.r);
+    rectSetRight(rectInt, rectGetRight(rect) - circ.r);
+    rectSetBottom(rectInt, rectGetBottom(rect) + circ.r);
+    rectSetTop(rectInt, rectGetTop(rect) - circ.r);
     
-    return isVectInRect(circGetPos(circ), rectInt);
+    return isVectInRect(circ.pos, rectInt);
 }
 
-bool isCircInGameRect(circ_t* circ){
+bool isCircInGameRect(circ_t circ){
     return isCircInRect(circ, getGameRect());
 }
 
 bool isPartInGameCirc(part_t* part){
-    static circ_t* circ;
-    bool valid = false;
-    
     if(!part) return;
     
-    if(!circ){
-        circ = circNew();
-        circSetRadius(circ, R_PART);
-    }
+    // HERE
+    circ_t circ = {
+        .pos = partGetPos(part),
+        .r = R_PART
+    };
     
-    // check
-    circSetPos(circ, partGetPos(part));
-    valid = isCircInGameCirc(circ);
-    circUnsetPos(circ);
-    
-    return valid;
+    return isCircInGameCirc(circ);
 }
 
 bool isPartInGameRect(part_t* part){
-    static circ_t* circ;
-    bool valid = false;
-    
     if(!part) return;
     
-    if(!circ){
-        circ = circNew();
-        circSetRadius(circ, R_PART);
-    }
+    // HERE!
+    circ_t circ = {
+        .pos = partGetPos(part),
+        .r = R_PART
+    };
     
-    // check
-    circSetPos(circ, partGetPos(part));
-    valid = isCircInGameRect(circ);
-    circUnsetPos(circ);
-    
-    return valid;
+    return isCircInGameRect(circ);
 }
 
-bool isVectInCirc(vect_t* vect, circ_t* circExt){
-    static circ_t* circInt;
-    bool valid = false;
+bool isVectInCirc(vect_t* vect, circ_t circExt){
+    if(!vect) return;
     
-    if(!vect || !circExt) return;
+    // HERE
+    circ_t circInt = {
+        .pos = vect,
+        .r = 0
+    };
     
-    if(!circInt){
-        circInt = circNew();
-        circSetRadius(circInt, 0);
-    }
-    
-    // check
-    circSetPos(circInt, vect);
-    valid = isCircInCirc(circInt, circExt);
-    circUnsetPos(circInt);
-    
-    return valid;
+    return isCircInCirc(circInt, circExt);
 }
 
 bool isVectInGameCirc(vect_t* vect){

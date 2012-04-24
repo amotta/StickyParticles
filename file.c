@@ -234,9 +234,11 @@ static bool fileReadDisc(){
     vect_t* pos = vectNew();
     vectSet(pos, posX, posY);
     
-    circ_t* disc = circNew();
-    circSetPos(disc, pos);
-    circSetRadius(disc, R_DISC);
+    // HERE
+    circ_t disc = {
+        .pos = pos,
+        .r = R_DISC
+    };
     
     if(!isCircInGameCirc(disc)){
         fileSetError(FILE_ERROR_DISC_POS);
