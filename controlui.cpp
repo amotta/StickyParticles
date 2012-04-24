@@ -10,6 +10,10 @@
 
 #include "controlui.h"
 
+#define DELTA_SPINNER_MIN 0.05
+#define DELTA_SPINNER_MAX 0.2
+#define DELTA_SPINNER_STEPS 5
+
 extern "C" {
     #include "game.h"
     #include "gameui.h"
@@ -34,10 +38,10 @@ enum STATES {
 namespace {
     int state = STATE_READY;
     char* STATE_MESSAGES[] = {
-        "Ready",
-        "File OK",
-        "File NOK",
-        "Game Over"
+        (char*) "Ready",
+        (char*) "File OK",
+        (char*) "File NOK",
+        (char*) "Game Over"
     };
     
     // GLUI
@@ -64,6 +68,11 @@ void ctrlUIInit(){
     fileText = glui->add_edittext_to_panel(
         panel, "File", GLUI_EDITTEXT_TEXT
     );
+    
+    if(fileText){
+        fileText->set_text("test1.txt");
+    }
+    
     glui->add_button_to_panel(panel, "Load", UI_ID_LOAD, ctrlUIHandleEvent);
     glui->add_button_to_panel(panel, "Save", UI_ID_SAVE, ctrlUIHandleEvent);
     
@@ -78,6 +87,12 @@ void ctrlUIInit(){
         UI_ID_INTERVAL,
         ctrlUIHandleEvent
     );
+        
+    deltaSpinner->set_float_limits(DELTA_SPINNER_MIN, DELTA_SPINNER_MAX);
+    deltaSpinner->set_speed(
+        (DELTA_SPINNER_MAX - DELTA_SPINNER_MIN) / DELTA_SPINNER_STEPS
+    );
+    
     glui->add_button_to_panel(panel, "Step", UI_ID_STEP, ctrlUIHandleEvent);
     glui->add_button_to_panel(panel, "Play", UI_ID_PLAY, ctrlUIHandleEvent);
     
@@ -87,6 +102,7 @@ void ctrlUIInit(){
     timeText = glui->add_edittext_to_panel(
         panel, "Time", GLUI_EDITTEXT_FLOAT
     );
+    
     scoreText = glui->add_edittext_to_panel(
         panel, "Score", GLUI_EDITTEXT_INT
     );
@@ -94,6 +110,7 @@ void ctrlUIInit(){
     statusText = glui->add_edittext_to_panel(
         panel, "Status", GLUI_EDITTEXT_TEXT
     );
+    
     statusText->set_text(STATE_MESSAGES[state]);
     
     // exit button
