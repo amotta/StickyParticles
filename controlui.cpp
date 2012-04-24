@@ -17,7 +17,6 @@ extern "C" {
 
 enum UI_IDS {
     UI_ID_EXIT,
-    UI_ID_FILE,
     UI_ID_LOAD,
     UI_ID_SAVE,
     UI_ID_INTERVAL,
@@ -48,14 +47,8 @@ void ctrlUIInit(){
     panel = glui->add_panel("Load/Save");
     
     fileText = glui->add_edittext_to_panel(
-        panel,
-        "File",
-        GLUI_EDITTEXT_TEXT,
-        NULL,
-        UI_ID_FILE,
-        ctrlUIHandleEvent
+        panel, "File", GLUI_EDITTEXT_TEXT
     );
-    
     glui->add_button_to_panel(panel, "Load", UI_ID_LOAD, ctrlUIHandleEvent);
     glui->add_button_to_panel(panel, "Save", UI_ID_SAVE, ctrlUIHandleEvent);
     
@@ -70,7 +63,6 @@ void ctrlUIInit(){
         UI_ID_INTERVAL,
         ctrlUIHandleEvent
     );
-    
     glui->add_button_to_panel(panel, "Step", UI_ID_STEP, ctrlUIHandleEvent);
     glui->add_button_to_panel(panel, "Play", UI_ID_PLAY, ctrlUIHandleEvent);
     
@@ -80,17 +72,12 @@ void ctrlUIInit(){
     timeText = glui->add_edittext_to_panel(
         panel, "Time", GLUI_EDITTEXT_FLOAT
     );
-    
     scoreText = glui->add_edittext_to_panel(
-        panel,
-        "Score",
-        GLUI_EDITTEXT_INT
+        panel, "Score", GLUI_EDITTEXT_INT
     );
     
     statusText = glui->add_edittext_to_panel(
-        panel,
-        "Status",
-        GLUI_EDITTEXT_TEXT
+        panel, "Status", GLUI_EDITTEXT_TEXT
     );
     
     // exit button
@@ -127,6 +114,23 @@ void ctrlUIHandleEvent(int id){
         case UI_ID_SAVE:
             // TODO
             // gameSaveCurrent(fileText->get_text());
+            printf("Save button pressed\n");
+            break;
+            
+        case UI_ID_INTERVAL:
+            // TODO
+            // gameSetCurrentInterval(deltaSpinner->get_float_val());
+            printf("Interval changed\n");
+            break;
+            
+        case UI_ID_STEP:
+            // TODO
+            printf("Step button pressed\n");
+            break;
+            
+        case UI_ID_PLAY:
+            // TODO
+            printf("Play button pressed\n");
             break;
 	}
 }
