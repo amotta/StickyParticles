@@ -7,7 +7,12 @@
 
 #include <math.h>
 #include <stdbool.h>
-#include <OpenGL/gl.h>
+
+#ifDEF __APPLE__
+    #include <OpenGL/gl.h>
+#else
+    #include <GL/gl.h>
+#endif
 
 #include "circle.h"
 #include "graphics.h"
