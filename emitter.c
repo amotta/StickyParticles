@@ -138,6 +138,8 @@ bool emitterDraw(emitter_t* emitter){
     };
     
     gfxRect(rect, true);
+    
+    return true;
 }
 
 void emitterFree(emitter_t* emitter){
