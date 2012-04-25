@@ -5,8 +5,13 @@
 //  Created by Alessandro Motta on 3/30/12.
 //
 
-#include <GLUT/glut.h>
-#include <OpenGL/gl.h>
+#ifdef __APPLE__
+    #include <GLUT/glut.h>
+    #include <OpenGL/gl.h>
+#else
+    #include <GL/gl.h>
+    #include <GL/glut.h>
+#endif
 
 #include "constants.h"
 #include "game.h"

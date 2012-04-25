@@ -7,8 +7,14 @@
 
 #include <stdbool.h>
 #include <stdlib.h>
-#include <GLUI/glui.h>
-#include <GLUT/glut.h>
+
+#ifdef __APPLE__
+    #include <GLUI/glui.h>
+    #include <GLUT/glut.h>
+#else
+    #include <GL/glui.h>
+    #include <GL/glut.h>
+#endif
 
 #include "controlui.h"
 
