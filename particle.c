@@ -69,8 +69,10 @@ bool partDraw(part_t* part){
     return true;
 }
 
-void partFree(part_t* part){
-    if(!part) return;
+bool partFree(part_t* part){
+    if(!part) return false;
     
     free(part);
+    
+    return true;
 }

@@ -14,8 +14,6 @@
 #include "particle.h"
 #include "vector.h"
 
-static void groupFreeParts(part_t* part);
-
 struct GROUP {
     vect_t pos;
     vect_t speed;
@@ -23,6 +21,7 @@ struct GROUP {
     unsigned int type;
     unsigned int numb;
     part_t* part;
+    group_t* prev;
     group_t* next;
 };
 
@@ -36,6 +35,7 @@ group_t* groupNew(){
         group->type = 0;
         group->numb = 0;
         group->part = NULL;
+        group->prev = NULL;
         group->next = NULL;
     }else{
         printf("Could not allocate memory for new group\n");
@@ -67,6 +67,18 @@ void groupSetType(group_t* group, unsigned int type){
     if(!group) return;
     
     group->type = type;
+}
+
+group_t* groupGetPrev(group_t* group){
+    if(!group) return;
+    
+    return group->prev;
+}
+
+void groupSetPrev(group_t* group, group_t* prev){
+    if(!group) return;
+    
+    group->prev = prev;
 }
 
 group_t* groupGetNext(group_t* group){
@@ -126,23 +138,11 @@ bool groupDraw(group_t* group){
     return true;
 }
 
-void groupFree(group_t* group){
-    if(!group){
-        return;
-    }
+bool groupFree(group_t* group){
+    if(!group) false;
     
-    partFree(group->part);
+    groupForEach(group, partFree);
     free(group);
-}
-
-void groupFreeParts(part_t* first){
-    part_t* cur = NULL;
-    part_t* next = first;
     
-    while(next){
-        cur = next;
-        next = partGetNext(cur);
-        
-        partFree(cur);
-    }
+    return true;
 }

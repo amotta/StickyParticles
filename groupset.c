@@ -34,6 +34,7 @@ groupSet_t* groupSetNew(){
 void groupSetAdd(groupSet_t* set, group_t* group){
     if(!set || !group) return;
     
+    groupSetPrev(group, NULL);
     groupSetNext(group, set->group);
     
     set->numb++;
@@ -68,13 +69,6 @@ void groupSetFree(groupSet_t* set){
     
     if(!set) return;
     
-    // init
-    next = set->group;
-    
-    while(next){
-        cur = next;
-        next = groupGetNext(cur);
-        
-        groupFree(cur);
-    }
+    groupSetForEach(set, groupFree);
+    free(set);
 }

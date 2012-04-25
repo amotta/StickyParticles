@@ -20,6 +20,6 @@ extern void partSetPos(part_t* part, vect_t pos);
 extern part_t* partGetNext(part_t* part);
 extern void partSetNext(part_t* part, part_t* next);
 extern bool partDraw(part_t* part);
-extern void partFree(part_t* part);
+extern bool partFree(part_t* part);
 
 #endif
