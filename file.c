@@ -502,9 +502,7 @@ void filePrintStatus(){
 game_t* fileRead(const char* name){
     bool ok = true;
     
-    gameFree(game);
     game = gameNew();
-    
     error = FILE_OK;
     fileName = name;
     lineNumber = 0;

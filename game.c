@@ -91,19 +91,26 @@ void gameFree(game_t* game){
     if(!game) return;
     
     emitterSetFree(game->emitters);
+    game->emitters = NULL;
+    
     groupSetFree(game->groups);
+    game->groups = NULL;
+    
     free(game);
 }
 
 bool gameLoad(const char* file){
-    game_t* game = NULL;
+    // free old game
+    if(currentGame){
+        gameFree(currentGame);
+        currentGame = NULL;
+    }
     
     // TODO
     // Create deep copy
-    game = fileRead(file);
-    currentGame = game;
+    currentGame = fileRead(file);
     
-    if(game){
+    if(currentGame){
         return true;
     }else{
         return false;

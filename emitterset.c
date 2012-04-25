@@ -56,17 +56,16 @@ bool emitterSetForEach(emitterSet_t* set, bool (*handle)(emitter_t* emitter)){
 }
 
 void emitterSetFree(emitterSet_t* set){
-    if(!set) return;
+    if(!set || !set->set) return;
     
-    if(set->set){
-        unsigned int i;
-        for(i = 0; i < set->numb; i++){
-            emitterFree(set->set[i]);
-            set->set[i] = NULL;
-        }
-        
-        set->set = NULL;
+    unsigned int i;
+    for(i = 0; i < set->numb; i++){
+        emitterFree(set->set[i]);
+        set->set[i] = NULL;
     }
+        
+    free(set->set);
+    set->set = NULL;
     
     free(set);
 }
