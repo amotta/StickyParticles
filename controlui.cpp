@@ -51,6 +51,7 @@ namespace {
     
     // GLUI
 	GLUI* glui = NULL;
+    GLUI_EditText* loadedText = NULL;
     GLUI_EditText* fileText = NULL;
     GLUI_Spinner* deltaSpinner = NULL;
     GLUI_EditText* timeText = NULL;
@@ -69,6 +70,10 @@ void ctrlUIInit(){
     
     // load / save panel
     panel = glui->add_panel("Load/Save");
+    
+    loadedText = glui->add_edittext_to_panel(
+        panel, "Loaded", GLUI_EDITTEXT_TEXT
+    );
     
     fileText = glui->add_edittext_to_panel(
         panel, "File", GLUI_EDITTEXT_TEXT
@@ -120,6 +125,9 @@ void ctrlUIInit(){
     
     // exit button
 	glui->add_button("Exit", UI_ID_EXIT, ctrlUIHandleEvent);
+    
+    // update
+    ctrlUIUpdate();
 }
 
 void ctrlUISetGameWindow(int wind){
@@ -127,6 +135,7 @@ void ctrlUISetGameWindow(int wind){
 }
                              
 void ctrlUIUpdate(){
+    loadedText->set_text(gameGetCurrentFile());
     deltaSpinner->set_float_val(gameGetCurrentInterval());
     scoreText->set_int_val(gameGetCurrentScore());
     statusText->set_text(STATE_MESSAGES[state]);

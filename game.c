@@ -8,6 +8,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "circle.h"
 #include "emitterset.h"
@@ -17,7 +18,10 @@
 #include "groupset.h"
 #include "rectangle.h"
 
+static void gameSetCurrentFile(const char* file);
+
 static bool debug;
+static char* currentFile;
 static game_t* currentGame;
 
 struct GAME {
@@ -45,22 +49,10 @@ game_t* gameNew(){
     return game;
 }
 
-unsigned int gameGetCurrentScore(){
-    if(!currentGame) return 0;
-    
-    return currentGame->score;
-}
-
 void gameSetScore(game_t* game, unsigned int score){
     if(!game) return;
     
     game->score = score;
-}
-
-double gameGetCurrentInterval(){
-    if(!currentGame) return 0;
-    
-    return currentGame->interval;
 }
 
 void gameSetInterval(game_t* game, double interval){
@@ -100,20 +92,49 @@ void gameFree(game_t* game){
 }
 
 bool gameLoad(const char* file){
-    // free old game
-    if(currentGame){
-        gameFree(currentGame);
-        currentGame = NULL;
-    }
+    game_t* newGame = NULL;
     
     // TODO
     // Create deep copy
-    currentGame = fileRead(file);
+    newGame = fileRead(file);
     
-    if(currentGame){
+    if(newGame){
+        if(currentGame){
+            gameFree(currentGame);
+        }
+        
+        // set new game
+        currentGame = newGame;
+        
+        // TODO
+        // deep copy
+        
+        // update currentFile
+        gameSetCurrentFile(file);
+        
         return true;
     }else{
         return false;
+    }
+}
+
+unsigned int gameGetCurrentScore(){
+    if(!currentGame) return 0;
+    
+    return currentGame->score;
+}
+
+double gameGetCurrentInterval(){
+    if(!currentGame) return 0;
+    
+    return currentGame->interval;
+}
+
+const char* gameGetCurrentFile(){
+    if(currentFile){
+        return currentFile;
+    }else{
+        return "No file";
     }
 }
 
@@ -147,4 +168,23 @@ void gameSetDebug(bool flag){
     debug = flag;
     
     fileSetDebug(flag);
+}
+
+void gameSetCurrentFile(const char* file){
+    // free old string
+    if(currentFile){
+        free(currentFile);
+        currentFile = NULL;
+    }
+    
+    // calculate bufLen
+    int bufLen = strlen(file) + 1;
+    
+    // allocate new buffer
+    if((currentFile = malloc(bufLen))){
+        memcpy(currentFile, file, bufLen);
+    }else{
+       printf("Could not allocate memory for file name\n");
+       exit(EXIT_FAILURE);
+    }
 }
