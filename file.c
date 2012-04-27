@@ -302,6 +302,7 @@ static bool fileReadEmitter(emitter_t* emitter){
 static bool fileReadEmitters(){
     char line[LINE_BUF_LEN];
     unsigned int numbEmitters;
+    emitterSet_t* emitters = NULL;
     
     if(!fileReadLine(line, LINE_BUF_LEN)){
         return false;
@@ -316,14 +317,13 @@ static bool fileReadEmitters(){
         printf("Emitter count: %u\n", numbEmitters);
     }
     
-    emitterSet_t* emitters = emitterSetNew(numbEmitters);
+    emitters = emitterSetNew(numbEmitters);
+    gameSetEmitters(game, emitters);
     
     // read individual emitters
     if(!emitterSetForEach(emitters, fileReadEmitter)){
         return false;
     }
-    
-    gameSetEmitters(game, emitters);
     
     return true;
 }
@@ -390,30 +390,29 @@ static bool fileReadGroup(group_t* group){
     groupSetType(group, type);
     
     // read particles
+    part_t* part = NULL;
     if(numbParts > 1){
         unsigned int i;
-        part_t* part = NULL;
-        
         for(i = 0; i < numbParts; i++){
             part = partNew();
+            groupAdd(group, part);
             
-            if(fileReadPart(part)){
-                groupAdd(group, part);
-            }else{
+            if(!fileReadPart(part)){
                 return false;
             }
         }
     }else{
         // create new part
-        part_t* part = partNew();
+        part = partNew();
+        groupAdd(group, part);
+        
+        // use same position for particle
         partSetPos(part, pos);
         
         if(!isPartInGameRect(part)){
             fileSetError(FILE_ERROR_PART_POS);
             return false;
         }
-        
-        groupAdd(group, part);
     }
     
     return true;
@@ -422,6 +421,8 @@ static bool fileReadGroup(group_t* group){
 static bool fileReadGroups(){
     char line[LINE_BUF_LEN];
     unsigned int numbGroups;
+    group_t* group = NULL;
+    groupSet_t* groups = NULL;
     
     if(!fileReadLine(line, LINE_BUF_LEN)){
         return false;
@@ -436,21 +437,20 @@ static bool fileReadGroups(){
         printf("Group count: %u\n", numbGroups);
     }
     
-    int i;
-    group_t* group = NULL;
-    groupSet_t* groups = groupSetNew();
+    // create new groupSet
+    groups = groupSetNew();
+    gameSetGroups(game, groups);
     
+    // read individual groups
+    unsigned int i;
     for(i = 0; i < numbGroups; i++){
         group = groupNew();
+        groupSetAdd(groups, group);
         
-        if(fileReadGroup(group)){
-            groupSetAdd(groups, group);
-        }else{
+        if(!fileReadGroup(group)){
             return false;
         }
     }
-    
-    gameSetGroups(game, groups);
     
     return true;
 }
@@ -539,6 +539,10 @@ game_t* fileRead(const char* name){
     filePrintStatus();
     
     if(error){
+        // game isn't needed anymore
+        gameFree(game);
+        
+        // don't return pointer
         return NULL;
     }else{
         return game;
