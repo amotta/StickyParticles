@@ -541,6 +541,7 @@ game_t* fileRead(const char* name){
     if(error){
         // game isn't needed anymore
         gameFree(game);
+        game = NULL;
         
         // don't return pointer
         return NULL;
