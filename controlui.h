@@ -10,6 +10,8 @@
 
 extern void ctrlUIInit();
 extern void ctrlUISetGameWindow(int gameWindow);
+extern void ctrlUISetOnLoad(void (*func)(const char* file));
+extern void ctrlUISetState(const char* status);
 extern void ctrlUIUpdate();
 
 #endif

@@ -23,11 +23,30 @@ extern "C" {
     #include "gameui.h"
 }
 
+enum STATE {
+    STATE_READY,
+    STATE_FILE_OK,
+    STATE_FILE_NOK,
+    STATE_GAME_OVER
+};
+
+namespace {
+    int state = STATE_READY;
+    const char* STATE_MESSAGES[] = {
+        (const char*) "Ready",
+        (const char*) "File OK",
+        (const char*) "File NOK",
+        (const char*) "Game Over"
+    };
+}
+
 static bool isOpt(char* arg);
 static void handleOpt(char* arg);
 static void handleKeyboard(unsigned char key, int x, int y);
 static void handleSpecial(int key, int x, int y);
 static void handleMouse(int button, int state, int x, int y);
+static void loadFile(const char* file);
+static void setState(int state);
 static void usage();
 
 int main(int argc, char** argv){
@@ -41,12 +60,16 @@ int main(int argc, char** argv){
     // set up control UI
     ctrlUIInit();
     ctrlUISetGameWindow(gameUIGetWindow());
+    ctrlUISetOnLoad(loadFile);
 	
     // set idle listener
     GLUI_Master.set_glutIdleFunc(NULL);
     GLUI_Master.set_glutKeyboardFunc(handleKeyboard);
     GLUI_Master.set_glutSpecialFunc(handleSpecial);
     GLUI_Master.set_glutMouseFunc(handleMouse);
+    
+    // set status
+    setState(STATE_READY);
     
     // show usage indications
     usage();
@@ -61,7 +84,7 @@ int main(int argc, char** argv){
     
     // load the last file specified
     if(file){
-        gameLoad(file);
+        loadFile(file);
     }
     
     gameUIUpdate();
@@ -100,6 +123,24 @@ void handleMouse(int button, int state, int x, int y){
         "Mouse key #%d changed to state #%d at X: %d Y: %d\n",
         button, state, x, y
     );
+}
+
+void loadFile(const char* file){
+    // load game file
+    if(gameLoad(file)){
+        setState(STATE_FILE_OK);
+    }else{
+        setState(STATE_FILE_NOK);
+    }
+    
+    // update UI
+    ctrlUIUpdate();
+    gameUIUpdate();
+}
+
+void setState(int newState){
+    state = newState;
+    ctrlUISetState(STATE_MESSAGES[newState]);
 }
 
 void usage(){
