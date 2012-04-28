@@ -23,12 +23,12 @@ extern "C" {
     #include "gameui.h"
 }
 
-bool isOpt(char* arg);
-void handleOpt(char* arg);
-void handleKeyboard(unsigned char key, int x, int y);
-void handleSpecial(int key, int x, int y);
-void handleMouse(int button, int state, int x, int y);
-void usage();
+static bool isOpt(char* arg);
+static void handleOpt(char* arg);
+static void handleKeyboard(unsigned char key, int x, int y);
+static void handleSpecial(int key, int x, int y);
+static void handleMouse(int button, int state, int x, int y);
+static void usage();
 
 int main(int argc, char** argv){
     char* file = NULL;
