@@ -10,5 +10,6 @@
 
 extern void ctrlUIInit();
 extern void ctrlUISetGameWindow(int gameWindow);
+extern void ctrlUIUpdate();
 
 #endif

@@ -31,6 +31,8 @@ void handleMouse(int button, int state, int x, int y);
 void usage();
 
 int main(int argc, char** argv){
+    char* file = NULL;
+    
     glutInit(&argc, argv);
 	
     // set up game UI
@@ -53,10 +55,17 @@ int main(int argc, char** argv){
         if(isOpt(argv[i])){
             handleOpt(argv[i]);
         }else{
-            gameLoad(argv[i]);
+            file = argv[i];
         }
     }
     
+    // load the last file specified
+    if(file){
+        gameLoad(file);
+    }
+    
+    gameUIUpdate();
+    ctrlUIUpdate();
     glutMainLoop();
 	
     return EXIT_SUCCESS;

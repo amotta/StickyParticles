@@ -60,7 +60,6 @@ namespace {
 }
 
 static void ctrlUIHandleEvent(int id);
-static void ctrlUIUpdate();
 
 void ctrlUIInit(){
     GLUI_Panel* panel = NULL;
