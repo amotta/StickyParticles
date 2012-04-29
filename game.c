@@ -94,6 +94,7 @@ void gameFree(game_t* game){
 void gameCurrentFree(){
     if(currentGame){
         gameFree(currentGame);
+        currentGame = NULL;
     }
 }
 
