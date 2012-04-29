@@ -36,6 +36,7 @@ void groupSetAdd(groupSet_t* set, group_t* group){
     
     groupSetPrev(group, NULL);
     groupSetNext(group, set->group);
+    groupSetPrev(set->group, group);
     
     set->numb++;
     set->group = group;
