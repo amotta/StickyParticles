@@ -25,6 +25,7 @@ extern void gameSetGroups(game_t* game, groupSet_t* groups);
 extern void gameFree(game_t* game);
 
 extern bool gameLoad(const char* file);
+extern void gameCurrentFree();
 extern unsigned int gameGetCurrentScore();
 extern double gameGetCurrentInterval();
 extern const char* gameGetCurrentFile();

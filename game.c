@@ -91,6 +91,12 @@ void gameFree(game_t* game){
     free(game);
 }
 
+void gameCurrentFree(){
+    if(currentGame){
+        gameFree(currentGame);
+    }
+}
+
 bool gameLoad(const char* file){
     game_t* newGame = NULL;
     
@@ -99,9 +105,7 @@ bool gameLoad(const char* file){
     newGame = fileRead(file);
     
     if(newGame){
-        if(currentGame){
-            gameFree(currentGame);
-        }
+        gameCurrentFree();
         
         // set new game
         currentGame = newGame;

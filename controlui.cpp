@@ -136,9 +136,10 @@ void ctrlUIUpdate(){
 void ctrlUIHandleEvent(int id){
 	switch(id){
 		case UI_ID_EXIT:
-            // TODO
             // free game
+            gameCurrentFree();
             
+            // terminate process
             exit(EXIT_SUCCESS);
 			break;
             
