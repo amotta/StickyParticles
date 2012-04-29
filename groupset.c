@@ -65,9 +65,6 @@ bool groupSetForEach(groupSet_t* set, bool (*handle)(group_t* group)){
 }
 
 void groupSetFree(groupSet_t* set){
-    group_t* cur = NULL;
-    group_t* next = NULL;
-    
     if(!set) return;
     
     groupSetForEach(set, groupFree);

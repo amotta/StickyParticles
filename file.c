@@ -429,7 +429,7 @@ static bool fileReadGroups(){
     }
     
     if(sscanf(line, "%u", &numbGroups) < 1){
-        error = FILE_ERROR_GROUPS;
+        fileSetError(FILE_ERROR_GROUPS);
         return false;
     }
     
