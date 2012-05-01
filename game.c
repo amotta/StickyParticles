@@ -18,12 +18,6 @@
 #include "groupset.h"
 #include "rectangle.h"
 
-static void gameSetCurrentFile(const char* file);
-
-static bool debug;
-static char* currentFile;
-static game_t* currentGame;
-
 struct GAME {
     unsigned int score;
     double interval;
@@ -49,10 +43,22 @@ game_t* gameNew(){
     return game;
 }
 
+unsigned int gameGetScore(const game_t* game){
+    if(!game) return 0;
+    
+    return game->score;
+}
+
 void gameSetScore(game_t* game, unsigned int score){
     if(!game) return;
     
     game->score = score;
+}
+
+double gameGetInterval(const game_t* game){
+    if(!game) return 0;
+    
+    return game->interval;
 }
 
 void gameSetInterval(game_t* game, double interval){
@@ -104,7 +110,7 @@ void gameDraw(const game_t* game){
     emitterSetForEach(game->emitters, emitterDraw);
 }
 
-void gameFree(const game_t* game){
+void gameFree(game_t* game){
     if(!game) return;
     
     emitterSetFree(game->emitters);

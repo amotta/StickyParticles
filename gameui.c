@@ -5,6 +5,8 @@
 //  Created by Alessandro Motta on 3/30/12.
 //
 
+#include <stdlib.h>
+
 #ifdef __APPLE__
     #include <GLUT/glut.h>
     #include <OpenGL/gl.h>
@@ -20,10 +22,7 @@
 static void gameUIHandleRedraw();
 static void gameUIHandleReshape(int x, int y);
 
-// handlers
-static void (*onDraw)() = NULL;
-
-// misc
+static game_t* currentGame = NULL;
 static int sizeX, sizeY;
 static int windowID;
 
@@ -52,10 +51,9 @@ void gameUIHandleRedraw(){
     glLoadIdentity();
     
     // invoke drawing
-    if(onDraw){
-        onDraw();
-    }
+    gameDraw(currentGame);
 	
+    // and finally show
 	glutSwapBuffers();
 }
 
@@ -67,8 +65,8 @@ int gameUIGetWindow(){
 	return windowID;
 }
 
-void gameSetOnDraw(void (*func)()){
-    onDraw = func;
+void gameUISetGame(game_t* game){
+    currentGame = game;
 }
 
 void gameUIHandleReshape(int x, int	y){

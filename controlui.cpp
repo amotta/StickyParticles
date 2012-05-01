@@ -14,15 +14,12 @@
 #endif
 
 #include "controlui.h"
+#include "game.h"
+#include "gameui.h"
 
 #define DELTA_SPINNER_MIN 0.05
 #define DELTA_SPINNER_MAX 0.2
 #define DELTA_SPINNER_STEPS 5
-
-extern "C" {
-    #include "game.h"
-    #include "gameui.h"
-}
 
 enum UI_IDS {
     UI_ID_EXIT,
@@ -34,6 +31,9 @@ enum UI_IDS {
 };
 
 namespace {
+    game_t* currentGame = NULL;
+    const char* currentFile = NULL;
+    
     // callbacks
     void (*onLoad)(const char* file) = NULL;
     
@@ -126,18 +126,32 @@ void ctrlUISetOnLoad(void (*func)(const char* file)){
 void ctrlUISetState(const char* status){
     statusText->set_text(status);
 }
+
+void ctrlUISetFile(const char* file){
+    currentFile = file;
+}
+
+void ctrlUISetGame(game_t* game){
+    currentGame = game;
+}
                              
 void ctrlUIUpdate(){
-    loadedText->set_text(gameGetCurrentFile());
-    deltaSpinner->set_float_val(gameGetCurrentInterval());
-    scoreText->set_int_val(gameGetCurrentScore());
+    if(currentFile){
+        loadedText->set_text(currentFile);
+    }else{
+        loadedText->set_text("No file");
+    }
+    
+    // NOTE
+    // works with currentGame = NULL too
+    deltaSpinner->set_float_val(gameGetInterval(currentGame));
+    scoreText->set_int_val(gameGetScore(currentGame));
 }
 
 void ctrlUIHandleEvent(int id){
 	switch(id){
 		case UI_ID_EXIT:
-            // free game
-            gameCurrentFree();
+            gameFree(currentGame);
             
             // terminate process
             exit(EXIT_SUCCESS);

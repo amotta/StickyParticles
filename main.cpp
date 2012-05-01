@@ -19,6 +19,7 @@
 #include "controlui.h"
 
 extern "C" {
+    #include "file.h"
     #include "game.h"
     #include "gameui.h"
 }
@@ -54,7 +55,6 @@ static void handleMouse(int button, int state, int x, int y);
 
 // UI handling
 static void loadFile(const char* file);
-static void drawGame();
 
 // misc
 static void setState(int state);
@@ -68,7 +68,6 @@ int main(int argc, char** argv){
 	
     // set up game UI
     gameUIInit();
-    gameUISetOnDraw(drawGame);
 
     // set up control UI
     ctrlUIInit();
@@ -119,9 +118,9 @@ bool isOpt(char* arg){
 
 void handleOpt(char* arg){
     if(!strcmp("-v", arg)){
-        gameSetDebug(true);
+        fileSetDebug(true);
     }else if(!strcmp("-s", arg)){
-        gameSetDebug(false);
+        fileSetDebug(false);
     }
 }
 
@@ -164,39 +163,47 @@ void loadFile(const char* file){
         setState(STATE_FILE_NOK);
     }
     
+    ctrlUISetGame(currentGame);
+    gameUISetGame(currentGame);
+    
     // update UI
     ctrlUIUpdate();
     gameUIUpdate();
 }
 
-void drawGame(){
-    gameDraw(currentGame);
-}
-
 void setState(int newState){
     state = newState;
+    
+    // update state in control UI
     ctrlUISetState(STATE_MESSAGES[newState]);
 }
 
 void setFile(const char* file){
-    if(!file) return;
+    char* newFile = NULL;
     
-    // free old string
-    if(currentFile){
-        free(currentFile);
-        currentFile = NULL;
-    }
+    if(!file) return;
     
     // calculate bufLen
     int bufLen = strlen(file) + 1;
     
     // allocate new buffer
-    if((currentFile = malloc(bufLen))){
-        memcpy(currentFile, file, bufLen);
+    if((newFile = (char*) malloc(bufLen))){
+        memcpy(newFile, file, bufLen);
+        
+        // free old buffer
+        if(currentFile){
+            free(currentFile);
+        }
+        
+        // update current file
+        currentFile = newFile;
     }else{
         printf("Could not allocate memory for file name\n");
         exit(EXIT_FAILURE);
     }
+    
+    // update file in control UI
+    ctrlUISetFile(currentFile);
 }
 
 void usage(){
