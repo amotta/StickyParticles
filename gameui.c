@@ -20,6 +20,10 @@
 static void gameUIHandleRedraw();
 static void gameUIHandleReshape(int x, int y);
 
+// handlers
+static void (*onDraw)() = NULL;
+
+// misc
 static int sizeX, sizeY;
 static int windowID;
 
@@ -48,18 +52,11 @@ void gameUIHandleRedraw(){
     glLoadIdentity();
     
     // invoke drawing
-    gameDraw();
+    if(onDraw){
+        onDraw();
+    }
 	
 	glutSwapBuffers();
-}
-
-void gameUIHandleIdle(){
-	glutSetWindow(windowID);
-    
-    // TODO
-    // gameUpdate();
-    
-    gameUIUpdate();
 }
 
 void gameUIUpdate(){
@@ -68,6 +65,10 @@ void gameUIUpdate(){
 
 int gameUIGetWindow(){
 	return windowID;
+}
+
+void gameSetOnDraw(void (*func)()){
+    onDraw = func;
 }
 
 void gameUIHandleReshape(int x, int	y){

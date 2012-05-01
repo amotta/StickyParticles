@@ -79,71 +79,9 @@ void gameSetGroups(game_t* game, groupSet_t* groups){
     game->groups = groups;
 }
 
-void gameFree(game_t* game){
+void gameDraw(const game_t* game){
     if(!game) return;
     
-    emitterSetFree(game->emitters);
-    game->emitters = NULL;
-    
-    groupSetFree(game->groups);
-    game->groups = NULL;
-    
-    free(game);
-}
-
-void gameCurrentFree(){
-    if(currentGame){
-        gameFree(currentGame);
-        currentGame = NULL;
-    }
-}
-
-bool gameLoad(const char* file){
-    game_t* newGame = NULL;
-    
-    // TODO
-    // Create deep copy
-    newGame = fileRead(file);
-    
-    if(newGame){
-        gameCurrentFree();
-        
-        // set new game
-        currentGame = newGame;
-        
-        // TODO
-        // deep copy
-        
-        // update currentFile
-        gameSetCurrentFile(file);
-        
-        return true;
-    }else{
-        return false;
-    }
-}
-
-unsigned int gameGetCurrentScore(){
-    if(!currentGame) return 0;
-    
-    return currentGame->score;
-}
-
-double gameGetCurrentInterval(){
-    if(!currentGame) return 0;
-    
-    return currentGame->interval;
-}
-
-const char* gameGetCurrentFile(){
-    if(currentFile){
-        return currentFile;
-    }else{
-        return "No file";
-    }
-}
-
-void gameDraw(){
     gfxColor(1, 1, 1);
     gfxClear();
     
@@ -155,41 +93,25 @@ void gameDraw(){
     gfxColor(0, 0, 0);
     gfxCirc(getGameCirc(), false);
     
-    // if game loaded
-    if(currentGame){
-        // game disc
-        gfxColor(0, 0, 1);
-        gfxCirc(currentGame->disc, true);
-        
-        // groups
-        groupSetForEach(currentGame->groups, groupDraw);
-        
-        // emitters
-        emitterSetForEach(currentGame->emitters, emitterDraw);
-    }
+    // game disc
+    gfxColor(0, 0, 1);
+    gfxCirc(game->disc, true);
+    
+    // groups
+    groupSetForEach(game->groups, groupDraw);
+    
+    // emitters
+    emitterSetForEach(game->emitters, emitterDraw);
 }
 
-void gameSetDebug(bool flag){
-    debug = flag;
+void gameFree(const game_t* game){
+    if(!game) return;
     
-    fileSetDebug(flag);
-}
-
-void gameSetCurrentFile(const char* file){
-    // free old string
-    if(currentFile){
-        free(currentFile);
-        currentFile = NULL;
-    }
+    emitterSetFree(game->emitters);
+    game->emitters = NULL;
     
-    // calculate bufLen
-    int bufLen = strlen(file) + 1;
+    groupSetFree(game->groups);
+    game->groups = NULL;
     
-    // allocate new buffer
-    if((currentFile = malloc(bufLen))){
-        memcpy(currentFile, file, bufLen);
-    }else{
-       printf("Could not allocate memory for file name\n");
-       exit(EXIT_FAILURE);
-    }
+    free(game);
 }

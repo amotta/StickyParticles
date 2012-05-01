@@ -9,8 +9,8 @@
 #define GAME_UI
 
 extern void gameUIInit();
-extern void gameUIHandleIdle();
 extern void gameUIUpdate();
 extern int gameUIGetWindow();
+extern void gameSetOnDraw(void (*func)());
 
 #endif

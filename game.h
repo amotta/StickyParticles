@@ -22,14 +22,7 @@ extern void gameSetInterval(game_t* game, double timeDiff);
 extern void gameSetDisc(game_t* game, circ_t disc);
 extern void gameSetEmitters(game_t* game, emitterSet_t* emitters);
 extern void gameSetGroups(game_t* game, groupSet_t* groups);
-extern void gameFree(game_t* game);
-
-extern bool gameLoad(const char* file);
-extern void gameCurrentFree();
-extern unsigned int gameGetCurrentScore();
-extern double gameGetCurrentInterval();
-extern const char* gameGetCurrentFile();
-extern void gameDraw();
-extern void gameSetDebug(bool flag);
+extern void gameDraw(const game_t* game);
+extern void gameFree(const game_t* game);
 
 #endif

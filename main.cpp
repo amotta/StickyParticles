@@ -38,15 +38,27 @@ namespace {
         (const char*) "File NOK",
         (const char*) "Game Over"
     };
+    
+    char* currentFile = NULL;
+    game_t* currentGame = NULL;
 }
 
+// arg handling
 static bool isOpt(char* arg);
 static void handleOpt(char* arg);
+
+// event handling
 static void handleKeyboard(unsigned char key, int x, int y);
 static void handleSpecial(int key, int x, int y);
 static void handleMouse(int button, int state, int x, int y);
+
+// UI handling
 static void loadFile(const char* file);
+static void drawGame();
+
+// misc
 static void setState(int state);
+static void setFile(const char* file);
 static void usage();
 
 int main(int argc, char** argv){
@@ -56,6 +68,7 @@ int main(int argc, char** argv){
 	
     // set up game UI
     gameUIInit();
+    gameUISetOnDraw(drawGame);
 
     // set up control UI
     ctrlUIInit();
@@ -82,13 +95,15 @@ int main(int argc, char** argv){
         }
     }
     
-    // load the last file specified
+    // load the last file
     if(file){
         loadFile(file);
     }
     
     gameUIUpdate();
     ctrlUIUpdate();
+    
+    // start event handling
     glutMainLoop();
 	
     return EXIT_SUCCESS;
@@ -126,9 +141,25 @@ void handleMouse(int button, int state, int x, int y){
 }
 
 void loadFile(const char* file){
-    // load game file
-    if(gameLoad(file)){
+    game_t* newGame = NULL;
+    
+    if(!file) return;
+    
+    // try to load game
+    newGame = fileRead(file);
+    
+    // change state
+    if(newGame){
+        setFile(file);
         setState(STATE_FILE_OK);
+        
+        // free old game
+        if(currentGame){
+            gameFree(currentGame);
+        }
+        
+        // set new game
+        currentGame = newGame;
     }else{
         setState(STATE_FILE_NOK);
     }
@@ -138,9 +169,34 @@ void loadFile(const char* file){
     gameUIUpdate();
 }
 
+void drawGame(){
+    gameDraw(currentGame);
+}
+
 void setState(int newState){
     state = newState;
     ctrlUISetState(STATE_MESSAGES[newState]);
+}
+
+void setFile(const char* file){
+    if(!file) return;
+    
+    // free old string
+    if(currentFile){
+        free(currentFile);
+        currentFile = NULL;
+    }
+    
+    // calculate bufLen
+    int bufLen = strlen(file) + 1;
+    
+    // allocate new buffer
+    if((currentFile = malloc(bufLen))){
+        memcpy(currentFile, file, bufLen);
+    }else{
+        printf("Could not allocate memory for file name\n");
+        exit(EXIT_FAILURE);
+    }
 }
 
 void usage(){
