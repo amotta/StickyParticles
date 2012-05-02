@@ -163,7 +163,7 @@ int groupCheckBorder(group_t* group){
     part_t* cur = NULL;
     part_t* next = NULL;
     
-    if(!group) return;
+    if(!group) return dir;
     
     // init
     next = group->part;

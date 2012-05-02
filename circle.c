@@ -7,6 +7,7 @@
 
 #include "circle.h"
 #include "constants.h"
+#include "geometry.h"
 #include "vector.h"
 
 bool isCircInCirc(circ_t circInt, circ_t circExt){
@@ -24,6 +25,28 @@ bool isCircInCirc(circ_t circInt, circ_t circExt){
 
 bool isCircInGameCirc(circ_t circ){
     return isCircInCirc(circ, getGameCirc());
+}
+
+int circCheckBorder(circ_t circ){
+    int dir = DIR_NONE;
+    
+    if(circ.pos.x < circ.r){
+        dir |= DIR_LEFT;
+    }
+    
+    if(circ.pos.x > RECT_X - circ.r){
+        dir |= DIR_RIGHT;
+    }
+    
+    if(circ.pos.y < circ.r){
+        dir |= DIR_BOTTOM;
+    }
+    
+    if(circ.pos.y > RECT_Y - circ.r){
+        dir |= DIR_TOP;
+    }
+    
+    return dir;
 }
 
 circ_t circGetNull(){

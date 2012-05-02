@@ -26,8 +26,6 @@ struct GAME {
     groupSet_t* groups;
 };
 
-static void moveGroup(group_t* group);
-
 game_t* gameNew(){
     game_t* game = NULL;
     

@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "circle.h"
 #include "constants.h"
 #include "geometry.h"
 #include "graphics.h"
@@ -18,6 +19,8 @@ struct PARTICLE {
     vect_t pos;
     part_t* next;
 };
+
+static circ_t partGetCirc(part_t* part);
 
 part_t* partNew(){
     part_t* part = NULL;
@@ -58,44 +61,15 @@ void partSetNext(part_t* part, part_t* next){
 }
 
 int partCheckBorder(part_t* part){
-    int dir = DIR_NONE;
-    vect_t pos;
+    if(!part) return DIR_NONE;
     
-    if(!part) return dir;
-    
-    // init
-    pos = part->pos;
-    
-    // TODO
-    // Move in circle module
-    if(pos.x < R_PART){
-        dir |= DIR_LEFT;
-    }
-    
-    if(pos.x > RECT_X - R_PART){
-        dir |= DIR_RIGHT;
-    }
-    
-    if(pos.y < R_PART){
-        dir |= DIR_BOTTOM;
-    }
-    
-    if(pos.y > RECT_Y - R_PART){
-        dir |= DIR_TOP;
-    }
-    
-    return dir;
+    return circCheckBorder(partGetCirc(part));
 }
 
 bool partDraw(part_t* part){
     if(!part) return false;
     
-    circ_t circ = {
-        .pos = part->pos,
-        .r = R_PART
-    };
-    
-    gfxCirc(circ, false);
+    gfxCirc(partGetCirc(part), false);
     
     return true;
 }
@@ -106,4 +80,15 @@ bool partFree(part_t* part){
     free(part);
     
     return true;
+}
+
+circ_t partGetCirc(part_t* part){
+    if(!part) return circGetNull();
+    
+    circ_t circ = {
+        .pos = part->pos,
+        .r = R_PART
+    };
+    
+    return circ;
 }
