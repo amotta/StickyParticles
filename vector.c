@@ -10,15 +10,39 @@
 #include "constants.h"
 #include "vector.h"
 
+vect_t vectAdd(vect_t vectOne, vect_t vectTwo){
+    vect_t sum = {
+        .x = vectOne.x + vectTwo.x,
+        .y = vectOne.y + vectTwo.y
+    };
+    
+    return sum;
+}
+
+vect_t vectSub(vect_t vectOne, vect_t vectTwo){
+    vect_t diff = {
+        .x = vectTwo.x - vectOne.x,
+        .y = vectTwo.y - vectOne.y
+    };
+    
+    return diff;
+}
+
+vect_t vectMul(vect_t vect, double factor){
+    vect_t res = {
+        .x = vect.x * factor,
+        .y = vect.y * factor
+    };
+    
+    return res;
+}
+
 double vectLen(vect_t vect){
     return sqrt(vect.x * vect.x + vect.y * vect.y);
 }
 
 double vectDist(vect_t start, vect_t end){
-    return sqrt(
-        (end.x - start.x) * (end.x - start.x) 
-        + (end.y - start.y) * (end.y - start.y)
-    );
+    return vectLen(vectSub(end, start));
 }
 
 vect_t vectGetNull(){

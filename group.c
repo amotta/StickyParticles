@@ -96,6 +96,7 @@ void groupSetNext(group_t* group, group_t* next){
 void groupAdd(group_t* group, part_t* part){
     if(!group || !part) return;
     
+    // set next
     partSetNext(part, group->part);
     
     group->part = part;
@@ -124,7 +125,44 @@ bool groupForEach(group_t* group, bool (*handle)(part_t* part)){
     return true;
 }
 
+void groupMove(group_t* group, double deltaT){
+    vect_t diff;
+    vect_t newPos;
+    part_t* cur = NULL;
+    part_t* next = NULL;
+    
+    if(!group) return;
+    
+    // group dislocation
+    diff = vectMul(group->speed, deltaT);
+
+    // init
+    next = group->part;
+    
+    // run
+    while(next){
+        cur = next;
+        next = partGetNext(cur);
+        
+        partSetPos(
+            cur,
+            vectAdd(
+                diff,
+                partGetPos(cur)
+            )
+        );
+    }
+    
+    // update group pos
+    group->pos = vectAdd(group->pos, diff);
+}
+
 bool groupDraw(group_t* group){
+    part_t* cur = NULL;
+    part_t* next = NULL;
+    
+    if(!group) return false;
+    
     // decide on color
     if(group->type == GROUP_TYPE_DANGEROUS){
         gfxColor(0.8, 0, 0);

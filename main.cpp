@@ -146,6 +146,7 @@ void handleMouse(int button, int state, int x, int y){
 void handleTimer(int val){
     setTimer();
     gameUpdate(currentGame);
+    gameUIUpdate();
 }
 
 void playGame(){

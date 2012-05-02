@@ -64,6 +64,23 @@ bool groupSetForEach(groupSet_t* set, bool (*handle)(group_t* group)){
     return true;
 }
 
+void groupSetMove(groupSet_t* set, double deltaT){
+    group_t* cur = NULL;
+    group_t* next = NULL;
+    
+    if(!set) return;
+    
+    // init
+    next = set->group;
+    
+    while(next){
+        cur = next;
+        next = groupGetNext(cur);
+        
+        groupMove(cur, deltaT);
+    }
+}
+
 void groupSetFree(groupSet_t* set){
     if(!set) return;
     
