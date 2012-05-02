@@ -36,6 +36,7 @@ namespace {
     
     // callbacks
     void (*onLoad)(const char* file) = NULL;
+    void (*onPlay)() = NULL;
     
     // GLUI
 	GLUI* glui = NULL;
@@ -123,6 +124,10 @@ void ctrlUISetOnLoad(void (*func)(const char* file)){
     onLoad = func;
 }
 
+void ctrlUISetOnPlay(void (*func)()){
+    onPlay = func;
+}
+
 void ctrlUISetState(const char* status){
     statusText->set_text(status);
 }
@@ -182,8 +187,10 @@ void ctrlUIHandleEvent(int id){
             break;
             
         case UI_ID_PLAY:
-            // TODO
-            printf("Play button pressed\n");
+            if(onPlay){
+                onPlay();
+            }
+            
             break;
 	}
 }

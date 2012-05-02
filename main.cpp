@@ -52,11 +52,14 @@ static void handleOpt(char* arg);
 static void handleKeyboard(unsigned char key, int x, int y);
 static void handleSpecial(int key, int x, int y);
 static void handleMouse(int button, int state, int x, int y);
+static void handleTimer(int val);
 
 // UI handling
+static void playGame();
 static void loadFile(const char* file);
 
 // misc
+static void setTimer();
 static void setState(int state);
 static void setFile(const char* file);
 static void usage();
@@ -73,6 +76,7 @@ int main(int argc, char** argv){
     ctrlUIInit();
     ctrlUISetGameWindow(gameUIGetWindow());
     ctrlUISetOnLoad(loadFile);
+    ctrlUISetOnPlay(playGame);
 	
     // set idle listener
     GLUI_Master.set_glutIdleFunc(NULL);
@@ -139,6 +143,15 @@ void handleMouse(int button, int state, int x, int y){
     );
 }
 
+void handleTimer(int val){
+    setTimer();
+    gameUpdate(currentGame);
+}
+
+void playGame(){
+    setTimer();
+}
+
 void loadFile(const char* file){
     game_t* newGame = NULL;
     
@@ -169,6 +182,14 @@ void loadFile(const char* file){
     // update UI
     ctrlUIUpdate();
     gameUIUpdate();
+}
+
+void setTimer(){
+    glutTimerFunc(
+        1000 * gameGetInterval(currentGame),
+        handleTimer,
+        0
+    );
 }
 
 void setState(int newState){

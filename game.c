@@ -85,6 +85,15 @@ void gameSetGroups(game_t* game, groupSet_t* groups){
     game->groups = groups;
 }
 
+void gameUpdate(game_t* game){
+    // TODO
+    // 1 Emit particles
+    // 2 Move particles
+    // 3 Detect collisions
+    // 4 Move disc
+    // ( 5 Force redisplay )
+}
+
 void gameDraw(const game_t* game){
     if(!game) return;
     
