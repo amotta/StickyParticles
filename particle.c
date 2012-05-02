@@ -9,6 +9,7 @@
 #include <stdlib.h>
 
 #include "constants.h"
+#include "geometry.h"
 #include "graphics.h"
 #include "particle.h"
 #include "vector.h"
@@ -56,11 +57,41 @@ void partSetNext(part_t* part, part_t* next){
     part->next = next;
 }
 
+int partCheckBorder(part_t* part){
+    int dir = DIR_NONE;
+    vect_t pos;
+    
+    if(!part) return dir;
+    
+    // init
+    pos = part->pos;
+    
+    // TODO
+    // Move in circle module
+    if(pos.x < R_PART){
+        dir |= DIR_LEFT;
+    }
+    
+    if(pos.x > RECT_X - R_PART){
+        dir |= DIR_RIGHT;
+    }
+    
+    if(pos.y < R_PART){
+        dir |= DIR_BOTTOM;
+    }
+    
+    if(pos.y > RECT_Y - R_PART){
+        dir |= DIR_TOP;
+    }
+    
+    return dir;
+}
+
 bool partDraw(part_t* part){
     if(!part) return false;
     
     circ_t circ = {
-        .pos = partGetPos(part),
+        .pos = part->pos,
         .r = R_PART
     };
     

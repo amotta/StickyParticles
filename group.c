@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "geometry.h"
 #include "graphics.h"
 #include "group.h"
 #include "particle.h"
@@ -155,6 +156,42 @@ void groupMove(group_t* group, double deltaT){
     
     // update group pos
     group->pos = vectAdd(group->pos, diff);
+}
+
+int groupCheckBorder(group_t* group){
+    int dir = DIR_NONE;
+    part_t* cur = NULL;
+    part_t* next = NULL;
+    
+    if(!group) return;
+    
+    // init
+    next = group->part;
+    
+    while(next){
+        cur = next;
+        next = partGetNext(cur);
+        
+        dir |= partCheckBorder(cur);
+    }
+    
+    if(dir){
+        group->type = GROUP_TYPE_DANGEROUS;
+    }
+    
+    if(
+        (dir & DIR_LEFT && group->speed.x < 0)
+        || (dir & DIR_RIGHT && group->speed.x > 0)
+    ){
+        group->speed.x = - group->speed.x;
+    }
+    
+    if(
+        (dir & DIR_BOTTOM && group->speed.y < 0)
+        || (dir & DIR_TOP && group->speed.y > 0)
+    ){
+        group->speed.y = - group->speed.y;
+    }
 }
 
 bool groupDraw(group_t* group){

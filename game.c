@@ -96,8 +96,9 @@ void gameUpdate(game_t* game){
     groupSetMove(game->groups, game->interval);
     
     // 3 Detect collisions
+    groupSetForEach(game->groups, groupCheckBorder);
+    
     // 4 Move disc
-    // ( 5 Force redisplay )
 }
 
 void gameDraw(const game_t* game){
