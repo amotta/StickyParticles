@@ -11,6 +11,7 @@
 
 #include "emitter.h"
 #include "emitterset.h"
+#include "groupset.h"
 
 struct EMITTER_SET {
     unsigned int numb;
@@ -40,6 +41,27 @@ emitterSet_t* emitterSetNew(unsigned int numbEmitters){
     }
     
     return set;
+}
+
+groupSet_t* emitterSetEmit(emitterSet_t* set, double deltaT){
+    groupSet_t* groups = NULL;
+    groupSet_t* newGroups = NULL;
+    
+    if(!set || !set->set) return groups;
+    
+    // prepare
+    groups = groupSetNew();
+    
+    unsigned int i;
+    for(i = 0; i < set->numb; i++){
+        newGroups = emitterEmit(set->set[i], deltaT);
+        
+        if(newGroups){
+            groupSetMerge(groups, newGroups);
+        }
+    }
+    
+    return groups;
 }
 
 bool emitterSetForEach(emitterSet_t* set, bool (*handle)(emitter_t* emitter)){
