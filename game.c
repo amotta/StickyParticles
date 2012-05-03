@@ -26,6 +26,8 @@ struct GAME {
     groupSet_t* groups;
 };
 
+static void gameDrawBackground();
+
 game_t* gameNew(){
     game_t* game = NULL;
     
@@ -108,9 +110,7 @@ void gameUpdate(game_t* game){
     // 4 Move disc
 }
 
-void gameDraw(const game_t* game){
-    if(!game) return;
-    
+void gameDrawBackground(){
     gfxColor(1, 1, 1);
     gfxClear();
     
@@ -121,6 +121,12 @@ void gameDraw(const game_t* game){
     // game circ
     gfxColor(0, 0, 0);
     gfxCirc(getGameCirc(), false);
+}
+
+void gameDraw(const game_t* game){
+    gameDrawBackground();
+    
+    if(!game) return;
     
     // game disc
     gfxColor(0, 0, 1);
