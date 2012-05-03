@@ -115,7 +115,7 @@ groupSet_t* emitterEmit(emitter_t* emitter, double deltaT){
     
     // generate random number
     double random = (double) rand() / RAND_MAX;
-    unsigned int numbParts = emitter->flow / random;
+    unsigned int numbParts = deltaT * emitter->flow / random;
     
     vect_t speed;
     double speedAngle;
