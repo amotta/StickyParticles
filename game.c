@@ -86,8 +86,17 @@ void gameSetGroups(game_t* game, groupSet_t* groups){
 }
 
 void gameUpdate(game_t* game){
+    groupSet_t* newGroups = NULL;
+    
     // TODO
     // 1 Emit particles
+    newGroups = emitterSetEmit(game->emitters, game->interval);
+    
+    if(newGroups){
+        groupSetMerge(game->groups, newGroups);
+        newGroups = NULL;
+    }
+    
     // 2 Move particles
     // 3 Detect collisions
     // 4 Move disc
