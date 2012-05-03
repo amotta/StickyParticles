@@ -12,6 +12,7 @@
 #include "constants.h"
 #include "emitter.h"
 #include "graphics.h"
+#include "groupset.h"
 #include "rectangle.h"
 #include "vector.h"
 
@@ -100,6 +101,46 @@ void emitterSetSpeed(emitter_t* emitter, double speed){
     if(!emitter) return;
     
     emitter->speed = speed;
+}
+
+groupSet_t* emitterEmit(emitter_t* emitter, double deltaT){
+    part_t* part = NULL;
+    group_t* group = NULL;
+    groupSet_t* groups = NULL;
+    
+    if(!emitter) return groups;
+    
+    // init
+    groups = groupSetNew();
+    
+    // generate random number
+    double random = (double) rand() / RAND_MAX;
+    unsigned int numbParts = emitter->flow / random;
+    
+    vect_t speed;
+    double speedAngle;
+    
+    unsigned int i;
+    for(i = 0; i < numbParts; i++){
+        part = partNew();
+        partSetPos(part, emitter->pos);
+        
+        group = groupNew();
+        groupSetPos(group, emitter->pos);
+        
+        // calculate speed
+        speedAngle = emitter->alpha * (1.0 - 2.0 * rand() / RAND_MAX);
+        speed.x = emitter->speed * cos(emitter->angle + speedAngle);
+        speed.y = emitter->speed * sin(emitter->angle + speedAngle);
+        groupSetSpeed(group, speed);
+        
+        groupSetType(group, GROUP_TYPE_HARMLESS);
+        groupAdd(group, part);
+        
+        groupSetAdd(groups, group);
+    }
+    
+    return groups;
 }
 
 bool emitterDraw(emitter_t* emitter){

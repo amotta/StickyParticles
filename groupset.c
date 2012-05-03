@@ -42,6 +42,39 @@ void groupSetAdd(groupSet_t* set, group_t* group){
     set->group = group;
 }
 
+void groupSetMerge(groupSet_t* to, groupSet_t* from){
+    group_t* cur = NULL;
+    group_t* next = NULL;
+    
+    if(!to || !from) return;
+    
+    if(to->group){
+        // find last
+        cur = to->group;
+        next = groupGetNext(cur);
+        
+        while(next){
+            cur = next;
+            next = groupGetNext(cur);
+        }
+        
+        groupSetNext(cur, from->group);
+        groupSetPrev(from->group, cur);
+    }else{
+        to->group = from->group;
+    }
+    
+    // update numbers ...
+    to->numb += from->numb;
+    
+    // ... and pointers
+    from->numb = 0;
+    from->group = NULL;
+    
+    // free from
+    groupSetFree(from);
+}
+
 bool groupSetForEach(groupSet_t* set, bool (*handle)(group_t* group)){
     group_t* cur = NULL;
     group_t* next = NULL;
