@@ -158,12 +158,12 @@ void groupMove(group_t* group, double deltaT){
     group->pos = vectAdd(group->pos, diff);
 }
 
-int groupCheckBorder(group_t* group){
+bool groupCheckBorder(group_t* group){
     int dir = DIR_NONE;
     part_t* cur = NULL;
     part_t* next = NULL;
     
-    if(!group) return dir;
+    if(!group) return false;
     
     // init
     next = group->part;
@@ -192,6 +192,8 @@ int groupCheckBorder(group_t* group){
     ){
         group->speed.y = - group->speed.y;
     }
+    
+    return true;
 }
 
 bool groupDraw(group_t* group){

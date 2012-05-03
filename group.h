@@ -30,7 +30,7 @@ extern void groupSetNext(group_t* group, group_t* next);
 extern void groupAdd(group_t* group, part_t* part);
 extern bool groupForEach(group_t* group, bool (*handle)(part_t* part));
 extern void groupMove(group_t* group, double deltaT);
-extern int groupCheckBorder(group_t* group);
+extern bool groupCheckBorder(group_t* group);
 extern bool groupDraw(group_t* group);
 extern bool groupFree(group_t* group);
 
