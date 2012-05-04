@@ -60,6 +60,15 @@ void partSetNext(part_t* part, part_t* next){
     part->next = next;
 }
 
+bool partCheckPart(part_t* partOne, part_t* partTwo){
+    if(!partOne || !partTwo) return false;
+    
+    return circCheckCirc(
+        partGetCirc(partOne),
+        partGetCirc(partTwo)
+    );
+}
+
 int partCheckBorder(part_t* part){
     if(!part) return DIR_NONE;
     

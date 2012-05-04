@@ -104,6 +104,40 @@ void groupAdd(group_t* group, part_t* part){
     group->numb++;
 }
 
+void groupMerge(group_t* to, group_t* from){
+    printf("Merge two groups\n");
+    
+    part_t* cur = NULL;
+    part_t* next = NULL;
+    
+    if(!to || !from) return;
+    
+    if(to->part){
+        // init
+        next = to->part;
+        
+        // find last
+        do{
+            cur = next;
+            next = partGetNext(cur);
+        }while(next);
+        
+        partSetNext(cur, from->part);
+    }else{
+        to->part = from->part;
+    }
+    
+    // update numbers ...
+    to->numb += from->numb;
+    
+    // ... and pointers
+    from->numb = 0;
+    from->part = NULL;
+    
+    // free from
+    groupFree(from);
+}
+
 bool groupForEach(group_t* group, bool (*handle)(part_t* part)){
     part_t* cur = NULL;
     part_t* next = NULL;
@@ -156,6 +190,36 @@ void groupMove(group_t* group, double deltaT){
     
     // update group pos
     group->pos = vectAdd(group->pos, diff);
+}
+
+bool groupCheckGroup(group_t* groupOne, group_t* groupTwo){
+    part_t* partOne = NULL;
+    part_t* partTwo = NULL;
+    
+    if(!groupOne || !groupTwo) return false;
+    
+    // init
+    partOne = groupOne->part;
+    while(partOne){
+        
+        // init
+        partTwo = groupTwo->part;
+        while(partTwo){
+            
+            if(partCheckPart(partOne, partTwo)){
+                printf("Two groups collide\n");
+                return true;
+            }
+            
+            // next partTwo
+            partTwo = partGetNext(partTwo);
+        }
+        
+        // next partOne
+        partOne = partGetNext(partOne);
+    }
+    
+    return false;
 }
 
 bool groupCheckBorder(group_t* group){

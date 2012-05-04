@@ -106,6 +106,7 @@ void gameUpdate(game_t* game){
     
     // 3 Detect collisions
     groupSetForEach(game->groups, groupCheckBorder);
+    groupSetCollide(game->groups);
     
     // 4 Move disc
 }

@@ -97,6 +97,36 @@ bool groupSetForEach(groupSet_t* set, bool (*handle)(group_t* group)){
     return true;
 }
 
+void groupSetCollide(groupSet_t* set){
+    group_t* groupOne = NULL;
+    group_t* groupTwo = NULL;
+    group_t* groupTwoNext = NULL;
+    
+    if(!set) return;
+    
+    // groupOne
+    groupOne = set->group;
+    while(groupOne){
+        
+        // groupTwo
+        groupTwo = groupGetNext(groupOne);
+        while(groupTwo){
+            groupTwoNext = groupGetNext(groupTwo);
+            
+            // check for collision
+            if(groupCheckGroup(groupOne, groupTwo)){
+                // merge groups
+                groupMerge(groupOne, groupTwo);
+            }
+            
+            // go to next
+            groupTwo = groupTwoNext;
+        }
+        
+        groupOne = groupGetNext(groupOne);
+    }
+}
+
 void groupSetMove(groupSet_t* set, double deltaT){
     group_t* cur = NULL;
     group_t* next = NULL;

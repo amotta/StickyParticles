@@ -5,6 +5,9 @@
 //  Created by Alessandro Motta on 3/7/12.
 //
 
+#include <math.h>
+#include <stdbool.h>
+
 #include "circle.h"
 #include "constants.h"
 #include "geometry.h"
@@ -25,6 +28,21 @@ bool isCircInCirc(circ_t circInt, circ_t circExt){
 
 bool isCircInGameCirc(circ_t circ){
     return isCircInCirc(circ, getGameCirc());
+}
+
+bool circCheckCirc(circ_t circOne, circ_t circTwo){
+    if(
+       fabs(circOne.pos.x - circTwo.pos.x) > circOne.r + circTwo.r
+       || fabs(circOne.pos.y - circTwo.pos.y) > circOne.r + circTwo.r
+    ){
+        return false;
+    }
+    
+    if(vectDist(circOne.pos, circTwo.pos) > circOne.r + circTwo.r){
+        return false;
+    }else{
+        return true;
+    }
 }
 
 int circCheckBorder(circ_t circ){
