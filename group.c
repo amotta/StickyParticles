@@ -203,9 +203,7 @@ bool groupCheckGroup(group_t* groupOne, group_t* groupTwo){
         // init
         partTwo = groupTwo->part;
         while(partTwo){
-            
             if(partCheckPart(partOne, partTwo)){
-                printf("Two groups collide\n");
                 return true;
             }
             
