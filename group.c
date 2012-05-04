@@ -26,6 +26,10 @@ struct GROUP {
     group_t* next;
 };
 
+static void groupMergeType(group_t* to, group_t* from);
+static void groupMergeSpeed(group_t* to, group_t* from);
+static void groupMergeParticles(group_t* to, group_t* from);
+
 group_t* groupNew(){
     group_t* group = NULL;
     
@@ -104,7 +108,27 @@ void groupAdd(group_t* group, part_t* part){
     group->numb++;
 }
 
-void groupMerge(group_t* to, group_t* from){
+void groupMergeType(group_t* to, group_t* from){
+    if(!to || !from) return;
+    
+    if(
+        to->type == GROUP_TYPE_DANGEROUS
+        || from->type == GROUP_TYPE_DANGEROUS
+    ){
+        to->type = GROUP_TYPE_DANGEROUS;
+    }
+}
+
+void groupMergeSpeed(group_t* to, group_t* from){
+    if(!to || !from) return;
+    
+    to->speed = vectAdd(
+        vectMul(to->speed, (double) to->numb / (to->numb + from->numb)),
+        vectMul(from->speed, (double) from->numb / (to->numb + from->numb))
+    );
+}
+
+void groupMergeParticles(group_t* to, group_t* from){
     part_t* cur = NULL;
     part_t* next = NULL;
     
@@ -131,6 +155,14 @@ void groupMerge(group_t* to, group_t* from){
     // ... and pointers
     from->numb = 0;
     from->part = NULL;
+}
+
+void groupMerge(group_t* to, group_t* from){
+    if(!to || !from) return;
+    
+    groupMergeType(to, from);
+    groupMergeSpeed(to, from);
+    groupMergeParticles(to, from);
     
     // free from
     groupFree(from);
