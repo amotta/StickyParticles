@@ -71,7 +71,7 @@ void groupSetType(group_t* group, unsigned int type){
 }
 
 group_t* groupGetPrev(group_t* group){
-    if(!group) return;
+    if(!group) return NULL;
     
     return group->prev;
 }
@@ -83,7 +83,7 @@ void groupSetPrev(group_t* group, group_t* prev){
 }
 
 group_t* groupGetNext(group_t* group){
-    if(!group) return;
+    if(!group) return NULL;
     
     return group->next;
 }
@@ -105,8 +105,6 @@ void groupAdd(group_t* group, part_t* part){
 }
 
 void groupMerge(group_t* to, group_t* from){
-    printf("Merge two groups\n");
-    
     part_t* cur = NULL;
     part_t* next = NULL;
     
@@ -280,9 +278,27 @@ bool groupDraw(group_t* group){
 }
 
 bool groupFree(group_t* group){
-    if(!group) false;
+    group_t* prev = NULL;
+    group_t* next = NULL;
     
+    if(!group) return false;
+    
+    // correct linking
+    prev = groupGetPrev(group);
+    next = groupGetNext(group);
+    
+    if(prev){
+        groupSetNext(prev, next);
+    }
+    
+    if(next){
+        groupSetPrev(next, prev);
+    }
+    
+    // free particles
     groupForEach(group, partFree);
+    
+    // free group
     free(group);
     
     return true;
