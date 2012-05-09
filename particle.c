@@ -5,6 +5,7 @@
 //  Created by Alessandro Motta on 4/12/12.
 //
 
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -61,7 +62,19 @@ void partSetNext(part_t* part, part_t* next){
 }
 
 bool partCheckPart(part_t* partOne, part_t* partTwo){
+    vect_t posOne, posTwo;
+    
     if(!partOne || !partTwo) return false;
+    
+    posOne = partOne->pos;
+    posTwo = partTwo->pos;
+    
+    if(
+        fabs(posOne.x - posTwo.x) > R_PART + R_PART
+        || fabs(posOne.y - posTwo.y) > R_PART + R_PART
+    ){
+        return false;
+    }
     
     return circCheckCirc(
         partGetCirc(partOne),
