@@ -17,16 +17,19 @@
 #include "graphics.h"
 #include "groupset.h"
 #include "rectangle.h"
+#include "vector.h"
 
 struct GAME {
     unsigned int score;
     double interval;
+    vect_t target;
     circ_t disc;
     emitterSet_t* emitters;
     groupSet_t* groups;
 };
 
 static void gameDrawBackground();
+static void gameUpdateDisc(game_t* game);
 
 game_t* gameNew(){
     game_t* game = NULL;
@@ -34,6 +37,7 @@ game_t* gameNew(){
     if((game = malloc(sizeof(game_t)))){
         game->score = 0;
         game->interval = 0;
+        game->target = vectGetNull();
         game->disc = circGetNull();
         game->emitters = NULL;
         game->groups = NULL;
@@ -69,6 +73,12 @@ void gameSetInterval(game_t* game, double interval){
     game->interval = interval;
 }
 
+void gameSetTarget(game_t* game, vect_t target){
+    if(!game) return;
+    
+    game->target = target;
+}
+
 void gameSetDisc(game_t* game, circ_t disc){
     if(!game) return;
     
@@ -92,7 +102,6 @@ void gameUpdate(game_t* game){
     
     if(!game) return;
     
-    // TODO
     // 1 Emit particles
     newGroups = emitterSetEmit(game->emitters, game->interval);
     
@@ -110,6 +119,14 @@ void gameUpdate(game_t* game){
     groupSetCollide(game->groups);
     
     // 4 Move disc
+    gameUpdateDisc(game);
+}
+
+void gameUpdateDisc(game_t* game){
+    if(!game) return;
+    
+    // TODO
+    game->disc.pos = game->target;
 }
 
 void gameDrawBackground(){

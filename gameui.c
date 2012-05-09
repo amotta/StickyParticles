@@ -18,11 +18,15 @@
 #include "constants.h"
 #include "game.h"
 #include "gameui.h"
+#include "vector.h"
 
 static void gameUIHandleRedraw();
+static void gameUIHandleMouse(int x, int y);
 static void gameUIHandleReshape(int x, int y);
 
 static game_t* currentGame = NULL;
+static double xMin, xMax;
+static double yMin, yMax; 
 static int sizeX, sizeY;
 static int windowID;
 
@@ -39,6 +43,11 @@ void gameUIInit(){
 	// init projection matrix
 	gameUIHandleRedraw(sizeX, sizeY);
 	
+    // handle mouse
+    glutMotionFunc(gameUIHandleMouse);
+    glutPassiveMotionFunc(gameUIHandleMouse);
+    
+    // handle display and reshape
 	glutDisplayFunc(gameUIHandleRedraw);
 	glutReshapeFunc(gameUIHandleReshape);
 }
@@ -69,16 +78,25 @@ void gameUISetGame(game_t* game){
     currentGame = game;
 }
 
+void gameUIHandleMouse(int x, int y){
+    if(!currentGame) return;
+    
+    vect_t target = {
+        .x = xMin + (xMax - xMin) / sizeX * x,
+        .y = yMax - (yMax - yMin) / sizeY * y
+    };
+    
+    gameSetTarget(currentGame, target);
+}
+
 void gameUIHandleReshape(int x, int	y){
     double aspectRatio;
-    double xMin, xMax;
-    double yMin, yMax;
     double pxPerUnit;
     double diff;
     
 	sizeX = x;
 	sizeY = y;
-    aspectRatio = (double) x / y;
+    aspectRatio = (double) sizeX / sizeY;
     
     // calculate extremes
     if(aspectRatio > RECT_X / RECT_Y){

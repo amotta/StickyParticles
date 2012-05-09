@@ -51,7 +51,6 @@ static void handleOpt(char* arg);
 // event handling
 static void handleKeyboard(unsigned char key, int x, int y);
 static void handleSpecial(int key, int x, int y);
-static void handleMouse(int button, int state, int x, int y);
 static void handleTimer(int val);
 
 // UI handling
@@ -79,10 +78,8 @@ int main(int argc, char** argv){
     ctrlUISetOnPlay(playGame);
 	
     // set idle listener
-    GLUI_Master.set_glutIdleFunc(NULL);
     GLUI_Master.set_glutKeyboardFunc(handleKeyboard);
     GLUI_Master.set_glutSpecialFunc(handleSpecial);
-    GLUI_Master.set_glutMouseFunc(handleMouse);
     
     // set status
     setState(STATE_READY);
@@ -134,13 +131,6 @@ void handleKeyboard(unsigned char key, int x, int y){
 
 void handleSpecial(int key, int x, int y){
     printf("Special key #%d pressed \n", key);
-}
-
-void handleMouse(int button, int state, int x, int y){
-    printf(
-        "Mouse key #%d changed to state #%d at X: %d Y: %d\n",
-        button, state, x, y
-    );
 }
 
 void handleTimer(int val){
@@ -231,7 +221,7 @@ void setFile(const char* file){
 void usage(){
     printf(
         "Usage of Sticky Particles\n"
-        " sticky.x file1 [file2 ... fileN]\n"
+        " sticky.x [file1]\n"
         " -v    Activate debugging\n"
         " -s    Deactivate debugging\n"
         "\n"
