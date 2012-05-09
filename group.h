@@ -13,6 +13,7 @@
 #include "particle.h"
 #include "vector.h"
 
+#define GROUP_TYPE_NONE 0
 #define GROUP_TYPE_HARMLESS 1
 #define GROUP_TYPE_DANGEROUS 2
 
@@ -22,6 +23,7 @@ extern group_t* groupNew();
 extern void groupSetPos(group_t* group, vect_t pos);
 extern void groupSetSpeed(group_t* group, vect_t speed);
 extern void groupSetOmega(group_t* group, double omega);
+extern int groupGetType(group_t* group);
 extern void groupSetType(group_t* group, unsigned int type);
 extern group_t* groupGetPrev(group_t* group);
 extern void groupSetPrev(group_t* group, group_t* prev);

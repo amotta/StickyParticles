@@ -120,6 +120,8 @@ groupSet_t* emitterEmit(emitter_t* emitter, double deltaT){
     vect_t speed;
     double speedAngle;
     
+    // TODO
+    // Only one group for each emitter and update
     unsigned int i;
     for(i = 0; i < numbParts; i++){
         part = partNew();
