@@ -11,6 +11,7 @@
 #include <string.h>
 
 #include "circle.h"
+#include "constants.h"
 #include "emitterset.h"
 #include "file.h"
 #include "game.h"
@@ -123,10 +124,45 @@ void gameUpdate(game_t* game){
 }
 
 void gameUpdateDisc(game_t* game){
+    double alpha;
+    double maxDiff;
+    vect_t target;
+    circ_t targetCirc;
+    vect_t diff;
+    vect_t dir;
+    
     if(!game) return;
     
-    // TODO
-    game->disc.pos = game->target;
+    // init
+    maxDiff = game->interval * MAX_VDISC;
+    targetCirc.pos = game->target;
+    targetCirc.r = R_DISC;
+    
+    if(isCircInCirc(targetCirc, getGameCirc())){
+        target = game->target;
+    }else{
+        diff = vectSub(getGameCenter(), game->target);
+        alpha = atan2(diff.y, diff.x);
+        
+        dir.x = (RECT_Y / 2 - R_DISC) * cos(alpha);
+        dir.y = (RECT_Y / 2 - R_DISC) * sin(alpha);
+        
+        target = vectAdd(getGameCenter(), dir);
+    }
+    
+    // calculate difference
+    diff = vectSub(game->disc.pos, target);
+    
+    if(vectLen(diff) < maxDiff){
+        game->disc.pos = target;
+    }else{
+        alpha = atan2(diff.y, diff.x);
+    
+        dir.x = maxDiff * cos(alpha);
+        dir.y = maxDiff * sin(alpha);
+    
+        game->disc.pos = vectAdd(game->disc.pos, dir);
+    }
 }
 
 void gameDrawBackground(){
