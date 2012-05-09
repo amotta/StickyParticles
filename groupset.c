@@ -96,6 +96,7 @@ bool groupSetForEach(groupSet_t* set, bool (*handle)(group_t* group)){
 
 void groupSetCollide(groupSet_t* set){
     group_t* groupOne = NULL;
+    group_t* groupOneNext = NULL;
     group_t* groupTwo = NULL;
     group_t* groupTwoNext = NULL;
     
@@ -104,6 +105,7 @@ void groupSetCollide(groupSet_t* set){
     // groupOne
     groupOne = set->group;
     while(groupOne){
+        groupOneNext = groupGetNext(groupOne);
         
         // groupTwo
         groupTwo = groupGetNext(groupOne);
@@ -112,15 +114,48 @@ void groupSetCollide(groupSet_t* set){
             
             // check for collision
             if(groupCheckGroup(groupOne, groupTwo)){
-                // merge groups
-                groupMerge(groupOne, groupTwo);
+                if(
+                    groupGetType(groupOne) == GROUP_TYPE_DANGEROUS
+                    && groupGetType(groupTwo) == GROUP_TYPE_DANGEROUS
+                ){
+                    // correct groupOneNext
+                    if(groupOneNext == groupTwo){
+                        groupOneNext = groupTwoNext;
+                    }
+                    
+                    // correct set->group
+                    if(set->group == groupOne){
+                        set->group = groupOneNext;
+                    }
+                    
+                    // free first group
+                    groupFree(groupOne);
+                    groupOne = NULL;
+                    
+                    // free second group
+                    groupFree(groupTwo);
+                    groupTwo = NULL;
+                    
+                    // update number of groups
+                    set->numb = set->numb - 2;
+                    
+                    break;
+                }else{
+                    // merge groups
+                    groupMerge(groupOne, groupTwo);
+                    groupFree(groupTwo);
+                    groupTwo = NULL;
+                    
+                    // update number of groups
+                    set->numb = set->numb - 1;
+                }
             }
             
             // go to next
             groupTwo = groupTwoNext;
         }
         
-        groupOne = groupGetNext(groupOne);
+        groupOne = groupOneNext;
     }
 }
 

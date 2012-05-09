@@ -68,6 +68,12 @@ void groupSetOmega(group_t* group, double omega){
     group->omega = omega;
 }
 
+int groupGetType(group_t* group){
+    if(!group) return GROUP_TYPE_NONE;
+    
+    return group->type;
+}
+
 void groupSetType(group_t* group, unsigned int type){
     if(!group) return;
     
@@ -163,9 +169,6 @@ void groupMerge(group_t* to, group_t* from){
     groupMergeType(to, from);
     groupMergeSpeed(to, from);
     groupMergeParticles(to, from);
-    
-    // free from
-    groupFree(from);
 }
 
 bool groupForEach(group_t* group, bool (*handle)(part_t* part)){
@@ -295,10 +298,15 @@ bool groupDraw(group_t* group){
     if(!group) return false;
     
     // decide on color
-    if(group->type == GROUP_TYPE_DANGEROUS){
-        gfxColor(0.8, 0, 0);
-    }else{
-        gfxColor(0, 0.8, 0);
+    switch(group->type){
+        case GROUP_TYPE_DANGEROUS:
+            gfxColor(0.8, 0, 0);
+            break;
+        case GROUP_TYPE_HARMLESS:
+            gfxColor(0, 0.8, 0);
+            break;
+        default:
+            gfxColor(0, 0, 0);
     }
     
     // draw particles
