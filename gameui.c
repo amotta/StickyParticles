@@ -67,6 +67,7 @@ void gameUIHandleRedraw(){
 }
 
 void gameUIUpdate(){
+    glutSetWindow(windowID);
     glutPostRedisplay();
 }
 
