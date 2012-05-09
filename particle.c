@@ -20,7 +20,7 @@ struct PARTICLE {
     part_t* next;
 };
 
-static circ_t partGetCirc(part_t* part);
+static inline circ_t partGetCirc(part_t* part);
 
 part_t* partNew(){
     part_t* part = NULL;
@@ -92,12 +92,12 @@ bool partFree(part_t* part){
 }
 
 circ_t partGetCirc(part_t* part){
+    static circ_t circ = { .r = R_PART };
+    
     if(!part) return circGetNull();
     
-    circ_t circ = {
-        .pos = part->pos,
-        .r = R_PART
-    };
+    // prepare circ
+    circ.pos = part->pos;
     
     return circ;
 }

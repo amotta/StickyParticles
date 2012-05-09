@@ -70,9 +70,6 @@ void groupSetMerge(groupSet_t* to, groupSet_t* from){
     // ... and pointers
     from->numb = 0;
     from->group = NULL;
-    
-    // free from
-    groupSetFree(from);
 }
 
 bool groupSetForEach(groupSet_t* set, bool (*handle)(group_t* group)){

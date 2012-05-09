@@ -44,24 +44,25 @@ emitterSet_t* emitterSetNew(unsigned int numbEmitters){
 }
 
 groupSet_t* emitterSetEmit(emitterSet_t* set, double deltaT){
-    groupSet_t* groups = NULL;
+    group_t* newGroup = NULL;
     groupSet_t* newGroups = NULL;
     
-    if(!set || !set->set) return groups;
-    
-    // prepare
-    groups = groupSetNew();
+    if(!set || !set->set) return newGroups;
     
     unsigned int i;
     for(i = 0; i < set->numb; i++){
-        newGroups = emitterEmit(set->set[i], deltaT);
+        newGroup = emitterEmit(set->set[i], deltaT);
         
-        if(newGroups){
-            groupSetMerge(groups, newGroups);
+        if(newGroup){
+            if(!newGroups){
+                newGroups = groupSetNew();
+            }
+            
+            groupSetAdd(newGroups, newGroup);
         }
     }
     
-    return groups;
+    return newGroups;
 }
 
 bool emitterSetForEach(emitterSet_t* set, bool (*handle)(emitter_t* emitter)){

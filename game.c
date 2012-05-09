@@ -98,6 +98,7 @@ void gameUpdate(game_t* game){
     
     if(newGroups){
         groupSetMerge(game->groups, newGroups);
+        groupSetFree(newGroups);
         newGroups = NULL;
     }
     

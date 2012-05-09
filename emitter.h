@@ -10,7 +10,7 @@
 
 #include <stdbool.h>
 
-#include "groupset.h"
+#include "group.h"
 #include "vector.h"
 
 typedef struct EMITTER emitter_t;
@@ -24,7 +24,7 @@ extern void emitterSetAlpha(emitter_t* emitter, double alpha);
 extern void emitterSetFlow(emitter_t* emitter, double flow);
 extern double emitterGetSpeed(emitter_t* emitter);
 extern void emitterSetSpeed(emitter_t* emitter, double speed);
-extern groupSet_t* emitterEmit(emitter_t* emitter, double deltaT);
+extern group_t* emitterEmit(emitter_t* emitter, double deltaT);
 extern bool emitterDraw(emitter_t* emitter);
 extern void emitterFree(emitter_t* emitter);
 
