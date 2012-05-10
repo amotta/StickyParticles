@@ -43,6 +43,22 @@ void groupSetAdd(groupSet_t* set, group_t* group){
     set->group = group;
 }
 
+void groupSetDel(groupSet_t* set, group_t* group){
+    if(!set || !group) return;
+    
+    // correct pointer if needed
+    if(set->group == group){
+        set->group = groupGetNext(group);
+    }
+    
+    // free group
+    groupFree(group);
+    group = NULL;
+    
+    // correct number
+    set->numb -= 1;
+}
+
 void groupSetMerge(groupSet_t* to, groupSet_t* from){
     group_t* cur = NULL;
     group_t* next = NULL;
@@ -124,31 +140,18 @@ void groupSetCollide(groupSet_t* set){
                         groupOneNext = groupTwoNext;
                     }
                     
-                    // correct set->group
-                    if(set->group == groupOne){
-                        set->group = groupOneNext;
-                    }
-                    
-                    // free first group
-                    groupFree(groupOne);
+                    groupSetDel(set, groupOne);
                     groupOne = NULL;
                     
-                    // free second group
-                    groupFree(groupTwo);
+                    groupSetDel(set, groupTwo);
                     groupTwo = NULL;
-                    
-                    // update number of groups
-                    set->numb = set->numb - 2;
                     
                     break;
                 }else{
                     // merge groups
                     groupMerge(groupOne, groupTwo);
-                    groupFree(groupTwo);
+                    groupSetDel(set, groupTwo);
                     groupTwo = NULL;
-                    
-                    // update number of groups
-                    set->numb = set->numb - 1;
                 }
             }
             
@@ -174,7 +177,7 @@ int groupSetCheckDisc(groupSet_t* set, circ_t disc){
         next = groupGetNext(cur);
         
         if(groupCheckCirc(cur, disc)){
-            groupFree(cur);
+            groupSetDel(set, cur);
             cur = NULL;
         }
     }
