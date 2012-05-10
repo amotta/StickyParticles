@@ -105,12 +105,12 @@ bool partFree(part_t* part){
 }
 
 circ_t partGetCirc(part_t* part){
-    static circ_t circ = { .r = R_PART };
-    
     if(!part) return circGetNull();
     
     // prepare circ
+    circ_t circ;
     circ.pos = part->pos;
+    circ.r = R_PART;
     
     return circ;
 }

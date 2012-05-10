@@ -24,7 +24,7 @@ static void gameUIHandleRedraw();
 static void gameUIHandleMouse(int x, int y);
 static void gameUIHandleReshape(int x, int y);
 
-static game_t* currentGame = NULL;
+static game_t* currentGame;
 static double xMin, xMax;
 static double yMin, yMax; 
 static int sizeX, sizeY;
