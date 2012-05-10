@@ -30,7 +30,8 @@ struct GAME {
 };
 
 static void gameDrawBackground();
-static void gameUpdateDisc(game_t* game);
+static void gameHandleEmitters(game_t* game);
+static void gameMoveDisc(game_t* game);
 
 game_t* gameNew(){
     game_t* game = NULL;
@@ -99,18 +100,10 @@ void gameSetGroups(game_t* game, groupSet_t* groups){
 }
 
 void gameUpdate(game_t* game){
-    groupSet_t* newGroups = NULL;
-    
     if(!game) return;
     
     // 1 Emit particles
-    newGroups = emitterSetEmit(game->emitters, game->interval);
-    
-    if(newGroups){
-        groupSetMerge(game->groups, newGroups);
-        groupSetFree(newGroups);
-        newGroups = NULL;
-    }
+    gameHandleEmitters(game);
     
     // 2 Move particles
     groupSetMove(game->groups, game->interval);
@@ -120,10 +113,28 @@ void gameUpdate(game_t* game){
     groupSetCollide(game->groups);
     
     // 4 Move disc
-    gameUpdateDisc(game);
+    gameMoveDisc(game);
+    groupSetCheckDisc(game->groups, game->disc);
 }
 
-void gameUpdateDisc(game_t* game){
+void gameHandleEmitters(game_t* game){
+    groupSet_t* newGroups = NULL;
+    
+    if(!game) return;
+    
+    // emit new groups
+    newGroups = emitterSetEmit(game->emitters, game->interval);
+    
+    // if needed ...
+    if(newGroups){
+        // merge with existing groups and free temp
+        groupSetMerge(game->groups, newGroups);
+        groupSetFree(newGroups);
+        newGroups = NULL;
+    }
+}
+
+void gameMoveDisc(game_t* game){
     double alpha;
     double maxDiff;
     vect_t target;

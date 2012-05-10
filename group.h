@@ -10,6 +10,7 @@
 
 #include <stdbool.h>
 
+#include "circle.h"
 #include "particle.h"
 #include "vector.h"
 
@@ -36,6 +37,7 @@ extern bool groupForEach(group_t* group, bool (*handle)(part_t* part));
 
 extern void groupMove(group_t* group, double deltaT);
 extern bool groupCheckGroup(group_t* groupOne, group_t* groupTwo);
+extern bool groupCheckCirc(group_t* group, circ_t circ);
 extern bool groupCheckBorder(group_t* group);
 
 extern bool groupDraw(group_t* group);

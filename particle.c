@@ -75,6 +75,12 @@ int partCheckBorder(part_t* part){
     return circCheckBorder(partGetCirc(part));
 }
 
+bool partCheckCirc(part_t* part, circ_t circ){
+    if(!part) return false;
+    
+    return circCheckCirc(partGetCirc(part), circ);
+}
+
 bool partDraw(part_t* part){
     if(!part) return false;
     

@@ -21,6 +21,7 @@ extern part_t* partGetNext(part_t* part);
 extern void partSetNext(part_t* part, part_t* next);
 extern bool partCheckPart(part_t* partOne, part_t* partTwo);
 extern int partCheckBorder(part_t* part);
+extern bool partCheckCirc(part_t* part, circ_t circ); 
 extern bool partDraw(part_t* part);
 extern bool partFree(part_t* part);
 

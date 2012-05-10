@@ -253,6 +253,25 @@ bool groupCheckGroup(group_t* groupOne, group_t* groupTwo){
     return false;
 }
 
+bool groupCheckCirc(group_t* group, circ_t circ){
+    part_t* cur = NULL;
+    
+    if(!group) return false;
+    
+    // init
+    cur = group->part;
+    
+    while(cur){
+        if(partCheckCirc(cur, circ)){
+            return true;
+        }
+        
+        cur = partGetNext(cur);
+    }
+    
+    return false;
+}
+
 bool groupCheckBorder(group_t* group){
     int dir = DIR_NONE;
     part_t* cur = NULL;

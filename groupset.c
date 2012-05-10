@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "circle.h"
 #include "group.h"
 #include "groupset.h"
 
@@ -156,6 +157,26 @@ void groupSetCollide(groupSet_t* set){
         }
         
         groupOne = groupOneNext;
+    }
+}
+
+int groupSetCheckDisc(groupSet_t* set, circ_t disc){
+    group_t* cur = NULL;
+    group_t* next = NULL;
+    
+    if(!set) return -1;
+    
+    // init
+    next = set->group;
+    
+    while(next){
+        cur = next;
+        next = groupGetNext(cur);
+        
+        if(groupCheckCirc(cur, disc)){
+            groupFree(cur);
+            cur = NULL;
+        }
     }
 }
 
