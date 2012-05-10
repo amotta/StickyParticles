@@ -85,6 +85,7 @@ void gameSetDisc(game_t* game, circ_t disc){
     if(!game) return;
     
     game->disc = disc;
+    game->target = disc.pos;
 }
 
 void gameSetEmitters(game_t* game, emitterSet_t* emitters){
@@ -100,6 +101,8 @@ void gameSetGroups(game_t* game, groupSet_t* groups){
 }
 
 void gameUpdate(game_t* game){
+    int points;
+    
     if(!game) return;
     
     // 1 Emit particles
@@ -114,7 +117,15 @@ void gameUpdate(game_t* game){
     
     // 4 Move disc
     gameMoveDisc(game);
-    groupSetCheckDisc(game->groups, game->disc);
+    
+    // 5 And finally collect trophies
+    points = groupSetCheckDisc(game->groups, game->disc);
+    
+    if(points > 0){
+        game->score += points;
+    }else{
+    
+    }
 }
 
 void gameHandleEmitters(game_t* game){

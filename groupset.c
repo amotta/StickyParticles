@@ -164,6 +164,7 @@ void groupSetCollide(groupSet_t* set){
 }
 
 int groupSetCheckDisc(groupSet_t* set, circ_t disc){
+    int out = 0;
     group_t* cur = NULL;
     group_t* next = NULL;
     
@@ -177,10 +178,23 @@ int groupSetCheckDisc(groupSet_t* set, circ_t disc){
         next = groupGetNext(cur);
         
         if(groupCheckCirc(cur, disc)){
-            groupSetDel(set, cur);
-            cur = NULL;
+            
+            switch(groupGetType(cur)){
+                case GROUP_TYPE_HARMLESS:
+                    // add points
+                    out += groupGetNumb(cur);
+                    
+                    // free group
+                    groupSetDel(set, cur);
+                    cur = NULL;
+                    break;
+                default:
+                    return -1;
+            }
         }
     }
+    
+    return out;
 }
 
 void groupSetMove(groupSet_t* set, double deltaT){

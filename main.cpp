@@ -135,7 +135,12 @@ void handleSpecial(int key, int x, int y){
 
 void handleTimer(int val){
     setTimer();
+    
+    // let's move
     gameUpdate(currentGame);
+    
+    // update UI
+    ctrlUIUpdate();
     gameUIUpdate();
 }
 

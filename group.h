@@ -26,6 +26,7 @@ extern void groupSetSpeed(group_t* group, vect_t speed);
 extern void groupSetOmega(group_t* group, double omega);
 extern int groupGetType(group_t* group);
 extern void groupSetType(group_t* group, unsigned int type);
+extern unsigned int groupGetNumb(group_t* group);
 extern group_t* groupGetPrev(group_t* group);
 extern void groupSetPrev(group_t* group, group_t* prev);
 extern group_t* groupGetNext(group_t* group);

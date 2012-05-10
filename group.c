@@ -80,6 +80,12 @@ void groupSetType(group_t* group, unsigned int type){
     group->type = type;
 }
 
+unsigned int groupGetNumb(group_t* group){
+    if(!group) return 0;
+    
+    return group->numb;
+}
+
 group_t* groupGetPrev(group_t* group){
     if(!group) return NULL;
     
