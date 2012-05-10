@@ -67,6 +67,25 @@ int circCheckBorder(circ_t circ){
     return dir;
 }
 
+circ_t circProjectOnCirc(circ_t from, circ_t to){
+    vect_t dir;
+    vect_t diff;
+    double alpha;
+    
+    // calculate direction
+    diff = vectSub(to.pos, from.pos);
+    alpha = atan2(diff.y, diff.x);
+    
+    // calculate position on border
+    dir.x = (to.r - from.r) * cos(alpha);
+    dir.y = (to.r - from.r) * sin(alpha);
+    
+    // set new position
+    from.pos = vectAdd(to.pos, dir);
+    
+    return from;
+}
+
 circ_t circGetNull(){
     circ_t nullCirc = {
         .pos = vectGetNull(),

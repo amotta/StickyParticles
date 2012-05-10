@@ -141,13 +141,8 @@ void gameUpdateDisc(game_t* game){
     if(isCircInCirc(targetCirc, getGameCirc())){
         target = game->target;
     }else{
-        diff = vectSub(getGameCenter(), game->target);
-        alpha = atan2(diff.y, diff.x);
-        
-        dir.x = (RECT_Y / 2 - R_DISC) * cos(alpha);
-        dir.y = (RECT_Y / 2 - R_DISC) * sin(alpha);
-        
-        target = vectAdd(getGameCenter(), dir);
+        targetCirc = circProjectOnCirc(targetCirc, getGameCirc());
+        target = targetCirc.pos;
     }
     
     // calculate difference
