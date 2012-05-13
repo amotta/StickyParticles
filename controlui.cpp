@@ -38,6 +38,7 @@ const char* STATE_MESSAGES[] = {
     (const char*) "Ready",
     (const char*) "File OK",
     (const char*) "File NOK",
+    (const char*) "Playing",
     (const char*) "Game Over"
 };
 
@@ -53,9 +54,12 @@ namespace {
 	GLUI* glui = NULL;
     GLUI_EditText* loadedText = NULL;
     GLUI_EditText* fileText = NULL;
+    GLUI_Button* saveButton = NULL;
     
     GLUI_Panel* simPanel = NULL;
     GLUI_Spinner* deltaSpinner = NULL;
+    GLUI_Button* stepButton = NULL;
+    GLUI_Button* playButton = NULL;
     GLUI_EditText* timeText = NULL;
     GLUI_EditText* scoreText = NULL;
     GLUI_EditText* statusText = NULL;
@@ -84,8 +88,13 @@ void ctrlUIInit(){
         fileText->set_text("test1.txt");
     }
     
+    // create load button
     glui->add_button_to_panel(panel, "Load", UI_ID_LOAD, ctrlUIHandleEvent);
-    glui->add_button_to_panel(panel, "Save", UI_ID_SAVE, ctrlUIHandleEvent);
+    
+    // create save button
+    saveButton = glui->add_button_to_panel(
+        panel, "Save", UI_ID_SAVE, ctrlUIHandleEvent
+    );
     
     // simulation panel
     simPanel = glui->add_panel("Simulation");
@@ -105,8 +114,14 @@ void ctrlUIInit(){
         (DELTA_SPINNER_MAX - DELTA_SPINNER_MIN) / DELTA_SPINNER_STEPS
     );
     
-    glui->add_button_to_panel(simPanel, "Step", UI_ID_STEP, ctrlUIHandleEvent);
-    glui->add_button_to_panel(simPanel, "Play", UI_ID_PLAY, ctrlUIHandleEvent);
+    // add step button
+    stepButton = glui->add_button_to_panel(
+        simPanel, "Step", UI_ID_STEP, ctrlUIHandleEvent
+    );
+    
+    playButton = glui->add_button_to_panel(
+        simPanel, "Play", UI_ID_PLAY, ctrlUIHandleEvent
+    );
     
     // information panel
     panel = glui->add_panel("Informations");
@@ -145,14 +160,23 @@ void ctrlUISetOnPlay(void (*func)()){
 void ctrlUISetState(int state){
     switch(state){
         case STATE_READY:
+            saveButton->disable();
             simPanel->disable();
             break;
         case STATE_FILE_OK:
+            saveButton->enable();
             simPanel->enable();
             break;
         case STATE_FILE_NOK:
+            // nothing
+            break;
+        case STATE_PLAYING:
+            stepButton->disable();
+            playButton->disable();
             break;
         case STATE_GAME_OVER:
+            stepButton->enable();
+            playButton->enable();
             break;
     }
     

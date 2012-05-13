@@ -17,16 +17,16 @@
 #endif
 
 #include "controlui.h"
-#include "main.h"
 
 extern "C" {
     #include "file.h"
     #include "game.h"
     #include "gameui.h"
+    #include "main.h"
 }
 
 namespace {
-    int state;
+    int state = STATE_READY;
     
     char* currentFile = NULL;
     game_t* currentGame = NULL;
@@ -133,6 +133,7 @@ void handleTimer(int val){
 }
 
 void playGame(){
+    setState(STATE_PLAYING);
     setTimer();
 }
 
