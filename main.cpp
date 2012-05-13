@@ -17,6 +17,7 @@
 #endif
 
 #include "controlui.h"
+#include "main.h"
 
 extern "C" {
     #include "file.h"
@@ -24,21 +25,8 @@ extern "C" {
     #include "gameui.h"
 }
 
-enum STATE {
-    STATE_READY,
-    STATE_FILE_OK,
-    STATE_FILE_NOK,
-    STATE_GAME_OVER
-};
-
 namespace {
-    int state = STATE_READY;
-    const char* STATE_MESSAGES[] = {
-        (const char*) "Ready",
-        (const char*) "File OK",
-        (const char*) "File NOK",
-        (const char*) "Game Over"
-    };
+    int state;
     
     char* currentFile = NULL;
     game_t* currentGame = NULL;
@@ -192,7 +180,7 @@ void setState(int newState){
     state = newState;
     
     // update state in control UI
-    ctrlUISetState(STATE_MESSAGES[newState]);
+    ctrlUISetState(newState);
 }
 
 void setFile(const char* file){

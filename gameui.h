@@ -9,6 +9,7 @@
 #define GAME_UI
 
 #include "game.h"
+
 extern void gameUIInit();
 extern void gameUIUpdate();
 extern int gameUIGetWindow();

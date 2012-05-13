@@ -14,8 +14,12 @@
 #endif
 
 #include "controlui.h"
-#include "game.h"
-#include "gameui.h"
+#include "main.h"
+
+extern "C" {
+    #include "game.h"
+    #include "gameui.h"
+}
 
 #define DELTA_SPINNER_MIN 0.05
 #define DELTA_SPINNER_MAX 0.2
@@ -28,6 +32,13 @@ enum UI_IDS {
     UI_ID_INTERVAL,
     UI_ID_STEP,
     UI_ID_PLAY
+};
+
+const char* STATE_MESSAGES[] = {
+    (const char*) "Ready",
+    (const char*) "File OK",
+    (const char*) "File NOK",
+    (const char*) "Game Over"
 };
 
 namespace {
@@ -128,8 +139,12 @@ void ctrlUISetOnPlay(void (*func)()){
     onPlay = func;
 }
 
-void ctrlUISetState(const char* status){
-    statusText->set_text(status);
+void ctrlUISetState(int state){
+    // TODO
+    // activate / deactivate buttons
+    
+    // change state text
+    statusText->set_text(STATE_MESSAGES[state]);
 }
 
 void ctrlUISetFile(const char* file){
