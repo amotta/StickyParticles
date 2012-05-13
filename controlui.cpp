@@ -53,6 +53,8 @@ namespace {
 	GLUI* glui = NULL;
     GLUI_EditText* loadedText = NULL;
     GLUI_EditText* fileText = NULL;
+    
+    GLUI_Panel* simPanel = NULL;
     GLUI_Spinner* deltaSpinner = NULL;
     GLUI_EditText* timeText = NULL;
     GLUI_EditText* scoreText = NULL;
@@ -86,24 +88,25 @@ void ctrlUIInit(){
     glui->add_button_to_panel(panel, "Save", UI_ID_SAVE, ctrlUIHandleEvent);
     
     // simulation panel
-    panel = glui->add_panel("Simulation");
+    simPanel = glui->add_panel("Simulation");
     
     deltaSpinner = glui->add_spinner_to_panel(
-        panel,
+        simPanel,
         "Interval",
         GLUI_SPINNER_FLOAT,
         NULL,
         UI_ID_INTERVAL,
         ctrlUIHandleEvent
     );
-        
+    
+    // config delta spinner
     deltaSpinner->set_float_limits(DELTA_SPINNER_MIN, DELTA_SPINNER_MAX);
     deltaSpinner->set_speed(
         (DELTA_SPINNER_MAX - DELTA_SPINNER_MIN) / DELTA_SPINNER_STEPS
     );
     
-    glui->add_button_to_panel(panel, "Step", UI_ID_STEP, ctrlUIHandleEvent);
-    glui->add_button_to_panel(panel, "Play", UI_ID_PLAY, ctrlUIHandleEvent);
+    glui->add_button_to_panel(simPanel, "Step", UI_ID_STEP, ctrlUIHandleEvent);
+    glui->add_button_to_panel(simPanel, "Play", UI_ID_PLAY, ctrlUIHandleEvent);
     
     // information panel
     panel = glui->add_panel("Informations");
@@ -140,8 +143,18 @@ void ctrlUISetOnPlay(void (*func)()){
 }
 
 void ctrlUISetState(int state){
-    // TODO
-    // activate / deactivate buttons
+    switch(state){
+        case STATE_READY:
+            simPanel->disable();
+            break;
+        case STATE_FILE_OK:
+            simPanel->enable();
+            break;
+        case STATE_FILE_NOK:
+            break;
+        case STATE_GAME_OVER:
+            break;
+    }
     
     // change state text
     statusText->set_text(STATE_MESSAGES[state]);
