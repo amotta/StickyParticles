@@ -27,6 +27,7 @@ extern "C" {
 
 namespace {
     int state = STATE_READY;
+    bool playing = false;
     
     char* currentFile = NULL;
     game_t* currentGame = NULL;
@@ -122,10 +123,24 @@ void handleSpecial(int key, int x, int y){
 }
 
 void handleTimer(int val){
-    setTimer();
+    bool update;
     
-    // let's move
-    gameUpdate(currentGame);
+    // already prepare
+    if(playing){
+        setTimer();
+    }
+    
+    // let's move 
+    update = gameUpdate(currentGame);
+    
+    // are you boss enough?
+    if(!update){
+        // ooops, game over
+        playing = false;
+        
+        // celebrate end of game
+        setState(STATE_GAME_OVER);
+    }
     
     // update UI
     ctrlUIUpdate();
@@ -133,7 +148,13 @@ void handleTimer(int val){
 }
 
 void playGame(){
+    // set flag
+    playing = true;
+    
+    // change state
     setState(STATE_PLAYING);
+    
+    // prepare timer
     setTimer();
 }
 
@@ -147,7 +168,13 @@ void loadFile(const char* file){
     
     // change state
     if(newGame){
+        // set new file
         setFile(file);
+        
+        // stop old game ...
+        playing = false;
+        
+        // ... and change state
         setState(STATE_FILE_OK);
         
         // free old game

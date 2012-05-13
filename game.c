@@ -100,10 +100,10 @@ void gameSetGroups(game_t* game, groupSet_t* groups){
     game->groups = groups;
 }
 
-void gameUpdate(game_t* game){
+bool gameUpdate(game_t* game){
     int points;
     
-    if(!game) return;
+    if(!game) return false;
     
     // 1 Emit particles
     gameHandleEmitters(game);
@@ -121,11 +121,13 @@ void gameUpdate(game_t* game){
     // 5 And finally collect trophies
     points = groupSetCheckDisc(game->groups, game->disc);
     
-    if(points > 0){
-        game->score += points;
+    if(points < 0){
+        return false;
     }else{
-    
+        game->score += points;
     }
+
+    return true;
 }
 
 void gameHandleEmitters(game_t* game){
