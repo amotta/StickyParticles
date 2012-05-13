@@ -58,8 +58,6 @@ namespace {
     
     GLUI_Panel* simPanel = NULL;
     GLUI_Spinner* deltaSpinner = NULL;
-    GLUI_Button* stepButton = NULL;
-    GLUI_Button* playButton = NULL;
     GLUI_EditText* timeText = NULL;
     GLUI_EditText* scoreText = NULL;
     GLUI_EditText* statusText = NULL;
@@ -113,15 +111,9 @@ void ctrlUIInit(){
     deltaSpinner->set_speed(
         (DELTA_SPINNER_MAX - DELTA_SPINNER_MIN) / DELTA_SPINNER_STEPS
     );
-    
-    // add step button
-    stepButton = glui->add_button_to_panel(
-        simPanel, "Step", UI_ID_STEP, ctrlUIHandleEvent
-    );
-    
-    playButton = glui->add_button_to_panel(
-        simPanel, "Play", UI_ID_PLAY, ctrlUIHandleEvent
-    );
+
+    glui->add_button_to_panel(simPanel, "Step", UI_ID_STEP, ctrlUIHandleEvent);
+    glui->add_button_to_panel(simPanel, "Play", UI_ID_PLAY, ctrlUIHandleEvent);
     
     // information panel
     panel = glui->add_panel("Informations");
@@ -171,12 +163,10 @@ void ctrlUISetState(int state){
             // nothing
             break;
         case STATE_PLAYING:
-            stepButton->disable();
-            playButton->disable();
+            simPanel->disable();
             break;
         case STATE_GAME_OVER:
-            stepButton->enable();
-            playButton->enable();
+            // nothing
             break;
     }
     
