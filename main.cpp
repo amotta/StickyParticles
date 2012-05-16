@@ -125,10 +125,10 @@ void handleSpecial(int key, int x, int y){
 void handleTimer(int val){
     bool update;
     
-    // already prepare
-    if(playing){
-        setTimer();
-    }
+    if(!playing) return;
+    
+    // prepare timer
+    setTimer();
     
     // let's move 
     update = gameUpdate(currentGame);
