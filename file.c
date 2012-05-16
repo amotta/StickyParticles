@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "circle.h"
 #include "constants.h"
 #include "emitter.h"
 #include "emitterset.h"
@@ -23,8 +24,11 @@
 static bool fileSkip();
 static bool fileReadLine(char* buf, int bufLen);
 static bool fileReadScore();
+static bool fileWriteScore();
 static bool fileReadInterval();
+static bool fileWriteInterval();
 static bool fileReadDisc();
+static bool fileWriteDisc();
 static bool fileReadEmitter(emitter_t* emitter);
 static bool fileReadEmitters();
 static bool fileReadGroup(group_t* group);
@@ -184,6 +188,14 @@ static bool fileReadScore(){
     return true;
 }
 
+static bool fileWriteScore(){
+    if(!game || !file) return false;
+    
+    fprintf(file, "%u\n", gameGetScore(game));
+    
+    return true;
+}
+
 static bool fileReadInterval(){
     char line[LINE_BUF_LEN];
     double interval;
@@ -207,6 +219,14 @@ static bool fileReadInterval(){
     }
     
     gameSetInterval(game, interval);
+    
+    return true;
+}
+
+static bool fileWriteInterval(){
+    if(!game || !file) return false;
+    
+    fprintf(file, "%f\n", gameGetInterval(game));
     
     return true;
 }
@@ -242,6 +262,17 @@ static bool fileReadDisc(){
     }
     
     gameSetDisc(game, disc);
+    
+    return true;
+}
+
+static bool fileWriteDisc(){
+    if(!game || !file) return false;
+    
+    circ_t disc;
+    disc = gameGetDisc(game);
+    
+    fprintf(file, "%f %f\n", disc.pos.x, disc.pos.y);
     
     return true;
 }
@@ -528,8 +559,12 @@ game_t* fileRead(const char* name){
     ok = ok && fileReadEmitters();
     ok = ok && fileReadGroups();
     
-    if(file && fclose(file)){
-        fileSetError(FILE_ERROR_FCLOSE);
+    if(file){
+        if(fclose(file)){
+            fileSetError(FILE_ERROR_FCLOSE);
+        }
+        
+        file = NULL;
     }
     
     if(debug){
@@ -547,6 +582,49 @@ game_t* fileRead(const char* name){
         return NULL;
     }else{
         return game;
+    }
+}
+
+bool fileSave(game_t* gameSave, const char* name){
+    bool ok = true;
+    
+    // anything there?
+    if(!gameSave || !name) return false;
+    
+    // Are we already workin'?
+    if(file) return false;
+    
+    // prepare
+    game = gameSave;
+    error = FILE_OK;
+    
+    // open file
+    file = fopen(name, "w");
+    
+    if(!file){
+        ok = false;
+        fileSetError(FILE_ERROR_FOPEN);
+    }
+    
+    ok = ok && fileWriteScore();
+    ok = ok && fileWriteInterval();
+    ok = ok && fileWriteDisc();
+    
+    if(file){
+        if(fclose(file)){
+            fileSetError(FILE_ERROR_FCLOSE);
+        }
+        
+        file = NULL;
+    }
+    
+    // free pointer
+    game = NULL;
+    
+    if(error){
+        return false;
+    }else{
+        return true;
     }
 }
 

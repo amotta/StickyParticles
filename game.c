@@ -81,6 +81,12 @@ void gameSetTarget(game_t* game, vect_t target){
     game->target = target;
 }
 
+circ_t gameGetDisc(game_t* game){
+    if(!game) return circGetNull();
+    
+    return game->disc;
+}
+
 void gameSetDisc(game_t* game, circ_t disc){
     if(!game) return;
     

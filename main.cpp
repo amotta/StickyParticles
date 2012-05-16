@@ -45,6 +45,7 @@ static void handleTimer(int val);
 // UI handling
 static void playGame();
 static void loadFile(const char* file);
+static void saveFile();
 
 // misc
 static void setTimer();
@@ -64,6 +65,7 @@ int main(int argc, char** argv){
     ctrlUIInit();
     ctrlUISetGameWindow(gameUIGetWindow());
     ctrlUISetOnLoad(loadFile);
+    ctrlUISetOnSave(saveFile);
     ctrlUISetOnPlay(playGame);
 	
     // set idle listener
@@ -194,6 +196,15 @@ void loadFile(const char* file){
     // update UI
     ctrlUIUpdate();
     gameUIUpdate();
+}
+
+void saveFile(){
+    if(!currentGame) return;
+    
+    // try to save game
+    if(fileSave(currentGame, "temp.txt")){
+        setFile("temp.txt");
+    }
 }
 
 void setTimer(){
