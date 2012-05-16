@@ -94,6 +94,12 @@ void gameSetDisc(game_t* game, circ_t disc){
     game->target = disc.pos;
 }
 
+emitterSet_t* gameGetEmitters(game_t* game){
+    if(!game) return NULL;
+    
+    return game->emitters;
+}
+
 void gameSetEmitters(game_t* game, emitterSet_t* emitters){
     if(!game || !emitters) return;
     

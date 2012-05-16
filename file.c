@@ -30,7 +30,9 @@ static bool fileWriteInterval();
 static bool fileReadDisc();
 static bool fileWriteDisc();
 static bool fileReadEmitter(emitter_t* emitter);
+static bool fileWriteEmitter(emitter_t* emitter);
 static bool fileReadEmitters();
+static bool fileWriteEmitters();
 static bool fileReadGroup(group_t* group);
 static bool fileReadGroups();
 static bool fileReadPart(part_t* part);
@@ -330,6 +332,12 @@ static bool fileReadEmitter(emitter_t* emitter){
     return true;
 }
 
+static bool fileWriteEmitter(emitter_t* emitter){
+    if(!emitter) return false;
+    
+    return true;
+}
+
 static bool fileReadEmitters(){
     char line[LINE_BUF_LEN];
     unsigned int numbEmitters;
@@ -357,6 +365,18 @@ static bool fileReadEmitters(){
     }
     
     return true;
+}
+
+static bool fileWriteEmitters(){
+    if(!game || !file) return false;
+    
+    emitterSet_t* emitters = NULL;
+    emitters = gameGetEmitters(game);
+    
+    fprintf(file, "\n");
+    fprintf(file, "%u\n", emitterSetGetNumb(emitters));
+    
+    emitterSetForEach(emitters, fileWriteEmitter);
 }
 
 static bool fileReadGroup(group_t* group){
@@ -609,6 +629,7 @@ bool fileSave(game_t* gameSave, const char* name){
     ok = ok && fileWriteScore();
     ok = ok && fileWriteInterval();
     ok = ok && fileWriteDisc();
+    ok = ok && fileWriteEmitters();
     
     if(file){
         if(fclose(file)){

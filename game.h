@@ -24,6 +24,7 @@ extern void gameSetInterval(game_t* game, double timeDiff);
 extern void gameSetTarget(game_t* game, vect_t target);
 extern circ_t gameGetDisc(game_t* game);
 extern void gameSetDisc(game_t* game, circ_t disc);
+extern emitterSet_t* gameGetEmitters(game_t* game);
 extern void gameSetEmitters(game_t* game, emitterSet_t* emitters);
 extern void gameSetGroups(game_t* game, groupSet_t* groups);
 extern bool gameUpdate(game_t* game);

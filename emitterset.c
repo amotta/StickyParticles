@@ -43,6 +43,12 @@ emitterSet_t* emitterSetNew(unsigned int numbEmitters){
     return set;
 }
 
+unsigned int emitterSetGetNumb(emitterSet_t* set){
+    if(!set) return 0;
+    
+    return set->numb;
+}
+
 groupSet_t* emitterSetEmit(emitterSet_t* set, double deltaT){
     group_t* newGroup = NULL;
     groupSet_t* newGroups = NULL;
