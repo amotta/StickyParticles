@@ -64,6 +64,8 @@ group_t* groupCopy(group_t* group){
     copy->type = group->type;
     copy->numb = group->numb;
     copy->part = groupCopyParts(group);
+    
+    return copy;
 }
 
 part_t* groupCopyParts(group_t* group){

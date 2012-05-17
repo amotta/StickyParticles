@@ -187,10 +187,6 @@ void loadFile(const char* file){
             gameFree(originalGame);
         }
         
-        if(currentGame){
-            gameFree(currentGame);
-        }
-        
         // set new game
         originalGame = newGame;
         
@@ -203,6 +199,11 @@ void loadFile(const char* file){
 
 void resetGame(){
     if(!originalGame) return;
+    
+    // free old game
+    if(currentGame){
+        free(currentGame);
+    }
     
     // new copy
     currentGame = gameCopy(originalGame);
