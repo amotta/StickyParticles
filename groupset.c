@@ -32,6 +32,12 @@ groupSet_t* groupSetNew(){
     return set;
 }
 
+unsigned int groupSetGetNumb(groupSet_t* set){
+    if(!set) return 0;
+    
+    return set->numb;
+}
+
 void groupSetAdd(groupSet_t* set, group_t* group){
     if(!set || !group) return;
     

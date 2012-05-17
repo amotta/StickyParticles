@@ -35,6 +35,7 @@ static bool fileReadEmitters();
 static bool fileWriteEmitters();
 static bool fileReadGroup(group_t* group);
 static bool fileReadGroups();
+static bool fileWriteGroups();
 static bool fileReadPart(part_t* part);
 static void fileSetError(int errorCode);
 static void filePrintStatus();
@@ -520,6 +521,21 @@ static bool fileReadGroups(){
     return true;
 }
 
+static bool fileWriteGroups(){
+    groupSet_t* set = NULL;
+    
+    if(!game || !file) return false;
+    
+    // init
+    set = gameGetGroups(game);
+    
+    // write numb groups
+    fprintf(file, "\n");
+    fprintf(file, "%u\n", groupSetGetNumb(set));
+    
+    return true;
+}
+
 static bool fileReadPart(part_t* part){
     char line[LINE_BUF_LEN];
     vect_t pos;
@@ -644,6 +660,7 @@ bool fileSave(game_t* gameSave, const char* name){
     ok = ok && fileWriteInterval();
     ok = ok && fileWriteDisc();
     ok = ok && fileWriteEmitters();
+    ok = ok && fileWriteGroups();
     
     if(file){
         if(fclose(file)){

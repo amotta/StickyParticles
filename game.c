@@ -106,6 +106,12 @@ void gameSetEmitters(game_t* game, emitterSet_t* emitters){
     game->emitters = emitters;
 }
 
+groupSet_t* gameGetGroups(game_t* game){
+    if(!game) return NULL;
+    
+    return game->groups;
+}
+
 void gameSetGroups(game_t* game, groupSet_t* groups){
     if(!game || !groups) return;
     
