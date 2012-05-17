@@ -484,6 +484,41 @@ static bool fileReadGroup(group_t* group){
     return true;
 }
 
+static bool fileWriteGroup(group_t* group){
+    char* typeString = NULL;
+    
+    if(!group || !file) return false;
+    
+    vect_t pos = groupGetPos(group);
+    vect_t speed = groupGetSpeed(group);
+    double omega = groupGetOmega(group);
+    int type = groupGetType(group);
+    unsigned int numbParts = groupGetNumb(group);
+    
+    switch(type){
+        case GROUP_TYPE_HARMLESS:
+            typeString = "INOFFENSIF";
+            break;
+        default:
+            typeString = "DANGEREUX";
+    }
+    
+    fprintf(
+        file,
+        "%f %f %f %f %f %s %u\n",
+        pos.x, pos.y,
+        speed.x, speed.y,
+        omega,
+        typeString,
+        numbParts
+    );
+    
+    // TODO
+    // groupForEach(group, fileWritePart);
+    
+    return true;
+}
+
 static bool fileReadGroups(){
     char line[LINE_BUF_LEN];
     unsigned int numbGroups;
@@ -526,12 +561,22 @@ static bool fileWriteGroups(){
     
     if(!game || !file) return false;
     
-    // init
+    // get groups
     set = gameGetGroups(game);
     
     // write numb groups
     fprintf(file, "\n");
-    fprintf(file, "%u\n", groupSetGetNumb(set));
+    
+    if(set){
+        // write numb groups
+        fprintf(file, "%u\n", groupSetGetNumb(set));
+        
+        // write individual groups
+        groupSetForEach(set, fileWriteGroup);
+    }else{
+        // no groups
+        fprintf(file, "0\n");
+    }
     
     return true;
 }

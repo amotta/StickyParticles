@@ -50,16 +50,34 @@ group_t* groupNew(){
     return group;
 }
 
+vect_t groupGetPos(group_t* group){
+    if(!group) return vectGetNull();
+    
+    return group->pos;
+}
+
 void groupSetPos(group_t* group, vect_t pos){
     if(!group) return;
     
     group->pos = pos;
 }
 
+vect_t groupGetSpeed(group_t* group){
+    if(!group) return vectGetNull();
+    
+    return group->speed;
+}
+
 void groupSetSpeed(group_t* group, vect_t speed){
     if(!group) return;
     
     group->speed = speed;
+}
+
+double groupGetOmega(group_t* group){
+    if(!group) return 0;
+    
+    return group->omega;
 }
 
 void groupSetOmega(group_t* group, double omega){
