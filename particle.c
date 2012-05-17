@@ -36,6 +36,18 @@ part_t* partNew(){
     return part;
 }
 
+part_t* partCopy(part_t* part){
+    part_t* copy = NULL;
+    
+    if(!part) return NULL;
+    
+    // the clone wars
+    copy = partNew();
+    copy->pos = part->pos;
+    
+    return copy;
+}
+
 vect_t partGetPos(part_t* part){
     if(!part) return vectGetNull();
     

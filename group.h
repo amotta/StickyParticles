@@ -21,6 +21,7 @@
 typedef struct GROUP group_t;
 
 extern group_t* groupNew();
+extern group_t* groupCopy(group_t* group);
 
 extern vect_t groupGetPos(group_t* group);
 extern void groupSetPos(group_t* group, vect_t pos);

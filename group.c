@@ -26,6 +26,7 @@ struct GROUP {
     group_t* next;
 };
 
+static part_t* groupCopyParts(group_t* group);
 static void groupMergeType(group_t* to, group_t* from);
 static void groupMergeSpeed(group_t* to, group_t* from);
 static void groupMergeParticles(group_t* to, group_t* from);
@@ -48,6 +49,47 @@ group_t* groupNew(){
     }
     
     return group;
+}
+
+group_t* groupCopy(group_t* group){
+    group_t* copy = NULL;
+    
+    if(!group) return NULL;
+    
+    // brand new shiny group
+    copy = groupNew();
+    copy->pos = group->pos;
+    copy->speed = group->speed;
+    copy->omega = group->omega;
+    copy->type = group->type;
+    copy->numb = group->numb;
+    copy->part = groupCopyParts(group);
+}
+
+part_t* groupCopyParts(group_t* group){
+    part_t* first = NULL;
+    part_t* prevCopy = NULL;
+    part_t* curCopy = NULL;
+    part_t* curOrig = NULL;
+    
+    if(!group) return NULL;
+    
+    first = partCopy(group->part);
+    
+    // init
+    prevCopy = first;
+    curOrig = partGetNext(group->part);
+    
+    while(curOrig){
+        curCopy = partCopy(curOrig);
+        partSetNext(prevCopy, curCopy);
+        
+        // next
+        curOrig = partGetNext(curOrig);
+        prevCopy = curCopy;
+    }
+    
+    return first;
 }
 
 vect_t groupGetPos(group_t* group){

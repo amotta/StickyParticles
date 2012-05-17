@@ -44,6 +44,21 @@ emitter_t* emitterNew(){
     return emitter;
 }
 
+emitter_t* emitterCopy(emitter_t* emitter){
+    emitter_t* copy = NULL;
+    
+    if(!emitter) return NULL;
+    
+    copy = emitterNew();
+    copy->pos = emitter->pos;
+    copy->angle = emitter->angle;
+    copy->alpha = emitter->alpha;
+    copy->flow = emitter->flow;
+    copy->speed = emitter->speed;
+    
+    return copy;
+}
+
 vect_t emitterGetPos(emitter_t* emitter){
     if(!emitter) return vectGetNull();
     
