@@ -85,6 +85,12 @@ void emitterSetAlpha(emitter_t* emitter, double alpha){
     emitter->alpha = alpha;
 }
 
+double emitterGetFlow(emitter_t* emitter){
+    if(!emitter) return 0;
+    
+    return emitter->flow;
+}
+
 void emitterSetFlow(emitter_t* emitter, double flow){
     if(!emitter) return;
     

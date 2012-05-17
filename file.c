@@ -333,7 +333,21 @@ static bool fileReadEmitter(emitter_t* emitter){
 }
 
 static bool fileWriteEmitter(emitter_t* emitter){
+    if(!file) return false;
+    
+    // check emitter
     if(!emitter) return false;
+    
+    vect_t pos = emitterGetPos(emitter);
+    double alpha = emitterGetAlpha(emitter);
+    double flow = emitterGetFlow(emitter);
+    double speed = emitterGetSpeed(emitter);
+    
+    fprintf(
+        file,
+        "%f %f %f %f %f\n",
+        pos.x, pos.y, alpha, flow, speed
+    );
     
     return true;
 }
