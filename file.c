@@ -379,7 +379,7 @@ static bool fileReadGroup(group_t* group){
     
     // validate speed
     double speedLen = vectLen(speed);
-    if(speedLen > MAX_VG || speedLen < MIN_VG){
+    if(speedLen > MAX_VG){
         fileSetError(FILE_ERROR_GROUP_SPEED);
         return NULL;
     }
