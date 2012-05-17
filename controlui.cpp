@@ -28,6 +28,7 @@ extern "C" {
 enum UI_IDS {
     UI_ID_EXIT,
     UI_ID_LOAD,
+    UI_ID_RESET,
     UI_ID_SAVE,
     UI_ID_INTERVAL,
     UI_ID_STEP,
@@ -48,6 +49,7 @@ namespace {
     
     // callbacks
     void (*onLoad)(const char* file) = NULL;
+    void (*onReset)() = NULL;
     void (*onSave)() = NULL;
     void (*onPlay)() = NULL;
     
@@ -55,6 +57,7 @@ namespace {
 	GLUI* glui = NULL;
     GLUI_EditText* loadedText = NULL;
     GLUI_EditText* fileText = NULL;
+    GLUI_Button* resetButton = NULL;
     GLUI_Button* saveButton = NULL;
     
     GLUI_Panel* simPanel = NULL;
@@ -89,6 +92,10 @@ void ctrlUIInit(){
     
     // create load button
     glui->add_button_to_panel(panel, "Load", UI_ID_LOAD, ctrlUIHandleEvent);
+    
+    resetButton = glui->add_button_to_panel(
+        panel, "Reset", UI_ID_RESET, ctrlUIHandleEvent
+    );
     
     // create save button
     saveButton = glui->add_button_to_panel(
@@ -146,6 +153,10 @@ void ctrlUISetOnLoad(void (*func)(const char* file)){
     onLoad = func;
 }
 
+void ctrlUISetOnReset(void (*func)()){
+    onReset = func;
+}
+
 void ctrlUISetOnSave(void (*func)()){
     onSave = func;
 }
@@ -157,10 +168,12 @@ void ctrlUISetOnPlay(void (*func)()){
 void ctrlUISetState(int state){
     switch(state){
         case STATE_READY:
+            resetButton->disable();
             saveButton->disable();
             simPanel->disable();
             break;
         case STATE_FILE_OK:
+            resetButton->enable();
             saveButton->enable();
             simPanel->enable();
             break;
@@ -212,6 +225,13 @@ void ctrlUIHandleEvent(int id){
         case UI_ID_LOAD:
             if(onLoad){
                 onLoad(fileText->get_text());
+            }
+            
+            break;
+        
+        case UI_ID_RESET:
+            if(onReset){
+                onReset();
             }
             
             break;

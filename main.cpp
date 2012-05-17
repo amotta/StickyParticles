@@ -30,6 +30,7 @@ namespace {
     bool playing = false;
     
     char* currentFile = NULL;
+    game_t* originalGame = NULL;
     game_t* currentGame = NULL;
 }
 
@@ -45,6 +46,7 @@ static void handleTimer(int val);
 // UI handling
 static void playGame();
 static void loadFile(const char* file);
+static void resetGame();
 static void saveFile();
 
 // misc
@@ -65,6 +67,7 @@ int main(int argc, char** argv){
     ctrlUIInit();
     ctrlUISetGameWindow(gameUIGetWindow());
     ctrlUISetOnLoad(loadFile);
+    ctrlUISetOnReset(resetGame);
     ctrlUISetOnSave(saveFile);
     ctrlUISetOnPlay(playGame);
 	
@@ -180,16 +183,31 @@ void loadFile(const char* file){
         setState(STATE_FILE_OK);
         
         // free old game
+        if(originalGame){
+            gameFree(originalGame);
+        }
+        
         if(currentGame){
             gameFree(currentGame);
         }
         
         // set new game
-        currentGame = newGame;
+        originalGame = newGame;
+        
+        // reset
+        resetGame();
     }else{
         setState(STATE_FILE_NOK);
     }
+}
+
+void resetGame(){
+    if(!originalGame) return;
     
+    // new copy
+    currentGame = gameCopy(originalGame);
+    
+    // tell about new game
     ctrlUISetGame(currentGame);
     gameUISetGame(currentGame);
     
