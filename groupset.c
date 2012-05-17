@@ -32,6 +32,42 @@ groupSet_t* groupSetNew(){
     return set;
 }
 
+groupSet_t* groupSetCopy(groupSet_t* set){
+    group_t* prevCopy = NULL;
+    group_t* curCopy = NULL;
+    group_t* curOrig = NULL;
+    groupSet_t* copy = NULL;
+    
+    if(!set) return NULL;
+    
+    // new empty set
+    copy = groupSetNew();
+    copy->numb = set->numb;
+    
+    if(set->group){
+        copy->group = groupCopy(set->group);
+        
+        // init
+        prevCopy = copy->group;
+        curOrig = groupGetNext(set->group);
+        
+        // copy every group
+        while(curOrig){
+            curCopy = groupCopy(curOrig);
+            groupSetPrev(curCopy, prevCopy);
+            groupSetNext(prevCopy, curCopy);
+            
+            // next
+            curOrig = groupGetNext(curOrig);
+            prevCopy = curCopy;
+        }
+    }else{
+        copy->group = NULL;
+    }
+    
+    return copy;
+}
+
 unsigned int groupSetGetNumb(groupSet_t* set){
     if(!set) return 0;
     

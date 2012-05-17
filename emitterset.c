@@ -43,6 +43,35 @@ emitterSet_t* emitterSetNew(unsigned int numbEmitters){
     return set;
 }
 
+emitterSet_t* emitterSetCopy(emitterSet_t* set){
+    emitterSet_t* copy = NULL;
+    
+    if(!set) return NULL;
+    
+    // new empty set
+    if((copy = malloc(sizeof(emitterSet_t)))){
+        copy->numb = set->numb;
+        
+        // new array
+        if((copy->set = malloc(set->numb * sizeof(emitter_t*)))){
+            
+            // copy every emitter
+            unsigned int i;
+            for(i = 0; i < set->numb; i++){
+                copy->set[i] = emitterCopy(set->set[i]);
+            }
+        }else{
+            printf("Could not allocate memory for emitter set copy\n");
+            exit(EXIT_FAILURE);
+        }
+    }else{
+        printf("Could not allocate memory for emitter set copy\n");
+        exit(EXIT_FAILURE);
+    }
+    
+    return copy;
+}
+
 unsigned int emitterSetGetNumb(emitterSet_t* set){
     if(!set) return 0;
     

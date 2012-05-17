@@ -16,6 +16,7 @@
 typedef struct EMITTER_SET emitterSet_t;
 
 extern emitterSet_t* emitterSetNew(unsigned int numbEmitters);
+extern emitterSet_t* emitterSetCopy(emitterSet_t* set);
 extern unsigned int emitterSetGetNumb(emitterSet_t* set);
 extern groupSet_t* emitterSetEmit(emitterSet_t* set, double deltaT);
 extern bool emitterSetForEach(

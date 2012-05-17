@@ -17,6 +17,7 @@
 typedef struct GAME game_t;
 
 extern game_t* gameNew();
+extern game_t* gameCopy(game_t* game);
 
 extern unsigned int gameGetScore(const game_t* game);
 extern void gameSetScore(game_t* game, unsigned int score);

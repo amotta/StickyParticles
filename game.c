@@ -51,6 +51,25 @@ game_t* gameNew(){
     return game;
 }
 
+game_t* gameCopy(game_t* game){
+    game_t* copy = NULL;
+    
+    if(!game) return NULL;
+    
+    // create new empty game
+    copy = gameNew();
+    
+    // copy values
+    copy->score = game->score;
+    copy->interval = game->interval;
+    copy->target = game->target;
+    copy->disc = game->disc;
+    copy->emitters = emitterSetCopy(game->emitters);
+    copy->groups = groupSetCopy(game->groups);
+    
+    return copy;
+}
+
 unsigned int gameGetScore(const game_t* game){
     if(!game) return 0;
     
