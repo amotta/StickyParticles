@@ -37,6 +37,7 @@ static bool fileReadGroup(group_t* group);
 static bool fileReadGroups();
 static bool fileWriteGroups();
 static bool fileReadPart(part_t* part);
+static bool fileWritePart(part_t* part);
 static void fileSetError(int errorCode);
 static void filePrintStatus();
 
@@ -383,9 +384,11 @@ static bool fileReadEmitters(){
 }
 
 static bool fileWriteEmitters(){
+    emitterSet_t* emitters = NULL;
+    
     if(!game || !file) return false;
     
-    emitterSet_t* emitters = NULL;
+    // init
     emitters = gameGetEmitters(game);
     
     fprintf(file, "\n");
@@ -513,8 +516,10 @@ static bool fileWriteGroup(group_t* group){
         numbParts
     );
     
-    // TODO
-    // groupForEach(group, fileWritePart);
+    // be efficient as always!
+    if(numbParts > 1){
+        groupForEach(group, fileWritePart);
+    }
     
     return true;
 }
@@ -605,6 +610,18 @@ static bool fileReadPart(part_t* part){
         fileSetError(FILE_ERROR_PART_POS);
         return false;
     }
+    
+    return true;
+}
+
+static bool fileWritePart(part_t* part){
+    if(!part || !file) return false;
+    
+    // init
+    vect_t pos = partGetPos(part);
+    
+    // write to file
+    fprintf(file, "%f %f\n", pos.x, pos.y);
     
     return true;
 }
