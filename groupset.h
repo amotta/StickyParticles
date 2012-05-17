@@ -16,6 +16,7 @@
 typedef struct GROUP_SET groupSet_t;
 
 extern groupSet_t* groupSetNew();
+extern unsigned int groupSetGetNumb(groupSet_t* set);
 extern void groupSetAdd(groupSet_t* set, group_t* group);
 extern void groupSetDel(groupSet_t* set, group_t* group);
 extern void groupSetMerge(groupSet_t* to, groupSet_t* from);

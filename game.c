@@ -81,6 +81,12 @@ void gameSetTarget(game_t* game, vect_t target){
     game->target = target;
 }
 
+circ_t gameGetDisc(game_t* game){
+    if(!game) return circGetNull();
+    
+    return game->disc;
+}
+
 void gameSetDisc(game_t* game, circ_t disc){
     if(!game) return;
     
@@ -88,10 +94,22 @@ void gameSetDisc(game_t* game, circ_t disc){
     game->target = disc.pos;
 }
 
+emitterSet_t* gameGetEmitters(game_t* game){
+    if(!game) return NULL;
+    
+    return game->emitters;
+}
+
 void gameSetEmitters(game_t* game, emitterSet_t* emitters){
     if(!game || !emitters) return;
     
     game->emitters = emitters;
+}
+
+groupSet_t* gameGetGroups(game_t* game){
+    if(!game) return NULL;
+    
+    return game->groups;
 }
 
 void gameSetGroups(game_t* game, groupSet_t* groups){

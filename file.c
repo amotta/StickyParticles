@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "circle.h"
 #include "constants.h"
 #include "emitter.h"
 #include "emitterset.h"
@@ -23,12 +24,18 @@
 static bool fileSkip();
 static bool fileReadLine(char* buf, int bufLen);
 static bool fileReadScore();
+static bool fileWriteScore();
 static bool fileReadInterval();
+static bool fileWriteInterval();
 static bool fileReadDisc();
+static bool fileWriteDisc();
 static bool fileReadEmitter(emitter_t* emitter);
+static bool fileWriteEmitter(emitter_t* emitter);
 static bool fileReadEmitters();
+static bool fileWriteEmitters();
 static bool fileReadGroup(group_t* group);
 static bool fileReadGroups();
+static bool fileWriteGroups();
 static bool fileReadPart(part_t* part);
 static void fileSetError(int errorCode);
 static void filePrintStatus();
@@ -184,6 +191,14 @@ static bool fileReadScore(){
     return true;
 }
 
+static bool fileWriteScore(){
+    if(!game || !file) return false;
+    
+    fprintf(file, "%u\n", gameGetScore(game));
+    
+    return true;
+}
+
 static bool fileReadInterval(){
     char line[LINE_BUF_LEN];
     double interval;
@@ -207,6 +222,14 @@ static bool fileReadInterval(){
     }
     
     gameSetInterval(game, interval);
+    
+    return true;
+}
+
+static bool fileWriteInterval(){
+    if(!game || !file) return false;
+    
+    fprintf(file, "%f\n", gameGetInterval(game));
     
     return true;
 }
@@ -242,6 +265,17 @@ static bool fileReadDisc(){
     }
     
     gameSetDisc(game, disc);
+    
+    return true;
+}
+
+static bool fileWriteDisc(){
+    if(!game || !file) return false;
+    
+    circ_t disc;
+    disc = gameGetDisc(game);
+    
+    fprintf(file, "%f %f\n", disc.pos.x, disc.pos.y);
     
     return true;
 }
@@ -299,6 +333,26 @@ static bool fileReadEmitter(emitter_t* emitter){
     return true;
 }
 
+static bool fileWriteEmitter(emitter_t* emitter){
+    if(!file) return false;
+    
+    // check emitter
+    if(!emitter) return false;
+    
+    vect_t pos = emitterGetPos(emitter);
+    double alpha = emitterGetAlpha(emitter);
+    double flow = emitterGetFlow(emitter);
+    double speed = emitterGetSpeed(emitter);
+    
+    fprintf(
+        file,
+        "%f %f %f %f %f\n",
+        pos.x, pos.y, alpha, flow, speed
+    );
+    
+    return true;
+}
+
 static bool fileReadEmitters(){
     char line[LINE_BUF_LEN];
     unsigned int numbEmitters;
@@ -326,6 +380,18 @@ static bool fileReadEmitters(){
     }
     
     return true;
+}
+
+static bool fileWriteEmitters(){
+    if(!game || !file) return false;
+    
+    emitterSet_t* emitters = NULL;
+    emitters = gameGetEmitters(game);
+    
+    fprintf(file, "\n");
+    fprintf(file, "%u\n", emitterSetGetNumb(emitters));
+    
+    emitterSetForEach(emitters, fileWriteEmitter);
 }
 
 static bool fileReadGroup(group_t* group){
@@ -418,6 +484,41 @@ static bool fileReadGroup(group_t* group){
     return true;
 }
 
+static bool fileWriteGroup(group_t* group){
+    char* typeString = NULL;
+    
+    if(!group || !file) return false;
+    
+    vect_t pos = groupGetPos(group);
+    vect_t speed = groupGetSpeed(group);
+    double omega = groupGetOmega(group);
+    int type = groupGetType(group);
+    unsigned int numbParts = groupGetNumb(group);
+    
+    switch(type){
+        case GROUP_TYPE_HARMLESS:
+            typeString = "INOFFENSIF";
+            break;
+        default:
+            typeString = "DANGEREUX";
+    }
+    
+    fprintf(
+        file,
+        "%f %f %f %f %f %s %u\n",
+        pos.x, pos.y,
+        speed.x, speed.y,
+        omega,
+        typeString,
+        numbParts
+    );
+    
+    // TODO
+    // groupForEach(group, fileWritePart);
+    
+    return true;
+}
+
 static bool fileReadGroups(){
     char line[LINE_BUF_LEN];
     unsigned int numbGroups;
@@ -450,6 +551,31 @@ static bool fileReadGroups(){
         if(!fileReadGroup(group)){
             return false;
         }
+    }
+    
+    return true;
+}
+
+static bool fileWriteGroups(){
+    groupSet_t* set = NULL;
+    
+    if(!game || !file) return false;
+    
+    // get groups
+    set = gameGetGroups(game);
+    
+    // write numb groups
+    fprintf(file, "\n");
+    
+    if(set){
+        // write numb groups
+        fprintf(file, "%u\n", groupSetGetNumb(set));
+        
+        // write individual groups
+        groupSetForEach(set, fileWriteGroup);
+    }else{
+        // no groups
+        fprintf(file, "0\n");
     }
     
     return true;
@@ -528,8 +654,12 @@ game_t* fileRead(const char* name){
     ok = ok && fileReadEmitters();
     ok = ok && fileReadGroups();
     
-    if(file && fclose(file)){
-        fileSetError(FILE_ERROR_FCLOSE);
+    if(file){
+        if(fclose(file)){
+            fileSetError(FILE_ERROR_FCLOSE);
+        }
+        
+        file = NULL;
     }
     
     if(debug){
@@ -547,6 +677,51 @@ game_t* fileRead(const char* name){
         return NULL;
     }else{
         return game;
+    }
+}
+
+bool fileSave(game_t* gameSave, const char* name){
+    bool ok = true;
+    
+    // anything there?
+    if(!gameSave || !name) return false;
+    
+    // Are we already workin'?
+    if(file) return false;
+    
+    // prepare
+    game = gameSave;
+    error = FILE_OK;
+    
+    // open file
+    file = fopen(name, "w");
+    
+    if(!file){
+        ok = false;
+        fileSetError(FILE_ERROR_FOPEN);
+    }
+    
+    ok = ok && fileWriteScore();
+    ok = ok && fileWriteInterval();
+    ok = ok && fileWriteDisc();
+    ok = ok && fileWriteEmitters();
+    ok = ok && fileWriteGroups();
+    
+    if(file){
+        if(fclose(file)){
+            fileSetError(FILE_ERROR_FCLOSE);
+        }
+        
+        file = NULL;
+    }
+    
+    // free pointer
+    game = NULL;
+    
+    if(error){
+        return false;
+    }else{
+        return true;
     }
 }
 

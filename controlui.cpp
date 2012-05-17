@@ -48,6 +48,7 @@ namespace {
     
     // callbacks
     void (*onLoad)(const char* file) = NULL;
+    void (*onSave)() = NULL;
     void (*onPlay)() = NULL;
     
     // GLUI
@@ -145,6 +146,10 @@ void ctrlUISetOnLoad(void (*func)(const char* file)){
     onLoad = func;
 }
 
+void ctrlUISetOnSave(void (*func)()){
+    onSave = func;
+}
+
 void ctrlUISetOnPlay(void (*func)()){
     onPlay = func;
 }
@@ -212,9 +217,10 @@ void ctrlUIHandleEvent(int id){
             break;
             
         case UI_ID_SAVE:
-            // TODO
-            // gameSaveCurrent(fileText->get_text());
-            printf("Save button pressed\n");
+            if(onSave){
+                onSave();
+            }
+            
             break;
             
         case UI_ID_INTERVAL:

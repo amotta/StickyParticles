@@ -21,9 +21,16 @@
 typedef struct GROUP group_t;
 
 extern group_t* groupNew();
+
+extern vect_t groupGetPos(group_t* group);
 extern void groupSetPos(group_t* group, vect_t pos);
+
+extern vect_t groupGetSpeed(group_t* group);
 extern void groupSetSpeed(group_t* group, vect_t speed);
+
+extern double groupGetOmega(group_t* group);
 extern void groupSetOmega(group_t* group, double omega);
+
 extern int groupGetType(group_t* group);
 extern void groupSetType(group_t* group, unsigned int type);
 extern unsigned int groupGetNumb(group_t* group);
