@@ -277,15 +277,22 @@ void groupMove(group_t* group, double deltaT){
     
     // run
     while(cur){
-        relPos = vectSub(
-            partGetPos(cur),
-            group->pos
-        );
+        diff = trans;
         
-        diff = vectAdd(
-            trans,
-            vectRotate(relPos, group->omega * deltaT)
-        );
+        if(group->omega){
+            relPos = vectSub(
+                partGetPos(cur),
+                group->pos
+            );
+            
+            diff = vectAdd(
+                diff,
+                vectRotate(
+                    relPos,
+                    group->omega * deltaT
+                )
+            );
+        }
         
         partSetPos(
             cur,
