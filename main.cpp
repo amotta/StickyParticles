@@ -203,6 +203,7 @@ void resetGame(){
     // free old game
     if(currentGame){
         free(currentGame);
+        currentGame = NULL;
     }
     
     // new copy
@@ -256,6 +257,7 @@ void setFile(const char* file){
         // free old buffer
         if(currentFile){
             free(currentFile);
+            currentFile = NULL;
         }
         
         // update current file
