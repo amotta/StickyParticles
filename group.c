@@ -124,6 +124,18 @@ double groupGetOmega(group_t* group){
     return group->omega;
 }
 
+vect_t groupGetOmegaVect(group_t* group){
+    if(!group) return vectGetNull();
+    
+    vect_t vect = {
+        .x = 0,
+        .y = 0,
+        .z = group->omega
+    };
+    
+    return vect;
+}
+
 void groupSetOmega(group_t* group, double omega){
     if(!group) return;
     
@@ -197,8 +209,8 @@ void groupMergeSpeed(group_t* to, group_t* from){
     if(!to || !from) return;
     
     to->speed = vectAdd(
-        vectMul(to->speed, (double) to->numb / (to->numb + from->numb)),
-        vectMul(from->speed, (double) from->numb / (to->numb + from->numb))
+        vectScale(to->speed, (double) to->numb / (to->numb + from->numb)),
+        vectScale(from->speed, (double) from->numb / (to->numb + from->numb))
     );
 }
 
@@ -262,35 +274,58 @@ bool groupForEach(group_t* group, bool (*handle)(part_t* part)){
 }
 
 void groupMove(group_t* group, double deltaT){
-    vect_t diff;
-    vect_t newPos;
     part_t* cur = NULL;
-    part_t* next = NULL;
+    vect_t trans;
+    vect_t omega;
+    vect_t speed;
+    vect_t relPos;
     
     if(!group) return;
     
     // group dislocation
-    diff = vectMul(group->speed, deltaT);
+    trans = group->speed;
+    omega = groupGetOmegaVect(group);
 
     // init
-    next = group->part;
+    cur = group->part;
     
     // run
-    while(next){
-        cur = next;
-        next = partGetNext(cur);
+    while(cur){
+        relPos = vectSub(
+            partGetPos(cur),
+            group->pos
+        );
+        
+        speed = vectAdd(
+            trans,
+            vectMul(
+                omega,
+                relPos
+            )
+        );
+        
+        // calculate speed
+        printf("Omega: %f %f %f\n", omega.x, omega.y, omega.z);
+        printf("Pos: %f %f %f\n", relPos.x, relPos.y, relPos.z);
+        printf("Speed: %f %f %f\n", speed.x, speed.y, speed.z);
         
         partSetPos(
             cur,
             vectAdd(
-                diff,
-                partGetPos(cur)
+                partGetPos(cur),
+                vectScale(speed, deltaT)
             )
         );
+        
+        // check out next
+        cur = partGetNext(cur);
     }
     
     // update group pos
-    group->pos = vectAdd(group->pos, diff);
+    group->pos = vectAdd(
+        group->pos,
+        vectScale(trans, deltaT)
+    );
 }
 
 bool groupCheckGroup(group_t* groupOne, group_t* groupTwo){

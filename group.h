@@ -30,6 +30,7 @@ extern vect_t groupGetSpeed(group_t* group);
 extern void groupSetSpeed(group_t* group, vect_t speed);
 
 extern double groupGetOmega(group_t* group);
+extern vect_t groupGetOmegaVect(group_t* group);
 extern void groupSetOmega(group_t* group, double omega);
 
 extern int groupGetType(group_t* group);

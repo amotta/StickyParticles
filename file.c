@@ -448,7 +448,7 @@ static bool fileReadGroup(group_t* group){
     double speedLen = vectLen(speed);
     if(speedLen > MAX_VG){
         // correct speed length
-        speed = vectMul(speed, MAX_VG / speedLen);
+        speed = vectScale(speed, MAX_VG / speedLen);
         
         // show warning
         printf(
