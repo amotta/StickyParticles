@@ -50,6 +50,19 @@ vect_t vectScale(vect_t vect, double factor){
     return res;
 }
 
+vect_t vectRotate(vect_t vect, double alpha){
+    double curCos = cos(alpha);
+    double curSin = sin(alpha);
+    
+    vect_t res = {
+        .x = vect.x * curCos - vect.y * curSin,
+        .y = vect.x * curSin + vect.y * curCos,
+        .z = vect.z
+    };
+    
+    return res;
+}
+
 double vectLen(vect_t vect){
     return sqrt(vect.x * vect.x + vect.y * vect.y + vect.z * vect.z);
 }

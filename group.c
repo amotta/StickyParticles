@@ -276,15 +276,13 @@ bool groupForEach(group_t* group, bool (*handle)(part_t* part)){
 void groupMove(group_t* group, double deltaT){
     part_t* cur = NULL;
     vect_t trans;
-    vect_t omega;
-    vect_t speed;
+    vect_t diff;
     vect_t relPos;
     
     if(!group) return;
     
-    // group dislocation
-    trans = group->speed;
-    omega = groupGetOmegaVect(group);
+    // translation
+    trans = vectScale(group->speed, deltaT);
 
     // init
     cur = group->part;
@@ -296,25 +294,14 @@ void groupMove(group_t* group, double deltaT){
             group->pos
         );
         
-        speed = vectAdd(
+        diff = vectAdd(
             trans,
-            vectMul(
-                omega,
-                relPos
-            )
+            vectRotate(relPos, group->omega * deltaT)
         );
-        
-        // calculate speed
-        printf("Omega: %f %f %f\n", omega.x, omega.y, omega.z);
-        printf("Pos: %f %f %f\n", relPos.x, relPos.y, relPos.z);
-        printf("Speed: %f %f %f\n", speed.x, speed.y, speed.z);
         
         partSetPos(
             cur,
-            vectAdd(
-                partGetPos(cur),
-                vectScale(speed, deltaT)
-            )
+            vectAdd(group->pos, diff)
         );
         
         // check out next
@@ -322,10 +309,7 @@ void groupMove(group_t* group, double deltaT){
     }
     
     // update group pos
-    group->pos = vectAdd(
-        group->pos,
-        vectScale(trans, deltaT)
-    );
+    group->pos = vectAdd(group->pos, trans);
 }
 
 bool groupCheckGroup(group_t* groupOne, group_t* groupTwo){
