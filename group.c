@@ -124,18 +124,6 @@ double groupGetOmega(group_t* group){
     return group->omega;
 }
 
-vect_t groupGetOmegaVect(group_t* group){
-    if(!group) return vectGetNull();
-    
-    vect_t vect = {
-        .x = 0,
-        .y = 0,
-        .z = group->omega
-    };
-    
-    return vect;
-}
-
 void groupSetOmega(group_t* group, double omega){
     if(!group) return;
     
