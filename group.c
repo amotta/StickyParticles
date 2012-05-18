@@ -277,8 +277,6 @@ void groupMove(group_t* group, double deltaT){
     
     // run
     while(cur){
-        diff = trans;
-        
         if(group->omega){
             relPos = vectSub(
                 partGetPos(cur),
@@ -286,18 +284,23 @@ void groupMove(group_t* group, double deltaT){
             );
             
             diff = vectAdd(
-                diff,
+                trans,
                 vectRotate(
                     relPos,
                     group->omega * deltaT
                 )
             );
+            
+            partSetPos(
+                cur,
+                vectAdd(group->pos, diff)
+            );
+        }else{
+            partSetPos(
+                cur,
+                vectAdd(partGetPos(cur), trans)
+            );
         }
-        
-        partSetPos(
-            cur,
-            vectAdd(group->pos, diff)
-        );
         
         // check out next
         cur = partGetNext(cur);
