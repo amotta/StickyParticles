@@ -66,7 +66,6 @@ enum FILE_ERROR_CODES {
     FILE_ERROR_EMITTERS,
     FILE_ERROR_GROUPTYPE,
     FILE_ERROR_GROUP,
-    FILE_ERROR_GROUP_SPEED,
     FILE_ERROR_GROUPS,
     FILE_ERROR_PART,
     FILE_ERROR_PART_POS,
@@ -87,7 +86,6 @@ static char* FILE_ERROR_MESSAGES[] = {
     "Could not read emitter",
     "Emitter angle is invalid",
     "Position of emitter is invalid",
-    "Speed of emitter is invalid",
     "Could not read number of emitters",
     "Could not read group type",
     "Could not read group",
@@ -449,8 +447,15 @@ static bool fileReadGroup(group_t* group){
     // validate speed
     double speedLen = vectLen(speed);
     if(speedLen > MAX_VG){
-        fileSetError(FILE_ERROR_GROUP_SPEED);
-        return NULL;
+        // correct speed length
+        speed = vectMul(speed, MAX_VG / speedLen);
+        
+        // show warning
+        printf(
+            " WARNING on line %u:\n"
+            "  Group too fast. Corrected speed\n",
+            lineNumber
+        );
     }
     
     groupSetPos(group, pos);
@@ -631,11 +636,11 @@ void fileSetError(int errorCode){
 }
 
 void filePrintStatus(){
-    printf("FILE %s\n", fileName);
-    
     if(error){
         printf(
-            " ERROR on line %u: %s\n", lineNumber, FILE_ERROR_MESSAGES[error]
+            " ERROR on line %u: %s\n",
+            lineNumber,
+            FILE_ERROR_MESSAGES[error]
         );
     }else{
         printf(" VALID\n");
@@ -653,8 +658,11 @@ game_t* fileRead(const char* name){
     if(debug){
         printf(
             "\n"
-            "File: %s\n", fileName
+            "File: %s\n",
+            fileName
         );
+    }else{
+        printf("FILE %s\n", fileName);
     }
     
     // try to open file
