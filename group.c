@@ -264,7 +264,6 @@ bool groupForEach(group_t* group, bool (*handle)(part_t* part)){
 void groupMove(group_t* group, double deltaT){
     part_t* cur = NULL;
     vect_t trans;
-    vect_t diff;
     vect_t relPos;
     
     if(!group) return;
@@ -277,30 +276,30 @@ void groupMove(group_t* group, double deltaT){
     
     // run
     while(cur){
+        // relative position
+        relPos = vectSub(
+            group->pos,
+            partGetPos(cur)
+        );
+        
+        // rotate if needed
         if(group->omega){
-            relPos = vectSub(
-                partGetPos(cur),
-                group->pos
-            );
-            
-            diff = vectAdd(
-                trans,
-                vectRotate(
-                    relPos,
-                    group->omega * deltaT
-                )
-            );
-            
-            partSetPos(
-                cur,
-                vectAdd(group->pos, diff)
-            );
-        }else{
-            partSetPos(
-                cur,
-                vectAdd(partGetPos(cur), trans)
+            relPos = vectRotate(
+                relPos,
+                group->omega * deltaT
             );
         }
+        
+        // set new position
+        partSetPos(
+            cur,
+            vectAdd(group->pos,
+                vectAdd(
+                    relPos,
+                    trans
+                )
+            )
+        );
         
         // check out next
         cur = partGetNext(cur);
