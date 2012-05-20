@@ -19,6 +19,7 @@ struct GROUP {
     vect_t pos;
     vect_t speed;
     double omega;
+    double momentum;
     unsigned int type;
     unsigned int numb;
     part_t* part;
@@ -28,8 +29,10 @@ struct GROUP {
 
 static part_t* groupCopyParts(group_t* group);
 static void groupMergeType(group_t* to, group_t* from);
+static void groupMergeMomentum(group_t* to, group_t* from);
 static void groupMergeSpeed(group_t* to, group_t* from);
 static void groupMergeParticles(group_t* to, group_t* from);
+static void groupMergeOmega(group_t* to);
 
 group_t* groupNew(){
     group_t* group = NULL;
@@ -38,6 +41,7 @@ group_t* groupNew(){
         group->pos = vectGetNull();
         group->speed = vectGetNull();
         group->omega = 0;
+        group->momentum = 0;
         group->type = 0;
         group->numb = 0;
         group->part = NULL;
@@ -61,6 +65,7 @@ group_t* groupCopy(group_t* group){
     copy->pos = group->pos;
     copy->speed = group->speed;
     copy->omega = group->omega;
+    copy->momentum = group->momentum;
     copy->type = group->type;
     copy->numb = group->numb;
     copy->part = groupCopyParts(group);
@@ -193,12 +198,41 @@ void groupMergeType(group_t* to, group_t* from){
     }
 }
 
+void groupMergeMomentum(group_t* to, group_t* from){
+    if(!to || !from ) return;
+    
+    vect_t newPos;
+    vect_t relPos;
+    double toMomentum;
+    double fromMomentum;
+    double diffMomentum;
+    
+    // calc new position
+    newPos = vectAdd(
+        vectScale(to->pos, (double) to->numb / (to->numb + from->numb)),
+        vectScale(from->pos, (double) from->numb / (to->numb + from->numb))
+    );
+    
+    // calculate toMomentum
+    relPos = vectSub(newPos, to->pos);
+    diffMomentum = relPos.x * to->speed.y - relPos.y * to->speed.x;
+    toMomentum = to->momentum + to->numb * diffMomentum;
+    
+    // calculate fromMomentum
+    relPos = vectSub(newPos, from->pos);
+    diffMomentum = relPos.x * from->speed.y - relPos.y * from->speed.x;
+    fromMomentum = from->momentum + from->numb * diffMomentum;
+    
+    to->pos = newPos;
+    to->momentum = toMomentum + fromMomentum;
+}
+
 void groupMergeSpeed(group_t* to, group_t* from){
     if(!to || !from) return;
     
     to->speed = vectAdd(
-        vectMul(to->speed, (double) to->numb / (to->numb + from->numb)),
-        vectMul(from->speed, (double) from->numb / (to->numb + from->numb))
+        vectScale(to->speed, (double) to->numb / (to->numb + from->numb)),
+        vectScale(from->speed, (double) from->numb / (to->numb + from->numb))
     );
 }
 
@@ -231,12 +265,43 @@ void groupMergeParticles(group_t* to, group_t* from){
     from->part = NULL;
 }
 
+void groupMergeOmega(group_t* to){
+    part_t* cur = NULL;
+    vect_t dist;
+    double distSqSum;
+    
+    if(!to) return;
+    
+    // init
+    distSqSum = 0;
+    cur = to->part;
+    
+    // calc distSqSum
+    while(cur){
+        dist = vectSub(
+            to->pos,
+            partGetPos(cur)
+        );
+        
+        // update distSqSum
+        distSqSum += dist.x * dist.x + dist.y * dist.y;
+        
+        // next
+        cur = partGetNext(cur);
+    }
+    
+    // calc new omega
+    to->omega = to->momentum / distSqSum;
+}
+
 void groupMerge(group_t* to, group_t* from){
     if(!to || !from) return;
     
     groupMergeType(to, from);
+    groupMergeMomentum(to, from);
     groupMergeSpeed(to, from);
     groupMergeParticles(to, from);
+    groupMergeOmega(to);
 }
 
 bool groupForEach(group_t* group, bool (*handle)(part_t* part)){
@@ -262,35 +327,51 @@ bool groupForEach(group_t* group, bool (*handle)(part_t* part)){
 }
 
 void groupMove(group_t* group, double deltaT){
-    vect_t diff;
-    vect_t newPos;
     part_t* cur = NULL;
-    part_t* next = NULL;
+    vect_t trans;
+    vect_t relPos;
     
     if(!group) return;
     
-    // group dislocation
-    diff = vectMul(group->speed, deltaT);
+    // translation
+    trans = vectScale(group->speed, deltaT);
 
     // init
-    next = group->part;
+    cur = group->part;
     
     // run
-    while(next){
-        cur = next;
-        next = partGetNext(cur);
+    while(cur){
+        // relative position
+        relPos = vectSub(
+            group->pos,
+            partGetPos(cur)
+        );
         
+        // rotate if needed
+        if(group->omega){
+            relPos = vectRotate(
+                relPos,
+                group->omega * deltaT
+            );
+        }
+        
+        // set new position
         partSetPos(
             cur,
-            vectAdd(
-                diff,
-                partGetPos(cur)
+            vectAdd(group->pos,
+                vectAdd(
+                    relPos,
+                    trans
+                )
             )
         );
+        
+        // check out next
+        cur = partGetNext(cur);
     }
     
     // update group pos
-    group->pos = vectAdd(group->pos, diff);
+    group->pos = vectAdd(group->pos, trans);
 }
 
 bool groupCheckGroup(group_t* groupOne, group_t* groupTwo){
