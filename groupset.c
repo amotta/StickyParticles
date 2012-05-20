@@ -88,7 +88,7 @@ void groupSetAdd(groupSet_t* set, group_t* group){
 void groupSetDel(groupSet_t* set, group_t* group){
     if(!set || !group) return;
     
-    // correct pointer if needed
+    // correct pointer
     if(set->group == group){
         set->group = groupGetNext(group);
     }
@@ -98,7 +98,7 @@ void groupSetDel(groupSet_t* set, group_t* group){
     group = NULL;
     
     // correct number
-    set->numb -= 1;
+    set->numb--;
 }
 
 void groupSetMerge(groupSet_t* to, groupSet_t* from){
@@ -173,15 +173,16 @@ void groupSetCollide(groupSet_t* set){
             
             // check for collision
             if(groupCheckGroup(groupOne, groupTwo)){
+                
+                // correct groupOneNext
+                if(groupOneNext == groupTwo){
+                    groupOneNext = groupTwoNext;
+                }
+                
                 if(
                     groupGetType(groupOne) == GROUP_TYPE_DANGEROUS
                     && groupGetType(groupTwo) == GROUP_TYPE_DANGEROUS
                 ){
-                    // correct groupOneNext
-                    if(groupOneNext == groupTwo){
-                        groupOneNext = groupTwoNext;
-                    }
-                    
                     groupSetDel(set, groupOne);
                     groupOne = NULL;
                     
@@ -220,7 +221,6 @@ int groupSetCheckDisc(groupSet_t* set, circ_t disc){
         next = groupGetNext(cur);
         
         if(groupCheckCirc(cur, disc)){
-            
             switch(groupGetType(cur)){
                 case GROUP_TYPE_HARMLESS:
                     // add points
