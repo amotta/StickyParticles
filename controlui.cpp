@@ -37,9 +37,11 @@ enum UI_IDS {
 
 const char* STATE_MESSAGES[] = {
     (const char*) "Ready",
+    (const char*) "Reset",
     (const char*) "File OK",
     (const char*) "File NOK",
     (const char*) "Playing",
+    (const char*) "Stopped",
     (const char*) "Game Over"
 };
 
@@ -172,6 +174,9 @@ void ctrlUISetState(int state){
             saveButton->disable();
             simPanel->disable();
             break;
+        case STATE_RESET:
+            simPanel->enable();
+            break;
         case STATE_FILE_OK:
             resetButton->enable();
             saveButton->enable();
@@ -183,6 +188,8 @@ void ctrlUISetState(int state){
         case STATE_PLAYING:
             simPanel->disable();
             break;
+        case STATE_STOPPED:
+            simPanel->enable();
         case STATE_GAME_OVER:
             // nothing
             break;

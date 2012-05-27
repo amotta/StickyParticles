@@ -6,13 +6,13 @@
 //
 
 #include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #ifdef __APPLE__
-    #include <GLUI/glui.h>
     #include <GLUT/glut.h>
 #else
-    #include <GL/glui.h>
     #include <GL/glut.h>
 #endif
 
@@ -27,7 +27,6 @@ extern "C" {
 
 namespace {
     int state = STATE_READY;
-    bool playing = false;
     
     char* currentFile = NULL;
     game_t* originalGame = NULL;
@@ -37,19 +36,18 @@ namespace {
 // arg handling
 static bool isOpt(char* arg);
 static void handleOpt(char* arg);
-
-// event handling
 static void handleKeyboard(unsigned char key, int x, int y);
-static void handleSpecial(int key, int x, int y);
 static void handleTimer(int val);
 
 // UI handling
 static void playGame();
+static void stopGame();
 static void loadFile(const char* file);
 static void resetGame();
 static void saveFile();
 
 // misc
+static void copyGame();
 static void setTimer();
 static void setState(int state);
 static void setFile(const char* file);
@@ -70,10 +68,9 @@ int main(int argc, char** argv){
     ctrlUISetOnReset(resetGame);
     ctrlUISetOnSave(saveFile);
     ctrlUISetOnPlay(playGame);
-	
-    // set idle listener
-    GLUI_Master.set_glutKeyboardFunc(handleKeyboard);
-    GLUI_Master.set_glutSpecialFunc(handleSpecial);
+    
+    // register keyboard callback
+    glutKeyboardFunc(handleKeyboard);
     
     // set status
     setState(STATE_READY);
@@ -120,17 +117,42 @@ void handleOpt(char* arg){
 }
 
 void handleKeyboard(unsigned char key, int x, int y){
-    printf("Key #%d pressed\n", key);
-}
-
-void handleSpecial(int key, int x, int y){
-    printf("Special key #%d pressed \n", key);
+    switch(key){
+        case 'q':
+            exit(EXIT_SUCCESS);
+            break;
+            
+        case 'j':
+            playGame();
+            break;
+            
+        case 'e':
+            stopGame();
+            break;
+            
+        case 's':
+            printf("STEP\n");
+            break;
+            
+        case 'r':
+            resetGame();
+            break;
+            
+        case 'w':
+            saveFile();
+            break;
+            
+        case 't':
+            printf("LOAD TEMP\n");
+            break;
+    }
 }
 
 void handleTimer(int val){
     bool update;
     
-    if(!playing) return;
+    if(!currentGame) return;
+    if(state != STATE_PLAYING) return;
     
     // prepare timer
     setTimer();
@@ -140,9 +162,6 @@ void handleTimer(int val){
     
     // are you boss enough?
     if(!update){
-        // ooops, game over
-        playing = false;
-        
         // celebrate end of game
         setState(STATE_GAME_OVER);
     }
@@ -153,14 +172,25 @@ void handleTimer(int val){
 }
 
 void playGame(){
-    // set flag
-    playing = true;
+    if(!currentGame) return;
+    if(
+        state != STATE_RESET
+        && state != STATE_FILE_OK
+        && state != STATE_STOPPED
+    ) return; 
     
     // change state
     setState(STATE_PLAYING);
     
     // prepare timer
     setTimer();
+}
+
+void stopGame(){
+    if(state != STATE_PLAYING) return;
+    
+    // stop game
+    setState(STATE_STOPPED);
 }
 
 void loadFile(const char* file){
@@ -176,28 +206,35 @@ void loadFile(const char* file){
         // set new file
         setFile(file);
         
-        // stop old game ...
-        playing = false;
-        
         // ... and change state
         setState(STATE_FILE_OK);
         
         // free old game
         if(originalGame){
             gameFree(originalGame);
+            originalGame = NULL;
         }
         
         // set new game
         originalGame = newGame;
         
-        // reset
-        resetGame();
+        // copy game
+        copyGame();
     }else{
         setState(STATE_FILE_NOK);
     }
 }
 
 void resetGame(){
+    if(!originalGame) return;
+    
+    // change state
+    setState(STATE_RESET);
+    
+    copyGame();
+}
+
+void copyGame(){
     if(!originalGame) return;
     
     // free old game
