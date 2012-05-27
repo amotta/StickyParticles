@@ -41,6 +41,8 @@ static void handleTimer(int val);
 
 // UI handling
 static void playGame();
+static void stepGame();
+static void updateGame();
 static void stopGame();
 static void loadFile(const char* file);
 static void resetGame();
@@ -131,7 +133,7 @@ void handleKeyboard(unsigned char key, int x, int y){
             break;
             
         case 's':
-            printf("STEP\n");
+            stepGame();
             break;
             
         case 'r':
@@ -149,26 +151,14 @@ void handleKeyboard(unsigned char key, int x, int y){
 }
 
 void handleTimer(int val){
-    bool update;
-    
     if(!currentGame) return;
     if(state != STATE_PLAYING) return;
     
     // prepare timer
     setTimer();
     
-    // let's move 
-    update = gameUpdate(currentGame);
-    
-    // are you boss enough?
-    if(!update){
-        // celebrate end of game
-        setState(STATE_GAME_OVER);
-    }
-    
-    // update UI
-    ctrlUIUpdate();
-    gameUIUpdate();
+    // simulate delta T
+    updateGame();
 }
 
 void playGame(){
@@ -184,6 +174,36 @@ void playGame(){
     
     // prepare timer
     setTimer();
+}
+
+void stepGame(){
+    if(!currentGame) return;
+    if(
+       state != STATE_RESET
+       && state != STATE_FILE_OK
+       && state != STATE_STOPPED
+    ) return;
+    
+    updateGame();
+}
+
+void updateGame(){
+    bool update;
+    
+    if(!currentGame) return;
+    
+    // let's move 
+    update = gameUpdate(currentGame);
+    
+    // are you boss enough?
+    if(!update){
+        // celebrate end of game
+        setState(STATE_GAME_OVER);
+    }
+    
+    // update UI
+    ctrlUIUpdate();
+    gameUIUpdate();
 }
 
 void stopGame(){
