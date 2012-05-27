@@ -259,8 +259,14 @@ static bool fileReadDisc(){
     };
     
     if(!isCircInGameCirc(disc)){
-        fileSetError(FILE_ERROR_DISC_POS);
-        return false;
+        disc = circProjectOnCirc(disc, getGameCirc());
+        
+        // show warning
+        printf(
+            " WARNING on line %u:\n"
+            "  Disc is out of game circle. Automatically corrected position\n",
+            lineNumber
+        );
     }
     
     gameSetDisc(game, disc);
