@@ -130,9 +130,32 @@ double groupGetOmega(group_t* group){
 }
 
 void groupSetOmega(group_t* group, double omega){
+    part_t* cur = NULL;
+    
     if(!group) return;
     
+    // set new omega
     group->omega = omega;
+    group->momentum = 0;
+    
+    // calc momentum
+    vect_t curPos;
+    cur = group->part;
+    
+    while(cur){
+        curPos = vectSub(group->pos, partGetPos(cur));
+        
+        // calc pos x (omega x pos)
+        group->momentum += curPos.x * (
+            group->speed.y + group->omega * curPos.x
+        );
+        
+        group->momentum -= curPos.y * (
+            group->speed.x - group->omega * curPos.y
+        );
+        
+        cur = partGetNext(cur);
+    }
 }
 
 int groupGetType(group_t* group){

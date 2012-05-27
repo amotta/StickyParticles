@@ -458,11 +458,6 @@ static bool fileReadGroup(group_t* group){
         );
     }
     
-    groupSetPos(group, pos);
-    groupSetSpeed(group, speed);
-    groupSetOmega(group, omega);
-    groupSetType(group, type);
-    
     // read particles
     part_t* part = NULL;
     if(numbParts > 1){
@@ -488,6 +483,12 @@ static bool fileReadGroup(group_t* group){
             return false;
         }
     }
+    
+    // config group
+    groupSetPos(group, pos);
+    groupSetSpeed(group, speed);
+    groupSetOmega(group, omega);
+    groupSetType(group, type);
     
     return true;
 }
