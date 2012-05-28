@@ -161,10 +161,18 @@ void groupSetCollide(groupSet_t* set){
     
     if(!set) return;
     
+    bool groupOneMixed;
+    bool groupOneMerged;
+    unsigned int groupOneType;
+    
     // groupOne
     groupOne = set->group;
     while(groupOne){
         groupOneNext = groupGetNext(groupOne);
+        
+        groupOneMixed = false;
+        groupOneMerged = false;
+        groupOneType = groupGetType(groupOne);
         
         // groupTwo
         groupTwo = groupGetNext(groupOne);
@@ -173,33 +181,36 @@ void groupSetCollide(groupSet_t* set){
             
             // check for collision
             if(groupCheckGroup(groupOne, groupTwo)){
-                
                 // correct groupOneNext
                 if(groupOneNext == groupTwo){
                     groupOneNext = groupTwoNext;
                 }
                 
-                if(
-                    groupGetType(groupOne) == GROUP_TYPE_DANGEROUS
-                    && groupGetType(groupTwo) == GROUP_TYPE_DANGEROUS
-                ){
-                    groupSetDel(set, groupOne);
-                    groupOne = NULL;
-                    
-                    groupSetDel(set, groupTwo);
-                    groupTwo = NULL;
-                    
-                    break;
-                }else{
-                    // merge groups
-                    groupMerge(groupOne, groupTwo);
-                    groupSetDel(set, groupTwo);
-                    groupTwo = NULL;
+                // is groupOne mixed?
+                if(groupOneType != groupGetType(groupTwo)){
+                    groupOneMixed = true;
                 }
+                
+                groupMerge(groupOne, groupTwo);
+                groupOneMerged = true;
+                
+                groupSetDel(set, groupTwo);
+                groupTwo = NULL;
+                
             }
             
             // go to next
             groupTwo = groupTwoNext;
+        }
+        
+        // delete group when only dangerous groups were merged
+        if(
+            groupOneMerged
+            && groupOneType == GROUP_TYPE_DANGEROUS
+            && !groupOneMixed
+        ){
+            groupSetDel(set, groupOne);
+            groupOne = NULL;
         }
         
         groupOne = groupOneNext;
