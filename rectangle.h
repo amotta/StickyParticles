@@ -17,6 +17,7 @@ typedef struct {
     double top;
 } rect_t;
 
+// returns the game rectangle
 extern rect_t getGameRect();
 
 #endif
