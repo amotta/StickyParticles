@@ -45,6 +45,7 @@ static void stepGame();
 static void updateGame();
 static void stopGame();
 static void loadFile(const char* file);
+static void loadTempFile();
 static void resetGame();
 static void saveFile();
 
@@ -146,7 +147,7 @@ void handleKeyboard(unsigned char key, int x, int y){
             break;
             
         case 't':
-            printf("LOAD TEMP\n");
+            loadTempFile();
             break;
     }
 }
@@ -247,6 +248,20 @@ void loadFile(const char* file){
         copyGame();
     }else{
         setState(STATE_FILE_NOK);
+    }
+}
+
+void loadTempFile(){
+    bool playing = false;
+    
+    if(state == STATE_PLAYING){
+        playing = true;
+    }
+    
+    loadFile("temp.txt");
+    
+    if(playing){
+        setState(STATE_PLAYING);
     }
 }
 
