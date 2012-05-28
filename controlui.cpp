@@ -18,7 +18,6 @@
 
 extern "C" {
     #include "game.h"
-    #include "gameui.h"
 }
 
 #define DELTA_SPINNER_MIN 0.05
