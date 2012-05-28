@@ -17,6 +17,7 @@ extern void ctrlUISetGameWindow(int gameWindow);
 extern void ctrlUISetOnLoad(void (*func)(const char* file));
 extern void ctrlUISetOnReset(void (*func)());
 extern void ctrlUISetOnSave(void (*func)());
+extern void ctrlUISetOnStep(void (*func)());
 extern void ctrlUISetOnPlay(void (*func)());
 extern void ctrlUISetState(int state);
 extern void ctrlUISetFile(const char* file);

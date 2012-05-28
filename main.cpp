@@ -69,6 +69,7 @@ int main(int argc, char** argv){
     ctrlUISetOnLoad(loadFile);
     ctrlUISetOnReset(resetGame);
     ctrlUISetOnSave(saveFile);
+    ctrlUISetOnStep(stepGame);
     ctrlUISetOnPlay(playGame);
     
     // register keyboard callback

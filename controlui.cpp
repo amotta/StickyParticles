@@ -53,6 +53,7 @@ namespace {
     void (*onLoad)(const char* file) = NULL;
     void (*onReset)() = NULL;
     void (*onSave)() = NULL;
+    void (*onStep)() = NULL;
     void (*onPlay)() = NULL;
     
     // GLUI
@@ -163,6 +164,10 @@ void ctrlUISetOnSave(void (*func)()){
     onSave = func;
 }
 
+void ctrlUISetOnStep(void (*func)()){
+    onStep = func;
+}
+
 void ctrlUISetOnPlay(void (*func)()){
     onPlay = func;
 }
@@ -261,8 +266,9 @@ void ctrlUIHandleEvent(int id){
             break;
             
         case UI_ID_STEP:
-            // TODO
-            printf("Step button pressed\n");
+            if(onStep){
+                onStep();
+            }
             break;
             
         case UI_ID_PLAY:
