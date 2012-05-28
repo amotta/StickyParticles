@@ -22,6 +22,9 @@ extern game_t* gameCopy(game_t* game);
 extern unsigned int gameGetScore(const game_t* game);
 extern void gameSetScore(game_t* game, unsigned int score);
 
+extern void gameResetTime(game_t* game);
+extern double gameGetTime(game_t* game);
+
 extern double gameGetInterval(const game_t* game);
 extern void gameSetInterval(game_t* game, double timeDiff);
 

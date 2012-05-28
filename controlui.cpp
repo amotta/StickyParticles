@@ -217,6 +217,7 @@ void ctrlUIUpdate(){
     // NOTE
     // works with currentGame = NULL too
     deltaSpinner->set_float_val(gameGetInterval(currentGame));
+    timeText->set_float_val(gameGetTime(currentGame));
     scoreText->set_int_val(gameGetScore(currentGame));
 }
 
@@ -251,9 +252,12 @@ void ctrlUIHandleEvent(int id){
             break;
             
         case UI_ID_INTERVAL:
-            // TODO
-            // gameSetCurrentInterval(deltaSpinner->get_float_val());
-            printf("Interval changed\n");
+            if(currentGame){
+                gameSetInterval(
+                    currentGame,
+                    deltaSpinner->get_float_val()
+                );
+            }
             break;
             
         case UI_ID_STEP:

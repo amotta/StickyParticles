@@ -22,6 +22,7 @@
 
 struct GAME {
     unsigned int score;
+    double time;
     double interval;
     vect_t target;
     circ_t disc;
@@ -29,6 +30,7 @@ struct GAME {
     groupSet_t* groups;
 };
 
+static void gameIncrTime(game_t* game);
 static void gameDrawBackground();
 static void gameHandleEmitters(game_t* game);
 static void gameMoveDisc(game_t* game);
@@ -38,6 +40,7 @@ game_t* gameNew(){
     
     if((game = malloc(sizeof(game_t)))){
         game->score = 0;
+        game->time = 0;
         game->interval = 0;
         game->target = vectGetNull();
         game->disc = circGetNull();
@@ -61,6 +64,7 @@ game_t* gameCopy(game_t* game){
     
     // copy values
     copy->score = game->score;
+    copy->time = game->time;
     copy->interval = game->interval;
     copy->target = game->target;
     copy->disc = game->disc;
@@ -80,6 +84,24 @@ void gameSetScore(game_t* game, unsigned int score){
     if(!game) return;
     
     game->score = score;
+}
+
+void gameResetTime(game_t* game){
+    if(!game) return;
+    
+    game->time = 0;
+}
+
+void gameIncrTime(game_t* game){
+    if(!game) return;
+    
+    game->time += game->interval;
+}
+
+double gameGetTime(game_t* game){
+    if(!game) return 0;
+    
+    return game->time;
 }
 
 double gameGetInterval(const game_t* game){
@@ -157,6 +179,9 @@ bool gameUpdate(game_t* game){
     
     // 5 And finally collect trophies
     points = groupSetCheckDisc(game->groups, game->disc);
+    
+    // 6 Update time
+    gameIncrTime(game);
     
     if(points < 0){
         return false;

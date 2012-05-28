@@ -167,10 +167,14 @@ void playGame(){
         state != STATE_RESET
         && state != STATE_FILE_OK
         && state != STATE_STOPPED
-    ) return; 
+    ) return;
     
     // change state
     setState(STATE_PLAYING);
+    
+    // reset score and time
+    gameResetTime(currentGame);
+    gameSetScore(currentGame, 0);
     
     // prepare timer
     setTimer();
